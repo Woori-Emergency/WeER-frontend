@@ -18,9 +18,9 @@ const LogoContainer = styled.div`
 `;
 
 const LogoImage = styled.img`
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
+  width: 130px;
+  height: 50px;
+  margin-right: 5px;
 `;
 
 const LogoText = styled.div`
@@ -86,10 +86,6 @@ function Header() {
     <HeaderContainer>
       <LogoContainer>
         <LogoImage src="/weer_logo.png" alt="Logo" />
-        <div>
-          <LogoText>Emergency</LogoText>
-          <Subtitle>실시간 응급실 예약 서비스</Subtitle>
-        </div>
       </LogoContainer>
       
       <Nav>
