@@ -1,1 +1,13 @@
-//메인 페이지 (지도)
+// src/pages/weer/MainPage.jsx
+
+import React from 'react';
+
+function MainPage() {
+  return (
+    <>
+
+    </>
+  );
+}
+
+export default MainPage;
