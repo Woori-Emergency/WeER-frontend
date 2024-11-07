@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/common/  Header';
+import Header from './components/common/Header';
 
 // 페이지 컴포넌트
 import HomePage from './pages/weer/MainPage';
