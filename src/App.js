@@ -11,7 +11,7 @@ import HospitalFilterPage from './pages/weer/HospitalFilterPage';
 import PatientStatusInputPage from './pages/weer/PatientStatusInputPage';
 import PatientStatusListPage from './pages/weer/PatientStatusListPage';
 import HospitalNoticePage from './pages/weer/HospitalAnnouncementPage';
-import MyBookingRequestsPage from './pages/weer/ReservationListPage';
+import ReservationListPage from './pages/weer/ReservationListPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminUserListPage from './pages/admin/AdminUserListPage';
 import AdminApprovalPage from './pages/admin/AdminApprovalPage';
@@ -40,7 +40,7 @@ function App() {
         <Route path="/patient-status-input" element={<PatientStatusInputPage />} />
         <Route path="/patient-status-list" element={<PatientStatusListPage />} />
         <Route path="/hospital-notice" element={<HospitalNoticePage />} />
-        <Route path="/booking-requests" element={<MyBookingRequestsPage />} />
+        <Route path="/my-booking-requests" element={<ReservationListPage />} />
 
         {/* admin */}
         <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
