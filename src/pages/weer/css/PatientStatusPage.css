@@ -1,3 +1,7 @@
+* {
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
 .patient-page {
     min-height: calc(100vh - 80px);
     padding: 40px 20px;
