@@ -107,10 +107,6 @@ const ReservationCard = ({ reservation }) => {
           <DetailLabel>예상 소요시간</DetailLabel>
           <DetailValue>{reservation.estimatedTime} ({reservation.distance})</DetailValue>
         </DetailItem>
-        <DetailItem>
-          <DetailLabel>진료과</DetailLabel>
-          <DetailValue>{reservation.department}</DetailValue>
-        </DetailItem>
       </Details>
     </Card>
   );

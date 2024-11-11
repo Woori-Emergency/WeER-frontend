@@ -21,33 +21,29 @@ import { PageWrapper } from '../../styles/CommonStyles';
 const HospitalBookingListPage = () => {
   const [requests, setRequests] = useState([
     {
-      id: 1,
+      patientId: 1,
       gender: '남성',
       age: '30대',
-      category: '질병',
+      medical: '질병',
       consciousness: 'ALERT',
-      vitals: {
-        bloodPressure: '125 mmHg',
-        heartRate: '75 bpm',
-        temperature: '36.8°C',
-        respiration: '16 /min'
-      },
-      requestTime: '11월 8일 오전 10:22',
+      bloodPressure: '125',
+      heartRate: '75',
+      temperature: '36.8',
+      respiration: '16',
+      created_at: '11월 8일 오전 10:22',
       status: 'pending'
     },
     {
-      id: 2,
+      patientId: 2,
       gender: '여성',
       age: '50대',
-      category: '외상',
+      medical: '외상',
       consciousness: 'ALERT',
-      vitals: {
-        bloodPressure: '135 mmHg',
-        heartRate: '82 bpm',
-        temperature: '37.1°C',
-        respiration: '18 /min'
-      },
-      requestTime: '11월 8일 오전 10:15',
+      bloodPressure: '135',
+      heartRate: '82',
+      temperature: '37.1',
+      respiration: '18',
+      created_at: '11월 8일 오전 10:15',
       status: 'pending'
     }
   ]);

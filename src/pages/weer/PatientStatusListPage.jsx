@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import PatientInfoCard from '../../components/patientStatus/PatientInfoCard';
 import FilterButtons from '../../components/patientStatus/FilterButtons';
 import CompletedTransferStatus from '../../components/patientStatus/CompletedTransferStatus';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -20,9 +21,10 @@ const ContentWrapper = styled.div`
 
 const PatientStatusListPage = () => {
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
+  const navigate = useNavigate();
 
   const currentPatient = {
-    userId: 1,
+    patientId: 1,
     gender: 'MALE',
     ageGroup: 'THIRTIES',
     bloodPressure: 125,
@@ -32,12 +34,12 @@ const PatientStatusListPage = () => {
     medical: 'DISEASE',
     consciousnessLevel: 'ALERT',
     transportStatus: 'IN_PROGRESS',
-    startTime: "2024-11-08T10:22:30"
+    created_at: "2024-11-08T10:22:30"
   };
 
   const completedTransfers = [
     {
-      userId: 2,
+      patientId: 2,
       gender: 'FEMALE',
       ageGroup: 'FORTIES',
       bloodPressure: 118,
@@ -47,8 +49,8 @@ const PatientStatusListPage = () => {
       medical: 'DISEASE',
       consciousnessLevel: 'ALERT',
       transportStatus: 'COMPLETED',
-      startTime: "2024-11-08T09:15:00",
-      endTime: "2024-11-08T09:45:00",
+      created_at: "2024-11-08T09:15:00",
+      modified_at: "2024-11-08T09:45:00",
       hospitalName: "서울대학교병원",
       distance: "5.2km",
       duration: "30분"
@@ -64,8 +66,8 @@ const PatientStatusListPage = () => {
       medical: 'TRAUMA',
       consciousnessLevel: 'ALERT',
       transportStatus: 'COMPLETED',
-      startTime: "2024-11-08T08:30:00",
-      endTime: "2024-11-08T09:00:00",
+      created_at: "2024-11-08T08:30:00",
+      modified_at: "2024-11-08T09:00:00",
       hospitalName: "세브란스병원",
       distance: "3.8km",
       duration: "25분"
@@ -74,10 +76,13 @@ const PatientStatusListPage = () => {
 
   const handleDistanceSort = () => {
     console.log('거리순 정렬');
+    navigate('/hospital-list');
+
   };
 
   const handleEmergencyFilter = () => {
     console.log('응급실 필터링');
+    navigate('/hospital/filter')
   };
 
   return (

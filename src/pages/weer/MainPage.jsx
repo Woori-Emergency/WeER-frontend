@@ -11,9 +11,11 @@ import {
   ButtonContainer,
   ActionButton
 } from '../../styles/CommonStyles';
+import { useNavigate } from 'react-router-dom';
 
 const MainPage = () => {
   // 상태 관리
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [mapCenter, setMapCenter] = useState({
@@ -38,26 +40,14 @@ const MainPage = () => {
     // - UI 업데이트
   };
 
-  // 레이어 변경 처리
-  const handleLayerChange = () => {
-    // TODO: 지도 레이어 변경 로직 구현
-    // - 일반 지도 / 위성 지도 전환
-    // - 교통 정보 표시/숨김
-  };
-
   // 거리순 정렬
   const handleDistanceSort = () => {
-    // TODO: 거리순 정렬 로직 구현
-    // - 현재 위치 기준 거리 계산
-    // - 목록 정렬
-    // - UI 업데이트
+    navigate('/hospital-list');
   };
 
   // 필터링 검색
   const handleFilterSearch = () => {
-    // TODO: 상세 필터링 검색 로직 구현
-    // - 진료과목, 운영시간 등 필터링
-    // - 검색 결과 업데이트
+    navigate('/hospital/filter')
   };
 
   return (
@@ -65,7 +55,7 @@ const MainPage = () => {
       <Container>
         <ContentWrapper>
           <TopContainer>
-            <Search onSearch={handleSearch} />
+            <Search/>
             <StatusButtons 
               onStatusChange={handleStatusChange}
               selectedStatus={selectedStatus}
@@ -76,7 +66,6 @@ const MainPage = () => {
             center={mapCenter}
             searchQuery={searchQuery}
             selectedStatus={selectedStatus}
-            onLayerChange={handleLayerChange}
           />
 
           <ButtonContainer>

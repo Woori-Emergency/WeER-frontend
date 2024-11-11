@@ -140,8 +140,7 @@ const ReservationListPage = () => {
       status: "APPROVED",
       createdAt: "2024-11-08T10:30:00",
       distance: "2.5km",
-      estimatedTime: "10분",
-      department: "응급의학과"
+      estimatedTime: "10분"
     },
     {
       id: 2,
@@ -149,8 +148,7 @@ const ReservationListPage = () => {
       status: "PENDING",
       createdAt: "2024-11-08T10:32:00",
       distance: "3.8km",
-      estimatedTime: "15분",
-      department: "내과"
+      estimatedTime: "15분"
     },
     {
       id: 3,
@@ -158,8 +156,7 @@ const ReservationListPage = () => {
       status: "REJECTED",
       createdAt: "2024-11-08T10:28:00",
       distance: "5.2km",
-      estimatedTime: "20분",
-      department: "외과"
+      estimatedTime: "20분"
     }
   ];
 
@@ -187,8 +184,7 @@ const ReservationListPage = () => {
           status: "APPROVED",
           createdAt: "2024-11-08T09:15:00",
           distance: "5.2km",
-          estimatedTime: "30분",
-          department: "응급의학과"
+          estimatedTime: "30분"
         },
         {
           id: 2,
@@ -196,8 +192,7 @@ const ReservationListPage = () => {
           status: "REJECTED",
           createdAt: "2024-11-08T09:10:00",
           distance: "6.1km",
-          estimatedTime: "35분",
-          department: "내과"
+          estimatedTime: "35분"
         }
       ]
     },
@@ -224,8 +219,7 @@ const ReservationListPage = () => {
           status: "APPROVED",
           createdAt: "2024-11-08T08:30:00",
           distance: "3.8km",
-          estimatedTime: "25분",
-          department: "응급의학과"
+          estimatedTime: "25분"
         },
         {
           id: 2,
@@ -233,8 +227,7 @@ const ReservationListPage = () => {
           status: "PENDING",
           createdAt: "2024-11-08T08:25:00",
           distance: "4.5km",
-          estimatedTime: "30분",
-          department: "정형외과"
+          estimatedTime: "30분"
         }
       ]
     }

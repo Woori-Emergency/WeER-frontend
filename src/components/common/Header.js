@@ -83,7 +83,7 @@ const LoginIcon = styled(FaUserCircle)`
 function Header() {
   const location = useLocation();
   /* 로그인 후, 프로필로 바뀌는 것 확인하기 위함*/
-  const isLoggedIn = true; 
+  const isLoggedIn = false; 
 
   return (
     <HeaderContainer>
@@ -99,8 +99,16 @@ function Header() {
         <NavItem to="/patient-status-list" active={location.pathname === "/patient-status-list"}>
           환자 상태 내역
         </NavItem>
+        {isLoggedIn && (
+          <NavItem 
+            to="/patient-status-input"
+            active={location.pathname === "/patient-status-input"}
+          >
+            환자 상태 기입
+          </NavItem>
+        )}
         {isLoggedIn ? (
-          <Profile />  
+          <Profile />
         ) : (
           <LoginButton to="/login">
             <LoginIcon />

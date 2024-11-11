@@ -10,7 +10,7 @@ const PatientStatusPage = () => {
     bodyTemp: '',
     respiration: '',
     diseaseStatus: 'DISEASE',
-    consciousnessLevel: 'A',
+    consciousnessLevel: 'ALERT',
   });
   
   const [errors, setErrors] = useState({});
