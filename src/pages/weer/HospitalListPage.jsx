@@ -1,14 +1,19 @@
-//병원 리스트 페이지
-//병원 공지사항 페이지
+import React from 'react';
+import styled from 'styled-components';
+import HospitalCard from '../../components/HospitalCard/HospitalCard';
 
-const HospitalListPage= () => {
-    return (
-      <div>
-        <h1>HospitalListPage</h1>
-        <p>이곳은 HospitalListPage 입니다.</p>
-      </div>
-    );
-  };
-  
-  export default HospitalListPage;
-  
+const PageWrapper = styled.div`
+  padding: 24px;
+  background: #F8F9FA;
+  min-height: 100vh;
+`;
+
+const HospitalListPage = () => {
+  return (
+    <PageWrapper>
+      <HospitalCard />
+    </PageWrapper>
+  );
+};
+
+export default HospitalListPage;

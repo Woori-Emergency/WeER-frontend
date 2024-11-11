@@ -38,7 +38,7 @@ const KakaoMap = () => {
   const getMarkerImage = (status) => {
     switch (status) {
       case 'available':
-        return '/images/marker/available.png';
+        return '/images/marker/ambulance.png';
       case 'busy':
         return '/images/marker/busy.png';
       case 'unavailable':
@@ -62,7 +62,7 @@ const KakaoMap = () => {
               onClick={() => setSelectedMarker(selectedMarker === hospital.id ? null : hospital.id)}
               image={{
                 src: getMarkerImage(hospital.status),
-                size: { width: 24, height: 35 },
+                size: { width: 50, height: 50 },
               }}
             />
             {selectedMarker === hospital.id && (
