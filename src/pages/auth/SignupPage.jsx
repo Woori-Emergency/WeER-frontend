@@ -101,7 +101,7 @@ const SignupPage = () => {
       })
       .then((data) => {
         alert('회원가입 성공!');
-        navigate('/'); // 회원가입 성공 후 리다이렉트
+        navigate('/auth/signup-complete'); // 회원가입 성공 후 리다이렉트
       })
       .catch((error) => {
         alert('회원가입 중 오류가 발생했습니다.');
@@ -283,7 +283,7 @@ const SignupPage = () => {
               style={{ fontSize: '18px', height: '50px', backgroundColor: '#E97132' }}
               disabled={idAvailable || emailAvailable} // 중복 체크가 완료되지 않으면 버튼 비활성화
             >
-              회원가입
+              회원가입 요청
             </Button>
           </Form.Item>
         </Form>
