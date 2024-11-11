@@ -35,10 +35,10 @@ const NavItem = styled(Link)`
   margin: 0 15px;
   position: relative;
   font-weight: ${(props) => (props.active ? 'bold' : 'normal')};
-  color: ${(props) => (props.active ? '#007bff' : '#333')};
+  color: ${(props) => (props.active ? '#E97132' : '#333')};
 
   &:hover {
-    color: #007bff;
+    color: #E97132;
   }
 `;
 
@@ -66,25 +66,28 @@ const LoginIcon = styled(FaUserCircle)`
   color: #333;
 `;
 
-function Header() {
+function AdminHeader() {
   const location = useLocation();
 
   return (
     <HeaderContainer>
       <LogoContainer>
-        {/* 로고 이미지를 Link로 감싸 메인 페이지로 이동 */}
+        {/* 로고 이미지를 클릭 시 메인 페이지로 이동하도록 Link 추가 */}
         <Link to="/">
           <LogoImage src="/weer_logo.png" alt="Logo" />
         </Link>
       </LogoContainer>
       
       <Nav>
-        <NavItem to="/" active={location.pathname === "/"}>메인</NavItem>
-        <NavItem to="/my-booking-requests" active={location.pathname === "/my-booking-requests"}>
-          예약 확인
+        {/* 관리자용 네비게이션 링크 */}
+        <NavItem to="/admin/users" active={location.pathname === "/admin/users"}>
+          사용자 조회
         </NavItem>
-        <NavItem to="/patient-status-list" active={location.pathname === "/patient-status-list"}>
-          환자 상태 내역
+        <NavItem to="/admin/approvals" active={location.pathname === "/admin/approvals"}>
+          가입 승인/반려
+        </NavItem>
+        <NavItem to="/admin/dashboard" active={location.pathname === "/admin/dashboard"}>
+          대시보드
         </NavItem>
         <LoginButton to="/login">
           <LoginIcon />
@@ -95,4 +98,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default AdminHeader;
