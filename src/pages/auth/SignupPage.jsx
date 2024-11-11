@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate import 추가
 
 import {
-  AutoComplete,
   Button,
-  Checkbox,
   Col,
   Form,
   Input,
@@ -58,7 +56,7 @@ const SignupPage = () => {
       const isAvailable = await response.json();
       setIdAvailable(isAvailable); // 서버 응답에 따라 ID 중복 여부 설정
     } catch (error) {
-      console.error("ID 중복 체크 오류:", error);
+      console.error("ID 중복:", error);
     }
   };
 
@@ -68,9 +66,8 @@ const SignupPage = () => {
       const response = await fetch(`http://localhost:8080/auth/check-email?email=${email}`);
       const isAvailable = await response.json();
       setEmailAvailable(isAvailable); // 서버 응답에 따라 이메일 중복 여부 설정
-      console.error("이메일중복여부 : ", isAvailable);
     } catch (error) {
-      console.error("이메일 중복 체크 오류:", error);
+      console.error("이메일 중복:", error);
     }
   };
 
@@ -87,7 +84,7 @@ const SignupPage = () => {
       organization: values.organization,
     };
 
-    // 회원가입 API 호출 (비동기 요청은 아니지만, 여기서 처리)
+    // 회원가입 API 호출
     fetch('http://localhost:8080/auth/signup', {
       method: 'POST',
       headers: {
@@ -123,10 +120,6 @@ const SignupPage = () => {
           form={form}
           name="signup"
           onFinish={onFinish}
-          initialValues={{
-            residence: ['zhejiang', 'hangzhou', 'xihu'],
-            prefix: '82',
-          }}
           style={{
             maxWidth: '100%',
             background: '#fff',

@@ -28,52 +28,54 @@ const LoginPage = () => {
       password: values.password,
     };
   
-    try {
-      // Send login request using fetch
-      const response = fetch('http://localhost:8080/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loginData),
-      });
-  
-      if (response.ok) {
-        const data = response.json();
+    // Send login request using fetch
+    fetch('http://localhost:8080/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(loginData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();  // JSON 형식으로 응답을 반환
+        } else {
+          return response.json().then((error) => {
+            throw new Error(error.message || '로그인 실패');
+          });
+        }
+      })
+      .then((data) => {
         console.log('Login successful', data);
   
-        if (rememberMe) {
-          localStorage.setItem('savedLoginId', values.loginId);
-        } else {
-          localStorage.removeItem('savedLoginId');
-        }
-  
-        if (autoLogin) {
-          localStorage.setItem('autoLogin', true);
-        } else {
-          localStorage.removeItem('autoLogin');
-        }
-
-        if(data=="User"){
-          navigate('/');
-        }
-        else if (data=="Admin"){
-          navigate('/admin/dashboard');
-        }
-        else if (data=="Hospital"){
-          navigate('/hospital-booking-list')
-        }
-
+        // 로그인 성공 시 세션 스토리지 처리
+      if (rememberMe) {
+        sessionStorage.setItem('savedLoginRole', data);
       } else {
-        const error = response.json();
-        console.error('Login failed:', error);
-        // 로그인 실패 메시지 표시
+        sessionStorage.removeItem('savedLoginId');
       }
-    } catch (error) {
-      console.error('Error during login:', error);
-      // 네트워크 오류 처리
-    }
+
+      if (autoLogin) {
+        sessionStorage.setItem('autoLogin', true);
+      } else {
+        sessionStorage.removeItem('autoLogin');
+      }
+  
+        // 역할에 따라 리디렉션
+        if (data.role === "User") {
+          navigate('/');
+        } else if (data.role === "Admin") {
+          navigate('/admin/dashboard');
+        } else if (data.role === "Hospital") {
+          navigate('/hospital-booking-list');
+        }
+      })
+      .catch((error) => {
+        console.error('Error during login:', error);
+        alert(error.message || '로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+      });
   };
+  
   
 
   return (
