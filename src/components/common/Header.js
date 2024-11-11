@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom'; 
 import { FaUserCircle } from 'react-icons/fa';
 
 const HeaderContainer = styled.header`
@@ -21,6 +21,21 @@ const LogoImage = styled.img`
   width: 130px;
   height: 50px;
   margin-right: 5px;
+<<<<<<< HEAD
+=======
+`;
+
+const LogoText = styled.div`
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.2;
+`;
+
+const Subtitle = styled.div`
+  font-size: 12px;
+  color: #666;
+>>>>>>> develop
 `;
 
 const Nav = styled.nav`
