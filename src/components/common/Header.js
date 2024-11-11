@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
+import Profile from '../Profile/Profile';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -81,6 +82,8 @@ const LoginIcon = styled(FaUserCircle)`
 
 function Header() {
   const location = useLocation();
+  /* 로그인 후, 프로필로 바뀌는 것 확인하기 위함*/
+  const isLoggedIn = true; 
 
   return (
     <HeaderContainer>
@@ -96,10 +99,14 @@ function Header() {
         <NavItem to="/patient-status-list" active={location.pathname === "/patient-status-list"}>
           환자 상태 내역
         </NavItem>
-        <LoginButton to="/login">
-          <LoginIcon />
-          로그인
-        </LoginButton>
+        {isLoggedIn ? (
+          <Profile />  
+        ) : (
+          <LoginButton to="/login">
+            <LoginIcon />
+            로그인
+          </LoginButton>
+        )}
       </Nav>
     </HeaderContainer>
   );
