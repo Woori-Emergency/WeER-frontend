@@ -11,16 +11,16 @@ const LoginPage = () => {
   const [autoLogin, setAutoLogin] = useState(false);
 
   useEffect(() => {
-    const savedUsername = localStorage.getItem('savedUsername');
+    const savedLoginId = localStorage.getItem('savedLoginId');
     const savedAutoLogin = JSON.parse(localStorage.getItem('autoLogin'));
 
-    if (savedAutoLogin && savedUsername) {
+    if (savedAutoLogin && savedLoginId) {
       console.log('자동 로그인 중...');
       navigate('/dashboard');
     }
   }, [navigate]);
 
-  const onFinish = async (values) => {
+  const onFinish = (values) => {
     console.log('Received values of form: ', values);
   
     const loginData = {
@@ -28,46 +28,54 @@ const LoginPage = () => {
       password: values.password,
     };
   
-    try {
-      // Send login request using fetch
-      const response = await fetch('http://localhost:8080/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loginData),
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
+    // Send login request using fetch
+    fetch('http://localhost:8080/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(loginData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();  // JSON 형식으로 응답을 반환
+        } else {
+          return response.json().then((error) => {
+            throw new Error(error.message || '로그인 실패');
+          });
+        }
+      })
+      .then((data) => {
         console.log('Login successful', data);
   
-        if (rememberMe) {
-          localStorage.setItem('savedUsername', values.loginId);
-        } else {
-          localStorage.removeItem('savedUsername');
-        }
-  
-        if (autoLogin) {
-          localStorage.setItem('autoLogin', true);
-        } else {
-          localStorage.removeItem('autoLogin');
-        }
-  
-        // 리다이렉트 URL 받아오기
-        const redirectUrl = JSON.parse(data).redirectUrl;
-        navigate(redirectUrl); // 메인페이지로 리다이렉트
-  
+        // 로그인 성공 시 세션 스토리지 처리
+      if (rememberMe) {
+        sessionStorage.setItem('savedLoginRole', data);
       } else {
-        const error = await response.json();
-        console.error('Login failed:', error.message);
-        // 로그인 실패 메시지 표시
+        sessionStorage.removeItem('savedLoginId');
       }
-    } catch (error) {
-      console.error('Error during login:', error);
-      // 네트워크 오류 처리
-    }
+
+      if (autoLogin) {
+        sessionStorage.setItem('autoLogin', true);
+      } else {
+        sessionStorage.removeItem('autoLogin');
+      }
+  
+        // 역할에 따라 리디렉션
+        if (data.role === "User") {
+          navigate('/');
+        } else if (data.role === "Admin") {
+          navigate('/admin/dashboard');
+        } else if (data.role === "Hospital") {
+          navigate('/hospital-booking-list');
+        }
+      })
+      .catch((error) => {
+        console.error('Error during login:', error);
+        alert(error.message || '로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+      });
   };
+  
   
 
   return (
@@ -91,7 +99,7 @@ const LoginPage = () => {
           }}
         >
           <Form.Item
-            name="username"
+            name="loginId"
             rules={[
               {
                 required: true,
