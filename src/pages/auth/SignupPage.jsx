@@ -48,41 +48,68 @@ const tailFormItemLayout = {
 const SignupPage = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate(); // useNavigate 추가
+  const [idAvailable, setIdAvailable] = useState(false); // ID 중복 체크 상태
+  const [emailAvailable, setEmailAvailable] = useState(false); // 이메일 중복 체크 상태
 
-  // Form 제출 후 호출되는 함수
-  const onFinish = async (values) => {
+  // ID 중복 체크 비동기 함수
+  const checkIdAvailability = async (loginId) => {
     try {
-      // 회원가입 데이터 준비
-      const signupData = {
-        loginId: values.loginId,
-        name: values.name,
-        email: values.email,
-        password: values.password,
-        tel: values.tel,
-        certificate: values.certificate,
-        organization: values.organization,
-      };
-  
-      // fetch를 사용하여 회원가입 API 호출
-      const response = await fetch('http://localhost:8080/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(signupData),
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        const redirectUrl = JSON.parse(data).redirectUrl;
-        navigate(redirectUrl); // 회원가입 성공 후 리다이렉트
-      } else {
-        alert('회원가입 실패');
-      }
+      const response = await fetch(`http://localhost:8080/auth/check-login-id?loginId=${loginId}`);
+      const isAvailable = await response.json();
+      setIdAvailable(isAvailable); // 서버 응답에 따라 ID 중복 여부 설정
     } catch (error) {
-      alert('회원가입 중 오류가 발생했습니다.');
-      console.error(error);
+      console.error("ID 중복 체크 오류:", error);
     }
+  };
+
+  // 이메일 중복 체크 비동기 함수
+  const checkEmailAvailability = async (email) => {
+    try {
+      const response = await fetch(`http://localhost:8080/auth/check-email?email=${email}`);
+      const isAvailable = await response.json();
+      setEmailAvailable(isAvailable); // 서버 응답에 따라 이메일 중복 여부 설정
+      console.error("이메일중복여부 : ", isAvailable);
+    } catch (error) {
+      console.error("이메일 중복 체크 오류:", error);
+    }
+  };
+
+  // Form 제출 후 호출되는 함수 (회원가입)
+  const onFinish = (values) => {
+    // 서버에 회원가입 요청 (동기 방식)
+    const signupData = {
+      loginId: values.loginId,
+      name: values.name,
+      email: values.email,
+      password: values.password,
+      tel: values.tel,
+      certificate: values.certificate,
+      organization: values.organization,
+    };
+
+    // 회원가입 API 호출 (비동기 요청은 아니지만, 여기서 처리)
+    fetch('http://localhost:8080/auth/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(signupData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('회원가입 실패');
+        }
+      })
+      .then((data) => {
+        alert('회원가입 성공!');
+        navigate('/'); // 회원가입 성공 후 리다이렉트
+      })
+      .catch((error) => {
+        alert('회원가입 중 오류가 발생했습니다.');
+        console.error(error);
+      });
   };
 
   return (
@@ -109,6 +136,7 @@ const SignupPage = () => {
           }}
           scrollToFirstError
         >
+          {/* ID 입력 필드 */}
           <Form.Item
             name="loginId"
             label="아이디"
@@ -130,43 +158,37 @@ const SignupPage = () => {
                     : Promise.reject(new Error('ID는 8자 이상, 13자 이하로 입력해주세요!')),
               },
             ]}
+            onBlur={(e) => checkIdAvailability(e.target.value)} // ID 입력 시 중복 체크
           >
             <Input />
           </Form.Item>
+          {idAvailable && (
+            <div style={{ color: 'red', fontSize: '12px' }}>이 ID는 이미 사용 중입니다.</div>
+          )}
 
-          <Form.Item
-            name="name"
-            label="이름"
-            tooltip="본인의 실명을 입력해주세요."
-            rules={[
-              {
-                required: true,
-                message: '이름을 입력해주세요.',
-                whitespace: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
+          {/* 이메일 입력 필드 */}
+        <Form.Item
             name="email"
             label="E-mail"
             rules={[
-              {
-                type: 'email',
-                message: '유효하지 않은 이메일입니다.',
-              },
-              {
-                required: true,
-                message: '이메일을 입력해주새요!',
-                whitespace: true,
-              },
+                {
+                    type: 'email',
+                    message: '유효하지 않은 이메일입니다.',
+                },
+                {
+                    required: true,
+                    message: '이메일을 입력해 주세요!',
+                    whitespace: true,
+                },
             ]}
-          >
+            onBlur={(e) => checkEmailAvailability(e.target.value)} // 이메일 입력 시 중복 체크
+        >
             <Input />
-          </Form.Item>
-
+        </Form.Item>
+        {emailAvailable && (
+            <div style={{ color: 'red', fontSize: '12px' }}>이 이메일은 이미 사용 중입니다.</div>
+        )}
+          {/* 나머지 폼 항목들... */}
           <Form.Item
             name="password"
             label="비밀번호"
@@ -260,24 +282,14 @@ const SignupPage = () => {
             <Input />
           </Form.Item>
 
-          <Form.Item
-            name="agreement"
-            valuePropName="checked"
-            rules={[
-              {
-                validator: (_, value) =>
-                  value ? Promise.resolve() : Promise.reject(new Error('Should accept agreement')),
-              },
-            ]}
-            {...tailFormItemLayout}
-          >
-            <Checkbox>
-              I have read the <a href="" style={{ color: '#E97132' }}>agreement</a>
-            </Checkbox>
-          </Form.Item>
-
           <Form.Item {...tailFormItemLayout}>
-            <Button type="primary" htmlType="submit" block style={{ fontSize: '18px', height: '50px', backgroundColor: '#E97132' }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              style={{ fontSize: '18px', height: '50px', backgroundColor: '#E97132' }}
+              disabled={idAvailable || emailAvailable} // 중복 체크가 완료되지 않으면 버튼 비활성화
+            >
               회원가입
             </Button>
           </Form.Item>
@@ -288,3 +300,4 @@ const SignupPage = () => {
 };
 
 export default SignupPage;
+  

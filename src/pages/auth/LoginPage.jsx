@@ -11,16 +11,16 @@ const LoginPage = () => {
   const [autoLogin, setAutoLogin] = useState(false);
 
   useEffect(() => {
-    const savedUsername = localStorage.getItem('savedUsername');
+    const savedLoginId = localStorage.getItem('savedLoginId');
     const savedAutoLogin = JSON.parse(localStorage.getItem('autoLogin'));
 
-    if (savedAutoLogin && savedUsername) {
+    if (savedAutoLogin && savedLoginId) {
       console.log('자동 로그인 중...');
       navigate('/dashboard');
     }
   }, [navigate]);
 
-  const onFinish = async (values) => {
+  const onFinish = (values) => {
     console.log('Received values of form: ', values);
   
     const loginData = {
@@ -30,7 +30,7 @@ const LoginPage = () => {
   
     try {
       // Send login request using fetch
-      const response = await fetch('http://localhost:8080/auth/login', {
+      const response = fetch('http://localhost:8080/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,13 +39,13 @@ const LoginPage = () => {
       });
   
       if (response.ok) {
-        const data = await response.json();
+        const data = response.json();
         console.log('Login successful', data);
   
         if (rememberMe) {
-          localStorage.setItem('savedUsername', values.loginId);
+          localStorage.setItem('savedLoginId', values.loginId);
         } else {
-          localStorage.removeItem('savedUsername');
+          localStorage.removeItem('savedLoginId');
         }
   
         if (autoLogin) {
@@ -53,14 +53,20 @@ const LoginPage = () => {
         } else {
           localStorage.removeItem('autoLogin');
         }
-  
-        // 리다이렉트 URL 받아오기
-        const redirectUrl = JSON.parse(data).redirectUrl;
-        navigate(redirectUrl); // 메인페이지로 리다이렉트
-  
+
+        if(data=="User"){
+          navigate('/');
+        }
+        else if (data=="Admin"){
+          navigate('/admin/dashboard');
+        }
+        else if (data=="Hospital"){
+          navigate('/hospital-booking-list')
+        }
+
       } else {
-        const error = await response.json();
-        console.error('Login failed:', error.message);
+        const error = response.json();
+        console.error('Login failed:', error);
         // 로그인 실패 메시지 표시
       }
     } catch (error) {
@@ -91,7 +97,7 @@ const LoginPage = () => {
           }}
         >
           <Form.Item
-            name="username"
+            name="loginId"
             rules={[
               {
                 required: true,
