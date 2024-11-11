@@ -20,7 +20,7 @@ import HospitalBookingListPage from './pages/hospital_admin/HospitalBookingListP
 function App() {
   const location = useLocation();
 
-  const hideHeaderRoutes = ['/login', '/signup'];
+  const hideHeaderRoutes = ['/single'];
   const showHeader = !hideHeaderRoutes.includes(location.pathname);
 
   return (
