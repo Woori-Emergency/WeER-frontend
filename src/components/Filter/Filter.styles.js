@@ -8,10 +8,24 @@ export const Container = styled.div`
   border-radius: 20px;
 `;
 
+export const FilterTitleHeader = styled.div`
+  font-size: 35px;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px; // 패딩 추가
+`;
+
 export const LocationSection = styled.div`
   display: flex;
   gap: 12px;
   margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 `;
 
 export const SelectBox = styled.div`
@@ -24,7 +38,7 @@ export const SelectBox = styled.div`
   color: #666;
   cursor: pointer;
   background: white;
-  min-width: 120px;
+  min-width: 160px;
 
   svg {
     color: #4B98F8;
@@ -72,12 +86,15 @@ export const SelectAllButton = styled.button`
   color: #666;
   font-size: 13px;
   cursor: pointer;
+  margin-bottom : 10px;
+  margin-left : auto;
 `;
 
 export const FilterGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4px;
+  padding : 10px;
 `;
 
 export const CheckboxItem = styled.div`
@@ -151,8 +168,8 @@ export const RefreshIcon = styled.div`
   width: 20px;
   height: 20px;
   color: #4B98F8;
-
-  &::before {
-    content: "🔄"; // 임시 아이콘
-  }
+  background-image: url('/images/refresh.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 `;
