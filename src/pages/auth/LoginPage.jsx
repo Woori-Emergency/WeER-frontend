@@ -9,6 +9,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
   const [autoLogin, setAutoLogin] = useState(false);
+  const token = localStorage.getItem('jwtToken'); // localStorage에서 token 가져오기
 
   useEffect(() => {
     const savedLoginId = localStorage.getItem('savedLoginId');
@@ -28,25 +29,31 @@ const LoginPage = () => {
       password: values.password,
     };
   
-    fetch('http://localhost:8080/auth/login', {
+    // Send login request using fetch
+    fetch('http://localhost:8080/auth/login-process', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(loginData),
     })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          return response.json().then((error) => {
-            throw new Error(error.message || '로그인 실패');
-          });
-        }
-      })
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then(error => {
+          throw error; // 에러 객체를 그대로 throw
+        });
+      }
+      return response.json();
+    })
       .then((data) => {
         console.log('Login successful', data);
+        
+        // 서버에서 받은 JWT 토큰을 로컬 스토리지에 저장
+        if (data.token) {
+          localStorage.setItem('jwtToken', data.token);
+        }
   
+        // 로그인 성공 시 세션 스토리지 처리
         if (rememberMe) {
           sessionStorage.setItem('savedLoginRole', data);
         } else {
@@ -54,24 +61,33 @@ const LoginPage = () => {
         }
 
         if (autoLogin) {
-          sessionStorage.setItem('autoLogin', true);
+          localStorage.setItem('autoLogin', true);
+
         } else {
-          sessionStorage.removeItem('autoLogin');
+          localStorage.removeItem('autoLogin');
         }
   
-        if (data.role === "User") {
-          navigate('/');
-        } else if (data.role === "Admin") {
-          navigate('/admin/dashboard');
-        } else if (data.role === "Hospital") {
-          navigate('/hospital-booking-list');
+        // 역할에 따라 리디렉션
+        switch(data.role) {
+          case "MEMBER":
+            navigate('/');
+            break;
+          case "ADMIN":
+            navigate('/admin/dashboard');
+            break;
+          case "HOSPITAL_ADMIN":
+            navigate('/hospital-booking-list');
+            break;
+          default:
+            navigate('/');
         }
       })
       .catch((error) => {
         console.error('Error during login:', error);
-        alert(error.message || '로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+        alert(error.message || '로그  인 중 오류가 발생했습니다. 다시 시도해주세요.');
       });
   };
+
 
   return (
     <div style={{ 
