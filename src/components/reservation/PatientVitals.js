@@ -47,7 +47,7 @@ const PatientVitals = ({ patient }) => {
         <VitalLabel>혈압</VitalLabel>
         <VitalValue>{patient.bloodPressure} mmHg</VitalValue>
       </VitalSign>
-      <VitalSign color="#dbeafe">
+      <VitalSign color="#ffedd5">
         <VitalLabel>맥박</VitalLabel>
         <VitalValue>{patient.heartRate} bpm</VitalValue>
       </VitalSign>

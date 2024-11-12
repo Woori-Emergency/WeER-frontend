@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'Wanted';
+    src: url('./fonts/WantedSansStd-Regular.ttf');
+}
+
+*,body {
+    font-family: 'Wanted';
+}

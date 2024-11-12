@@ -1,18 +1,13 @@
 import React from 'react';
-import styled from 'styled-components';
 import HospitalCard from '../../components/HospitalCard/HospitalCard';
+import { ContentWrapper } from '../../styles/CommonStyles';
 
-const PageWrapper = styled.div`
-  padding: 24px;
-  background: #F8F9FA;
-  min-height: 100vh;
-`;
 
 const HospitalListPage = () => {
   return (
-    <PageWrapper>
+    <ContentWrapper>
       <HospitalCard />
-    </PageWrapper>
+    </ContentWrapper>
   );
 };
 

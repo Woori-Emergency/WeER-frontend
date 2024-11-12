@@ -1,15 +1,13 @@
-// pages/weer/MainPage.jsx
 import React, { useState } from 'react';
 import Search from '../../components/Search/Search';
 import StatusButtons from '../../components/StatusButtons/StatusButtons';
 import KakaoMap from '../../components/Map/Map';
-import { 
-  PageWrapper, 
-  Container, 
+import FilterButtons from '../../components/patientStatus/FilterButtons';
+import {
+  PageWrapper,
+  Container,
   ContentWrapper,
   TopContainer,
-  ButtonContainer,
-  ActionButton
 } from '../../styles/CommonStyles';
 import { useNavigate } from 'react-router-dom';
 
@@ -47,40 +45,30 @@ const MainPage = () => {
 
   // 필터링 검색
   const handleFilterSearch = () => {
-    navigate('/hospital/filter')
+    navigate('/hospital/filter');
   };
 
   return (
-    <PageWrapper>
-      <Container>
-        <ContentWrapper>
-          <TopContainer>
-            <Search/>
-            <StatusButtons 
-              onStatusChange={handleStatusChange}
-              selectedStatus={selectedStatus}
-            />
-          </TopContainer>
+    <ContentWrapper>
+      <TopContainer>
+        <Search/>
+        <StatusButtons
+          onStatusChange={handleStatusChange}
+          selectedStatus={selectedStatus}
+        />
+      </TopContainer>
 
-          <KakaoMap 
-            center={mapCenter}
-            searchQuery={searchQuery}
-            selectedStatus={selectedStatus}
-          />
+      <KakaoMap
+        center={mapCenter}
+        searchQuery={searchQuery}
+        selectedStatus={selectedStatus}
+      />
 
-          <ButtonContainer>
-            <ActionButton onClick={handleDistanceSort}>
-              거리순 보기
-              <span>→</span>
-            </ActionButton>
-            <ActionButton onClick={handleFilterSearch}>
-              응급실 필터링검색
-              <span>→</span>
-            </ActionButton>
-          </ButtonContainer>
-        </ContentWrapper>
-      </Container>
-    </PageWrapper>
+      <FilterButtons 
+        onDistanceSort={handleDistanceSort}
+        onEmergencyFilter={handleFilterSearch}
+      />
+    </ContentWrapper>
   );
 };
 

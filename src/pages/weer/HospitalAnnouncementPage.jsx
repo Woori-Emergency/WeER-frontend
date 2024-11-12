@@ -5,7 +5,7 @@ import {
   HospitalHeader,
   HospitalTitle 
 } from '../../components/HospitalAnnouncement/HospitalAnnouncement.styles';
-import { PageWrapper } from '../../styles/CommonStyles';
+import { ContentWrapper } from '../../styles/CommonStyles';
 
 const HospitalAnnouncementPage = () => {
   const [data, setData] = useState([]);
@@ -90,11 +90,11 @@ const HospitalAnnouncementPage = () => {
   };
 
   return (
-    <div style={{ padding: '16px' }}>
 
-    <HospitalHeader>
+    <ContentWrapper>
+          <HospitalHeader>
         <HospitalTitle>
-          부산대학교병원
+        성심의료재단강동성심병원 
         </HospitalTitle>
         <PageHeader>
           최신정보 : {getCurrentDateTime()} | 응급실/진료불가능 메시지
@@ -104,8 +104,7 @@ const HospitalAnnouncementPage = () => {
         data={data} 
         loading={loading}
       />
-
-    </div>
+    </ContentWrapper>
   );
 };
 

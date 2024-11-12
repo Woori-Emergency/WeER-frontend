@@ -4,18 +4,11 @@ import PatientVitals from '../../components/reservation/PatientVitals';
 import ReservationCard from '../../components/reservation/ReservationCard';
 import CompletedTransferList from '../../components/reservation/CompletedTransferList';
 import { formatDate } from '../../utils/dateUtils';
+import { 
 
+  ContentWrapper,
+} from '../../styles/CommonStyles';
 
-const Container = styled.div`
-  min-height: 100vh;
-  background-color: #f5f5f5;
-  padding: 2rem 1rem;
-`;
-
-const ContentWrapper = styled.div`
-  max-width: 1000px;
-  margin: 0 auto;
-`;
 
 const Card = styled.div`
   background: white;
@@ -234,7 +227,6 @@ const ReservationListPage = () => {
   ];
 
   return (
-    <Container>
       <ContentWrapper>
         <Card>
           <CardHeader>
@@ -291,7 +283,6 @@ const ReservationListPage = () => {
           )}
         </CompletedTransferSection>
       </ContentWrapper>
-    </Container>
   );
 };
 

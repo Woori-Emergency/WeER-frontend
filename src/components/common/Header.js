@@ -22,8 +22,6 @@ const LogoImage = styled.img`
   width: 130px;
   height: 50px;
   margin-right: 5px;
-<<<<<<< HEAD
-=======
 `;
 
 const LogoText = styled.div`
@@ -36,7 +34,6 @@ const LogoText = styled.div`
 const Subtitle = styled.div`
   font-size: 12px;
   color: #666;
->>>>>>> develop
 `;
 
 const Nav = styled.nav`
@@ -51,10 +48,10 @@ const NavItem = styled(Link)`
   margin: 0 15px;
   position: relative;
   font-weight: ${(props) => (props.active ? 'bold' : 'normal')};
-  color: ${(props) => (props.active ? '#007bff' : '#333')};
+  color: ${(props) => (props.active ? '#E97132 ' : '#333')};
 
   &:hover {
-    color: #007bff;
+    color: #E97132 ;
   }
 `;
 

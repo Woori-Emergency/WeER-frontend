@@ -15,7 +15,8 @@ export const FilterTitleHeader = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 20px; // 패딩 추가
+  padding: 20px;
+  color: #2B4570; // 네이비로 변경
 `;
 
 export const LocationSection = styled.div`
@@ -30,18 +31,22 @@ export const LocationSection = styled.div`
 
 export const SelectBox = styled.div`
   padding: 8px 16px;
-  border: 1px solid #E2E8F0;
+  border: 1px solid #2B4570; // 네이비로 변경
   border-radius: 8px;
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #666;
+  color: #2B4570; // 네이비로 변경
   cursor: pointer;
   background: white;
   min-width: 160px;
 
   svg {
-    color: #4B98F8;
+    color: #E97132; // 오렌지로 변경
+  }
+
+  &:hover {
+    background: #f5f5f5;
   }
 `;
 
@@ -54,6 +59,11 @@ export const RefreshButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #7EB09B; // 세이지 그린으로 변경
+
+  &:hover {
+    color: #6b9884;
+  }
 `;
 
 export const FilterSection = styled.div`
@@ -69,7 +79,7 @@ export const SectionHeader = styled.div`
 
 export const FilterTitle = styled.div`
   padding: 8px 20px;
-  background: #4B98F8;
+  background: #2B4570; // 네이비로 변경
   color: white;
   border-radius: 8px;
   font-weight: 500;
@@ -80,21 +90,25 @@ export const SelectAllButton = styled.button`
   align-items: center;
   gap: 4px;
   padding: 6px 12px;
-  border: 1px solid #E2E8F0;
+  border: 1px solid #7EB09B; // 세이지 그린으로 변경
   border-radius: 8px;
   background: white;
-  color: #666;
+  color: #7EB09B; // 세이지 그린으로 변경
   font-size: 13px;
   cursor: pointer;
-  margin-bottom : 10px;
-  margin-left : auto;
+  margin-bottom: 10px;
+  margin-left: auto;
+
+  &:hover {
+    background: #f5f5f5;
+  }
 `;
 
 export const FilterGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4px;
-  padding : 10px;
+  padding: 10px;
 `;
 
 export const CheckboxItem = styled.div`
@@ -102,7 +116,7 @@ export const CheckboxItem = styled.div`
   align-items: center;
   padding: 8px 8px 8px 8px;
   border-bottom: 1px solid #E2E8F0;
-  gap: 8px; 
+  gap: 8px;
 `;
 
 export const CheckboxWrapper = styled.div`
@@ -116,11 +130,12 @@ export const Checkbox = styled.input`
   height: 16px;
   margin: 0;
   cursor: pointer;
+  accent-color: #7EB09B; // 세이지 그린으로 변경
 `;
 
 export const Label = styled.label`
   font-size: 14px;
-  color: #333;
+  color: #2B4570; // 네이비로 변경
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -129,7 +144,7 @@ export const Label = styled.label`
 export const SearchButton = styled.button`
   width: 100%;
   padding: 12px;
-  background: #4B98F8;
+  background: #E97132; // 메인 오렌지로 변경
   color: white;
   border: none;
   border-radius: 8px;
@@ -141,23 +156,26 @@ export const SearchButton = styled.button`
   justify-content: center;
   gap: 8px;
 
+  &:hover {
+    background: #d65f21;
+  }
+
   svg {
     width: 16px;
     height: 16px;
   }
 `;
 
-// Filter.styles.js에 추가
 export const LocationIcon = styled.div`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 20px;
   height: 20px;
-  color: #4B98F8;
+  color: #E97132; // 오렌지로 변경
 
   &::before {
-    content: "📍"; // 임시 아이콘
+    content: "📍";
   }
 `;
 
@@ -167,7 +185,7 @@ export const RefreshIcon = styled.div`
   justify-content: center;
   width: 20px;
   height: 20px;
-  color: #4B98F8;
+  color: #7EB09B; // 세이지 그린으로 변경
   background-image: url('/images/refresh.png');
   background-size: contain;
   background-repeat: no-repeat;
