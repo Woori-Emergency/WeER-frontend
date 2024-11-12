@@ -61,9 +61,9 @@ export const InfoButton = styled.button`
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 14px;
-  border: 1px solid #2B4570;
+  border: 1px solid #405880;
   background: white;
-  color: #2B4570;
+  color: #405880;
   cursor: pointer;
 
   &:hover {
@@ -75,9 +75,9 @@ export const ReservationButton = styled.button`
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 14px;
-  border: none;
-  background: #E97132;
-  color: white;
+  border: 1px solid #E97132; // 테두리 색상 추가
+  background: white;
+  color: #E97132;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -102,9 +102,10 @@ export const Section = styled.div`
   flex: 1;
 `;
 
+// 응급실, 중환자실 색상
 export const SectionTitle = styled.div`
   padding: 12px 24px;
-  background: #2B4570;
+  background: #405880;
   color: white;
   font-size: 16px;
   font-weight: 500;
@@ -142,7 +143,7 @@ export const Value = styled.div`
   align-items: center;
   gap: 6px;
   font-size: 14px;
-  color: #2B4570;
+  color: #666;
   font-weight: 500;
 `;
 
@@ -188,12 +189,12 @@ export const NoticeBar = styled.div`
   top: 8px;
   bottom: 8px;
   width: 4px;
-  background: #7EB09B;
+  background: #d65f21;
   border-radius: 2px;
 `;
 
 export const NoticeIcon = styled.span`
-  margin-left: 24px;
+  margin-left: 12px;
   margin-right: 8px;
   font-size: 16px;
   color: #666;
@@ -214,10 +215,11 @@ export const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 
+// 장비 Modal
 export const ModalTitle = styled.h3`
   text-align: center;
   color: white;
-  background: #2B4570;
+  background: #405880;
   padding: 16px;
   border-radius: 8px;
   margin: 0 0 24px 0;
@@ -284,7 +286,7 @@ export const EquipmentItem = styled.div`
 export const EquipmentLabel = styled.span`
   font-size: 14px;
   font-weight: 500;
-  color: #2B4570;
+  color: #405880;
 `;
 
 export const EquipmentStatus = styled.span`
@@ -314,7 +316,7 @@ export const EquipmentStatus = styled.span`
 export const CloseButton = styled.button`
   width: 100%;
   padding: 12px;
-  background: #E97132;
+  background: #405880;
   color: white;
   border: none;
   border-radius: 8px;
@@ -325,6 +327,6 @@ export const CloseButton = styled.button`
   transition: background-color 0.2s;
   
   &:hover {
-    background: #d65f21;
+    background: #2B4570;
   }
 `;
