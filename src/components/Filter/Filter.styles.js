@@ -16,7 +16,7 @@ export const FilterTitleHeader = styled.div`
   align-items: center;
   text-align: center;
   padding: 20px;
-  color: #2B4570; // 네이비로 변경
+  color: #405880; // 네이비로 변경
 `;
 
 export const LocationSection = styled.div`
@@ -59,10 +59,10 @@ export const RefreshButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #7EB09B; // 세이지 그린으로 변경
+  color: #FFCF9D; // 세이지 그린으로 변경
 
   &:hover {
-    color: #6b9884;
+    color: #FFCF9D;
   }
 `;
 
@@ -77,30 +77,32 @@ export const SectionHeader = styled.div`
   margin-bottom: 16px;
 `;
 
+// 응급실, 중환자실, 장비 색상
 export const FilterTitle = styled.div`
   padding: 8px 20px;
-  background: #2B4570; // 네이비로 변경
+  background: #405880; // 네이비로 변경
   color: white;
   border-radius: 8px;
   font-weight: 500;
 `;
 
+// 필터링 검색 페이지 '전체선택 버튼'
 export const SelectAllButton = styled.button`
   display: flex;
   align-items: center;
   gap: 4px;
   padding: 6px 12px;
-  border: 1px solid #7EB09B; // 세이지 그린으로 변경
+  border: 1px solid #E97132; 
   border-radius: 8px;
   background: white;
-  color: #7EB09B; // 세이지 그린으로 변경
+  color: #E97132; 
   font-size: 13px;
   cursor: pointer;
   margin-bottom: 10px;
   margin-left: auto;
 
   &:hover {
-    background: #f5f5f5;
+    background: #f5b695;
   }
 `;
 
@@ -130,7 +132,7 @@ export const Checkbox = styled.input`
   height: 16px;
   margin: 0;
   cursor: pointer;
-  accent-color: #7EB09B; // 세이지 그린으로 변경
+  accent-color: #E97132; // 세이지 그린으로 변경
 `;
 
 export const Label = styled.label`
@@ -141,10 +143,11 @@ export const Label = styled.label`
   align-items: center;
 `;
 
+// 검색 버튼
 export const SearchButton = styled.button`
   width: 100%;
   padding: 12px;
-  background: #E97132; // 메인 오렌지로 변경
+  background: #405880; // 메인 오렌지로 변경
   color: white;
   border: none;
   border-radius: 8px;
@@ -157,7 +160,7 @@ export const SearchButton = styled.button`
   gap: 8px;
 
   &:hover {
-    background: #d65f21;
+    background: #2B4570;
   }
 
   svg {
