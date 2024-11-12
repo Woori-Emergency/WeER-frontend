@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link, useLocation } from 'react-router-dom'; 
+import { Link, useLocation } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
-import Profile from '../Profile/Profile';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -24,18 +23,6 @@ const LogoImage = styled.img`
   margin-right: 5px;
 `;
 
-const LogoText = styled.div`
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  line-height: 1.2;
-`;
-
-const Subtitle = styled.div`
-  font-size: 12px;
-  color: #666;
-`;
-
 const Nav = styled.nav`
   display: flex;
   align-items: center;
@@ -48,10 +35,10 @@ const NavItem = styled(Link)`
   margin: 0 15px;
   position: relative;
   font-weight: ${(props) => (props.active ? 'bold' : 'normal')};
-  color: ${(props) => (props.active ? '#E97132 ' : '#333')};
+  color: ${(props) => (props.active ? '#E97132' : '#333')};
 
   &:hover {
-    color: #E97132 ;
+    color: #E97132;
   }
 `;
 
@@ -79,47 +66,36 @@ const LoginIcon = styled(FaUserCircle)`
   color: #333;
 `;
 
-function Header() {
+function AdminHeader() {
   const location = useLocation();
-  /* 로그인 후, 프로필로 바뀌는 것 확인하기 위함*/
-  const isLoggedIn = false; 
 
   return (
     <HeaderContainer>
       <LogoContainer>
-        {/* 로고 이미지를 Link로 감싸 메인 페이지로 이동 */}
+        {/* 로고 이미지를 클릭 시 메인 페이지로 이동하도록 Link 추가 */}
         <Link to="/">
           <LogoImage src="/weer_logo.png" alt="Logo" />
         </Link>
       </LogoContainer>
       
       <Nav>
-        <NavItem to="/" active={location.pathname === "/"}>메인</NavItem>
-        <NavItem to="/my-booking-requests" active={location.pathname === "/my-booking-requests"}>
-          예약 확인
+        {/* 관리자용 네비게이션 링크 */}
+        <NavItem to="/admin/users" active={location.pathname === "/admin/users"}>
+          사용자 조회
         </NavItem>
-        <NavItem to="/patient-status-list" active={location.pathname === "/patient-status-list"}>
-          환자 상태 내역
+        <NavItem to="/admin/approvals" active={location.pathname === "/admin/approvals"}>
+          가입 승인/반려
         </NavItem>
-        {isLoggedIn && (
-          <NavItem 
-            to="/patient-status-input"
-            active={location.pathname === "/patient-status-input"}
-          >
-            환자 상태 기입
-          </NavItem>
-        )}
-        {isLoggedIn ? (
-          <Profile />
-        ) : (
-          <LoginButton to="/login">
-            <LoginIcon />
-            로그인
-          </LoginButton>
-        )}
+        <NavItem to="/admin/dashboard" active={location.pathname === "/admin/dashboard"}>
+          대시보드
+        </NavItem>
+        <LoginButton to="/login">
+          <LoginIcon />
+          로그인
+        </LoginButton>
       </Nav>
     </HeaderContainer>
   );
 }
 
-export default Header;
+export default AdminHeader;

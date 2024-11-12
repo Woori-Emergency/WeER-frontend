@@ -28,7 +28,6 @@ const LoginPage = () => {
       password: values.password,
     };
   
-    // Send login request using fetch
     fetch('http://localhost:8080/auth/login', {
       method: 'POST',
       headers: {
@@ -38,7 +37,7 @@ const LoginPage = () => {
     })
       .then((response) => {
         if (response.ok) {
-          return response.json();  // JSON 형식으로 응답을 반환
+          return response.json();
         } else {
           return response.json().then((error) => {
             throw new Error(error.message || '로그인 실패');
@@ -48,20 +47,18 @@ const LoginPage = () => {
       .then((data) => {
         console.log('Login successful', data);
   
-        // 로그인 성공 시 세션 스토리지 처리
-      if (rememberMe) {
-        sessionStorage.setItem('savedLoginRole', data);
-      } else {
-        sessionStorage.removeItem('savedLoginId');
-      }
+        if (rememberMe) {
+          sessionStorage.setItem('savedLoginRole', data);
+        } else {
+          sessionStorage.removeItem('savedLoginId');
+        }
 
-      if (autoLogin) {
-        sessionStorage.setItem('autoLogin', true);
-      } else {
-        sessionStorage.removeItem('autoLogin');
-      }
+        if (autoLogin) {
+          sessionStorage.setItem('autoLogin', true);
+        } else {
+          sessionStorage.removeItem('autoLogin');
+        }
   
-        // 역할에 따라 리디렉션
         if (data.role === "User") {
           navigate('/');
         } else if (data.role === "Admin") {
@@ -75,15 +72,32 @@ const LoginPage = () => {
         alert(error.message || '로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
       });
   };
-  
-  
 
   return (
-    <Row justify="center" align="middle" style={{ minHeight: '70vh', padding: '10px' }}>
-      <Col xs={24} sm={16} md={12} lg={10} xl={8}>
-        <Title level={2} style={{ textAlign: 'center', marginBottom: '30px' }}>
+    <div style={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      minHeight: '100vh'
+    }}>
+      <Col xs={22} sm={16} md={12} lg={10} xl={8} style={{ textAlign: 'center' }}>
+        <div style={{ marginBottom: '20px' }}>
+          <img 
+            src="/weer_logo.png"
+            alt="WeER Logo"
+            style={{ 
+              height: '60px',
+              width: 'auto',
+              cursor: 'pointer'
+            }} 
+            onClick={() => navigate('/')}
+          />
+        </div>
+        
+        {/* <Title level={2} style={{ marginBottom: '30px' }}>
           로그인
-        </Title>
+        </Title> */}
+        
         <Form
           name="login"
           initialValues={{
@@ -92,10 +106,6 @@ const LoginPage = () => {
           onFinish={onFinish}
           style={{
             maxWidth: '100%',
-            background: '#fff',
-            padding: '20px',
-            borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
           }}
         >
           <Form.Item
@@ -113,7 +123,11 @@ const LoginPage = () => {
               },
             ]}
           >
-            <Input prefix={<UserOutlined />} placeholder="아이디" style={{ fontSize: '16px', padding: '12px' }} />
+            <Input 
+              prefix={<UserOutlined />} 
+              placeholder="아이디" 
+              style={{ fontSize: '16px', padding: '12px' }} 
+            />
           </Form.Item>
 
           <Form.Item
@@ -131,7 +145,12 @@ const LoginPage = () => {
               },
             ]}
           >
-            <Input prefix={<LockOutlined />} type="password" placeholder="비밀번호" style={{ fontSize: '16px', padding: '12px' }} />
+            <Input 
+              prefix={<LockOutlined />} 
+              type="password" 
+              placeholder="비밀번호" 
+              style={{ fontSize: '16px', padding: '12px' }} 
+            />
           </Form.Item>
 
           <Form.Item style={{ marginBottom: '8px' }}>
@@ -152,13 +171,24 @@ const LoginPage = () => {
           <Form.Item style={{ marginBottom: '8px' }}>
             <Row justify="end">
               <Col>
-                <a onClick={() => navigate('/auth/forgot-password')} style={{ color: '#E97132' }}>비밀번호를 잊으셨나요?</a>
+                <a onClick={() => navigate('/auth/forgot-password')} style={{ color: '#E97132' }}>
+                  비밀번호를 잊으셨나요?
+                </a>
               </Col>
             </Row>
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block style={{ fontSize: '18px', height: '50px', backgroundColor: '#E97132' }}>
+            <Button 
+              type="primary" 
+              htmlType="submit" 
+              block 
+              style={{ 
+                fontSize: '18px', 
+                height: '50px', 
+                backgroundColor: '#E97132' 
+              }}
+            >
               로그인
             </Button>
             <div style={{ textAlign: 'center', marginTop: '10px' }}>
@@ -167,7 +197,7 @@ const LoginPage = () => {
           </Form.Item>
         </Form>
       </Col>
-    </Row>
+    </div>
   );
 };
 

@@ -5,14 +5,9 @@ import FilterButtons from '../../components/patientStatus/FilterButtons';
 import CompletedTransferStatus from '../../components/patientStatus/CompletedTransferStatus';
 import { useNavigate } from 'react-router-dom';
 
-const Container = styled.div`
-  min-height: 100vh;
-  background-color: #f5f5f5;
-  padding: 2rem 1rem;
-`;
-
 const ContentWrapper = styled.div`
-  max-width: 1000px;
+  padding: 20px;
+  max-width: 1200px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -86,7 +81,6 @@ const PatientStatusListPage = () => {
   };
 
   return (
-    <Container>
       <ContentWrapper>
         <PatientInfoCard patient={currentPatient} />
         
@@ -101,7 +95,6 @@ const PatientStatusListPage = () => {
           transfers={completedTransfers}
         />
       </ContentWrapper>
-    </Container>
   );
 };
 

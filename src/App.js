@@ -33,7 +33,6 @@ function App() {
       {/* 로그인, 회원가입, 회원가입 완료 페이지에서는 헤더를 숨기고, 
           관리 경로일 경우 AdminHeader, 아닐 경우 일반 Header를 표시 */}
       {showHeader && (isAdminRoute ? <AdminHeader /> : <Header />)}
-
       <Routes>
         <Route path="/" element={<MainPage />} />
 

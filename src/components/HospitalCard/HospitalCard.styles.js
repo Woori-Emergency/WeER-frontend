@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 
 export const CardWrapper = styled.div`
   width: 100%;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   background: white;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  padding-bottom: 24px; // 하단 패딩 추가
+  padding-bottom: 24px;
 `;
 
 export const Header = styled.div`
@@ -29,7 +29,7 @@ export const HospitalInfo = styled.div`
 export const HospitalName = styled.h2`
   font-size: 20px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #2B4570;
   margin: 0;
 `;
 
@@ -44,7 +44,7 @@ export const StatusInfo = styled.div`
 export const StatusDot = styled.div`
   width: 8px;
   height: 8px;
-  background: #4CD964;
+  background: #7EB09B;
   border-radius: 50%;
 `;
 
@@ -61,9 +61,9 @@ export const InfoButton = styled.button`
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 14px;
-  border: 1px solid #ddd;
+  border: 1px solid #2B4570;
   background: white;
-  color: #333;
+  color: #2B4570;
   cursor: pointer;
 
   &:hover {
@@ -76,7 +76,7 @@ export const ReservationButton = styled.button`
   border-radius: 8px;
   font-size: 14px;
   border: none;
-  background: #3182F6;
+  background: #E97132;
   color: white;
   cursor: pointer;
   display: flex;
@@ -84,7 +84,7 @@ export const ReservationButton = styled.button`
   gap: 4px;
 
   &:hover {
-    background: #1b64da;
+    background: #d65f21;
   }
 `;
 
@@ -104,7 +104,7 @@ export const Section = styled.div`
 
 export const SectionTitle = styled.div`
   padding: 12px 24px;
-  background: #3182F6;
+  background: #2B4570;
   color: white;
   font-size: 16px;
   font-weight: 500;
@@ -142,7 +142,7 @@ export const Value = styled.div`
   align-items: center;
   gap: 6px;
   font-size: 14px;
-  color: #333;
+  color: #2B4570;
   font-weight: 500;
 `;
 
@@ -153,7 +153,7 @@ export const StatusIcon = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: ${props => props.isAvailable ? '#4CD964' : '#FF3B30'};
+  background: ${props => props.isAvailable ? '#7EB09B' : '#D64045'};
   color: white;
   font-size: 10px;
   
@@ -173,27 +173,27 @@ export const NoticeLink = styled(Link)`
   align-items: center;
   position: relative;
   min-height: 48px;
-  text-decoration: none; // 링크 밑줄 제거
+  text-decoration: none;
   cursor: pointer;
   transition: background-color 0.2s;
 
   &:hover {
-    background: #F1F3F5; // 호버 시 배경색 살짝 변경
+    background: #F1F3F5;
   }
 `;
 
 export const NoticeBar = styled.div`
   position: absolute;
-  left: 12px; // 왼쪽에서 12px 띄움
+  left: 12px;
   top: 8px;
   bottom: 8px;
   width: 4px;
-  background: #3182F6;
+  background: #7EB09B;
   border-radius: 2px;
 `;
 
 export const NoticeIcon = styled.span`
-  margin-left: 24px; // 파란 바와의 거리를 24px로 증가
+  margin-left: 24px;
   margin-right: 8px;
   font-size: 16px;
   color: #666;
@@ -201,7 +201,6 @@ export const NoticeIcon = styled.span`
   align-items: center;
 `;
 
-// 모달 관련 스타일 추가
 export const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -218,7 +217,7 @@ export const ModalOverlay = styled.div`
 export const ModalTitle = styled.h3`
   text-align: center;
   color: white;
-  background: #3182F6;
+  background: #2B4570;
   padding: 16px;
   border-radius: 8px;
   margin: 0 0 24px 0;
@@ -241,7 +240,6 @@ export const ModalContent = styled.div`
   overflow-y: auto;
   padding: 0 4px;
 
-  /* 스크롤바 스타일링 */
   &::-webkit-scrollbar {
     width: 8px;
   }
@@ -260,7 +258,7 @@ export const ModalContent = styled.div`
 export const EquipmentGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px 40px; // 컬럼 사이 간격 증가
+  gap: 20px 40px;
   padding: 0 8px;
 
   @media (max-width: 768px) {
@@ -272,29 +270,51 @@ export const EquipmentItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: 16px;
+  border-radius: 8px;
+  background: ${props => props.available ? '#f8f9fa' : '#fff'};
   border-bottom: 1px solid #e9ecef;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${props => props.available ? '#f1f3f5' : '#f8f9fa'};
+  }
 `;
 
 export const EquipmentLabel = styled.span`
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: #2B4570;
 `;
 
 export const EquipmentStatus = styled.span`
   font-size: 14px;
-  color: ${props => props.available ? '#2b8a3e' : '#e03131'};
-  font-weight: 500;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: ${props => props.available ? '#7EB09B20' : '#D6404520'};
+  color: ${props => props.available ? '#2b8a3e' : '#D64045'};
   min-width: 90px;
-  text-align: right;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: ${props => props.available ? '#2b8a3e' : '#D64045'};
+  }
 `;
 
 export const CloseButton = styled.button`
   width: 100%;
   padding: 12px;
-  background: #3182F6;
+  background: #E97132;
   color: white;
   border: none;
   border-radius: 8px;
@@ -305,6 +325,6 @@ export const CloseButton = styled.button`
   transition: background-color 0.2s;
   
   &:hover {
-    background: #1b64da;
+    background: #d65f21;
   }
 `;

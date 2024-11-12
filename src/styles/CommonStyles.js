@@ -33,10 +33,9 @@ export const Container = styled.div`
 `;
 
 export const ContentWrapper = styled.div`
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 `;
 
 export const TopContainer = styled.div`
