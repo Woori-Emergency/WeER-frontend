@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import * as S from './Filter.styles';
+import locationData from '../../data/koprov.json'; 
 
 const Filter = () => {
-  // 각 섹션별 체크박스 상태 관리
+  // 위치 관련 상태 - 서울특별시를 기본값으로 설정
+  const [selectedCity, setSelectedCity] = useState('서울특별시');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+  const [isDistrictDropdownOpen, setIsDistrictDropdownOpen] = useState(false);
+
+  // 기존 필터 상태
   const [erItems, setErItems] = useState({
     일반: false,
     소아: false,
@@ -34,7 +41,34 @@ const Filter = () => {
     '혈관촬영기': false,
   });
 
-  // 각 섹션별 체크박스 변경 핸들러
+  // 위치 선택 핸들러
+  const handleCityClick = () => {
+    setIsCityDropdownOpen(!isCityDropdownOpen);
+    setIsDistrictDropdownOpen(false);
+  };
+
+  const handleDistrictClick = () => {
+    setIsDistrictDropdownOpen(!isDistrictDropdownOpen);
+    setIsCityDropdownOpen(false);
+  };
+
+  const handleCitySelect = (city) => {
+    setSelectedCity(city);
+    setSelectedDistrict('');
+    setIsCityDropdownOpen(false);
+  };
+
+  const handleDistrictSelect = (district) => {
+    setSelectedDistrict(district);
+    setIsDistrictDropdownOpen(false);
+  };
+
+  const handleLocationRefresh = () => {
+    setSelectedCity('서울특별시');  // 초기화할 때도 서울특별시로 설정
+    setSelectedDistrict('');
+  };
+
+  // 기존 필터 핸들러
   const handleCheckboxChange = (section, item) => {
     const setters = {
       er: setErItems,
@@ -48,7 +82,6 @@ const Filter = () => {
     }));
   };
 
-  // 섹션별 전체 선택/해제 핸들러
   const handleSelectAll = (section) => {
     const items = {
       er: erItems,
@@ -77,16 +110,47 @@ const Filter = () => {
       <S.FilterTitleHeader>
         필터링 검색
       </S.FilterTitleHeader>
-      <S.LocationSection>
-        <S.SelectBox>
-          <S.LocationIcon />
-          시/도
-        </S.SelectBox>
-        <S.SelectBox>
-          <S.LocationIcon />
-          구
-        </S.SelectBox>
-        <S.RefreshButton>
+
+      <S.LocationSection className="location-dropdown">
+        <S.SelectBoxContainer>
+          <S.SelectBox onClick={handleCityClick}>
+            <S.LocationIcon />
+            {selectedCity}
+          </S.SelectBox>
+          {isCityDropdownOpen && (
+            <S.DropdownList>
+              {Object.keys(locationData).map((city) => (
+                <S.DropdownItem
+                  key={city}
+                  onClick={() => handleCitySelect(city)}
+                >
+                  {city}
+                </S.DropdownItem>
+              ))}
+            </S.DropdownList>
+          )}
+        </S.SelectBoxContainer>
+
+        <S.SelectBoxContainer>
+          <S.SelectBox onClick={handleDistrictClick}>
+            <S.LocationIcon />
+            {selectedDistrict || '선택'}
+          </S.SelectBox>
+          {isDistrictDropdownOpen && (
+            <S.DropdownList>
+              {locationData[selectedCity]?.map((district) => (
+                <S.DropdownItem
+                  key={district}
+                  onClick={() => handleDistrictSelect(district)}
+                >
+                  {district}
+                </S.DropdownItem>
+              ))}
+            </S.DropdownList>
+          )}
+        </S.SelectBoxContainer>
+
+        <S.RefreshButton onClick={handleLocationRefresh}>
           <S.RefreshIcon />
         </S.RefreshButton>
       </S.LocationSection>
