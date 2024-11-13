@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import { Link, useLocation } from 'react-router-dom'; 
 import { FaUserCircle } from 'react-icons/fa';
 import Profile from '../Profile/Profile';
+import { jwtDecode } from 'jwt-decode';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -81,28 +82,63 @@ const LoginIcon = styled(FaUserCircle)`
 
 function Header() {
   const location = useLocation();
-  /* 로그인 후, 프로필로 바뀌는 것 확인하기 위함*/
-  const isLoggedIn = false; 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userPayload, setUserPayload] = useState(null);
+
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          setIsLoggedIn(true);
+          setUserPayload(decoded);
+        } catch (error) {
+          console.error("토큰 디코딩 실패:", error);
+          localStorage.removeItem("jwtToken");
+          setIsLoggedIn(false);
+          setUserPayload(null);
+        }
+      } else {
+        setIsLoggedIn(false);
+        setUserPayload(null);
+      }
+    };
+
+    checkLoginStatus();
+    window.addEventListener('storage', checkLoginStatus);
+
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+    };
+  }, []);
 
   return (
     <HeaderContainer>
       <LogoContainer>
-        {/* 로고 이미지를 Link로 감싸 메인 페이지로 이동 */}
         <Link to="/">
           <LogoImage src="/weer_logo.png" alt="Logo" />
         </Link>
       </LogoContainer>
       
       <Nav>
-        <NavItem to="/" active={location.pathname === "/"}>메인</NavItem>
-        <NavItem to="/my-booking-requests" active={location.pathname === "/my-booking-requests"}>
+        <NavItem to="/" active={location.pathname === "/"}>
+          메인
+        </NavItem>
+        <NavItem 
+          to="/my-booking-requests" 
+          active={location.pathname === "/my-booking-requests"}
+        >
           예약 확인
         </NavItem>
-        <NavItem to="/patient-status-list" active={location.pathname === "/patient-status-list"}>
+        <NavItem 
+          to="/patient-status-list" 
+          active={location.pathname === "/patient-status-list"}
+        >
           환자 상태 내역
         </NavItem>
         {isLoggedIn && (
-          <NavItem 
+          <NavItem
             to="/patient-status-input"
             active={location.pathname === "/patient-status-input"}
           >
@@ -110,7 +146,7 @@ function Header() {
           </NavItem>
         )}
         {isLoggedIn ? (
-          <Profile />
+          <Profile payload={userPayload} /> // payload 전달
         ) : (
           <LoginButton to="/login">
             <LoginIcon />

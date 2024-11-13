@@ -2,9 +2,52 @@ import React, {useState} from 'react';
 import * as S from './HospitalCard.styles';
 
 
-const HospitalCard = () => {
+const HospitalCard = ({ hospitalId = 1, patientConditionId = 1 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isReservationRequested, setIsReservationRequested] = useState(false);
+    const [reservationError, setReservationError] = useState(null);  // 상태 추가
 
+    const handleReservation = async () => {
+      try {
+          // localStorage에서 JWT 토큰 가져오기
+          const token = localStorage.getItem('jwtToken'); // 또는 sessionStorage.getItem('token')
+          console.log(token);
+
+          if (!token) {
+              throw new Error('로그인이 필요합니다');
+          }
+
+          console.log(patientConditionId);
+          console.log(hospitalId);
+
+          const response = await fetch('http://localhost:8080/hospital/reserve', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}` // JWT 토큰 추가
+              },
+              body: JSON.stringify({
+                  patientconditionId: patientConditionId,
+                  hospitalId: hospitalId
+              })
+          });
+
+          if (!response.ok) {
+              if (response.status === 401) {
+                  throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
+              }
+              throw new Error('예약 요청에 실패했습니다');
+          }
+
+          setIsReservationRequested(true);
+          setReservationError(null);
+      } catch (error) {
+          console.error('예약 요청 중 오류 발생:', error);
+          setReservationError(error.message);
+          setIsReservationRequested(false);
+      }
+  };
+    
     const equipmentData = {
         regularVentilator: { available: true, count: 5 },
         prematureVentilator: { available: false, count: 0 },
@@ -30,9 +73,23 @@ const HospitalCard = () => {
           </S.StatusInfo>
         </S.HospitalInfo>
         <S.ButtonGroup>
-        <S.InfoButton onClick={() => setIsModalOpen(true)}>장비 정보</S.InfoButton>
-          <S.ReservationButton>예약 →</S.ReservationButton>
-        </S.ButtonGroup>
+                    <S.InfoButton onClick={() => setIsModalOpen(true)}>장비 정보</S.InfoButton>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                        <S.ReservationButton 
+                            onClick={handleReservation}
+                            disabled={isReservationRequested}
+                            style={{
+                                opacity: isReservationRequested ? 0.7 : 1,
+                                cursor: isReservationRequested ? 'not-allowed' : 'pointer'
+                            }}
+                        >
+                            {isReservationRequested ? '예약 요청됨' : '예약 →'}
+                        </S.ReservationButton>
+                        {reservationError && (
+                            <S.ErrorMessage>{reservationError}</S.ErrorMessage>
+                        )}
+                    </div>
+                </S.ButtonGroup>
 
         {isModalOpen && (
         <S.ModalOverlay onClick={() => setIsModalOpen(false)}>
