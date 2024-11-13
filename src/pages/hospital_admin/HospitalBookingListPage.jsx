@@ -115,19 +115,19 @@ const HospitalBookingListPage = () => {
               <InfoGrid>
                 <InfoCard bgColor="#FEF2F2">
                   <InfoLabel>혈압</InfoLabel>
-                  <InfoValue>{request.vitals.bloodPressure}</InfoValue>
+                  <InfoValue>{request.bloodPressure}</InfoValue>
                 </InfoCard>
                 <InfoCard bgColor="#FEF3C7">
                   <InfoLabel>맥박</InfoLabel>
-                  <InfoValue>{request.vitals.heartRate}</InfoValue>
+                  <InfoValue>{request.heartRate}</InfoValue>
                 </InfoCard>
                 <InfoCard bgColor="#FEF9C3">
                   <InfoLabel>체온</InfoLabel>
-                  <InfoValue>{request.vitals.temperature}</InfoValue>
+                  <InfoValue>{request.temperature}</InfoValue>
                 </InfoCard>
                 <InfoCard bgColor="#EFF6FF">
                   <InfoLabel>호흡수</InfoLabel>
-                  <InfoValue>{request.vitals.respiration}</InfoValue>
+                  <InfoValue>{request.respiration}</InfoValue>
                 </InfoCard>
               </InfoGrid>
 
