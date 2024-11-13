@@ -3,7 +3,8 @@ import HospitalAnnouncement from '../../components/HospitalAnnouncement/Hospital
 import { 
   PageHeader, 
   HospitalHeader,
-  HospitalTitle 
+  HospitalTitle, 
+  RefreshIcon
 } from '../../components/HospitalAnnouncement/HospitalAnnouncement.styles';
 import { ContentWrapper } from '../../styles/CommonStyles';
 
@@ -89,12 +90,16 @@ const HospitalAnnouncementPage = () => {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   };
 
+  const handleGoBack = () =>{
+    window.history.back();
+  }
+
   return (
 
     <ContentWrapper>
           <HospitalHeader>
         <HospitalTitle>
-        성심의료재단강동성심병원 
+        성심의료재단강동성심병원 <RefreshIcon onClick={handleGoBack}></RefreshIcon>
         </HospitalTitle>
         <PageHeader>
           최신정보 : {getCurrentDateTime()} | 응급실/진료불가능 메시지

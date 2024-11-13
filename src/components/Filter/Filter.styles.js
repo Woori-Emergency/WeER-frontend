@@ -194,3 +194,32 @@ export const RefreshIcon = styled.div`
   background-repeat: no-repeat;
   background-position: center;
 `;
+
+export const DropdownList = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #2B4570;
+  border-radius: 8px;
+  margin-top: 4px;
+  z-index: 1000;
+`;
+
+export const DropdownItem = styled.div`
+  padding: 8px 16px;
+  cursor: pointer;
+  color: #2B4570;
+
+  &:hover {
+    background: #f5f5f5;
+  }
+`;
+
+export const SelectBoxContainer = styled.div`
+  position: relative;  // 드롭다운 포지셔닝을 위해 필요
+  z-index: 1000;      // 다른 요소들 위에 표시되도록
+`;

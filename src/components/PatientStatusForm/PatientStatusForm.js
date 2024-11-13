@@ -1,6 +1,57 @@
 import React from 'react';
 import * as S from './PatientStatusForm.styles';
 
+
+const validateBloodPressure = (value) => {
+  if (!value) return '';
+  
+  const number = Number(value);
+  
+  if (!Number.isInteger(number)) {
+    return '정수만 입력 가능합니다';
+  }
+  
+  return '';
+};
+
+const validateHeartRate = (value) => {
+  if (!value) return '';
+  
+  const number = Number(value);
+  
+  if (!Number.isInteger(number)) {
+    return '정수만 입력 가능합니다';
+  }
+  
+  return '';
+};
+
+const validateBodyTemp = (value) => {
+  if (!value) return '';
+
+  
+  const temp = Number(value);
+  
+  // 소수점 첫째 자리까지만 허용 체크
+  if (!/^\d+(\.\d)?$/.test(temp)) {
+    return '소수점 첫째 자리까지만 입력 가능합니다';
+  }
+  
+  return '';
+};
+
+const validateRespiration = (value) => {
+  if (!value) return '';
+  
+  const respRate = Number(value);
+
+  if (!Number.isInteger(respRate)) {
+    return '정수만 입력 가능합니다';
+  }
+  
+  return '';
+};
+
 const PatientStatusForm = ({ 
   formData, 
   errors, 
@@ -8,6 +59,47 @@ const PatientStatusForm = ({
   handleInputChange, 
   handleSubmit 
 }) => {
+  const handleFieldChange = (field, value) => {
+    let error = '';
+    
+    switch (field) {
+      case 'bloodPress':
+        error = validateBloodPressure(value);
+        break;
+      case 'heartRate':
+        error = validateHeartRate(value);
+        break;
+      case 'bodyTemp':
+        error = validateBodyTemp(value);
+        break;
+      case 'respiration':
+        error = validateRespiration(value);
+        break;
+      default:
+        break;
+    }
+    
+    if (!error || !value) {
+      handleInputChange(field, value);
+    }
+  };
+
+  const handleKeyPress = (e, field) => {
+    const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Delete', 'Tab'];
+    
+    // 체온: 숫자와 소수점(.) 만 허용
+    if (field === 'bodyTemp') {
+      if (!/[\d.]/.test(e.key) && !allowedKeys.includes(e.key)) {
+        e.preventDefault();
+      }
+    // 그 외 : 숫자만 허용 
+    } else {
+      if (!/\d/.test(e.key) && !allowedKeys.includes(e.key)) {
+        e.preventDefault();
+      }
+    }
+  };
+
   return (
     <S.FormContainer>
       <S.PageTitle>환자 상태 입력란</S.PageTitle>
@@ -70,7 +162,8 @@ const PatientStatusForm = ({
             <S.Input
               type="text"
               value={formData[input.field]}
-              onChange={(e) => handleInputChange(input.field, e.target.value)}
+              onChange={(e) => handleFieldChange(input.field, e.target.value)}
+              onKeyPress={(e) => handleKeyPress(e, input.field)}
               placeholder={input.placeholder}
               error={errors[input.field]}
             />
