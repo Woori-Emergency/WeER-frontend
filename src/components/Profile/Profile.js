@@ -3,6 +3,8 @@ import * as S from './Profile.styles';
 import { FaUserCircle } from 'react-icons/fa';
 
 const Profile = () => {
+
+  fetch('http://localhost:8080/user/info')
   return (
     <S.ProfileContainer>
       <S.ProfileImage>
