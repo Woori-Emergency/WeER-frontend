@@ -25,12 +25,12 @@ const LoginPage = () => {
 
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
-  
+
     const loginData = {
       loginId: values.loginId,
       password: values.password,
     };
-  
+
     // Send login request using fetch
     fetch('http://localhost:8080/auth/login', {
       method: 'POST',
@@ -49,7 +49,7 @@ const LoginPage = () => {
     })
       .then((data) => {
         console.log('Login successful', data);
-        
+
         // 서버에서 받은 JWT 토큰을 로컬 스토리지에 저장
         if (data.accessToken) {
           localStorage.setItem('accessToken', data.accessToken);
@@ -57,7 +57,7 @@ const LoginPage = () => {
           localStorage.setItem('role', data.role);
           
         }
-  
+
         // 로그인 성공 시 세션 스토리지 처리
         if (rememberMe) {
           sessionStorage.setItem('savedLoginRole', data);
@@ -114,11 +114,11 @@ const LoginPage = () => {
             onClick={() => navigate('/')}
           />
         </div>
-        
+
         {/* <Title level={2} style={{ marginBottom: '30px' }}>
           로그인
         </Title> */}
-        
+
         <Form
           name="login"
           initialValues={{

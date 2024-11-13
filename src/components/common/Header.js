@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link, useLocation } from 'react-router-dom'; 
 import { FaUserCircle } from 'react-icons/fa';
 import Profile from '../Profile/Profile';
+import { jwtDecode } from 'jwt-decode';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -82,11 +83,39 @@ const LoginIcon = styled(FaUserCircle)`
 function Header() {
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userPayload, setUserPayload] = useState(null);
+
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          setIsLoggedIn(true);
+          setUserPayload(decoded);
+        } catch (error) {
+          console.error("토큰 디코딩 실패:", error);
+          localStorage.removeItem("jwtToken");
+          setIsLoggedIn(false);
+          setUserPayload(null);
+        }
+      } else {
+        setIsLoggedIn(false);
+        setUserPayload(null);
+      }
+    };
+
+    checkLoginStatus();
+    window.addEventListener('storage', checkLoginStatus);
+
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+    };
+  }, []);
 
   return (
     <HeaderContainer>
       <LogoContainer>
-        {/* 로고 이미지를 Link로 감싸 메인 페이지로 이동 */}
         <Link to="/">
           <LogoImage src="/weer_logo.png" alt="Logo" />
         </Link>
@@ -117,7 +146,7 @@ function Header() {
           </NavItem>
         )}
         {isLoggedIn ? (
-          <Profile /> // payload를 Profile 컴포넌트에 전달
+          <Profile payload={userPayload} /> // payload 전달
         ) : (
           <LoginButton to="/login">
             <LoginIcon />
