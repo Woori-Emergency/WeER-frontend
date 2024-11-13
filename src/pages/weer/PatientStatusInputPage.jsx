@@ -60,8 +60,14 @@ const PatientStatusInputPage = () => {
     if (!validateForm()) {
       return;
     }
-
+  
     try {
+      const token = localStorage.getItem("accessToken"); // "accessToken"에서 "jwtToken"으로 변경
+      console.log(token);
+      if (!token) {
+        throw new Error("로그인이 필요합니다.");
+      }
+  
       const patientData = {
         gender: formData.gender,
         ageGroup: formData.ageGroup,
@@ -73,25 +79,32 @@ const PatientStatusInputPage = () => {
         medical: formData.diseaseStatus
       };
 
-      const response = await fetch('/hospital/patient?userId=1', { 
+      console.log(JSON.stringify(patientData));
+  
+      const response = await fetch('http://localhost:8080/hospital/patient', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // 수정된 토큰 사용
         },
         body: JSON.stringify(patientData)
       });
-
-      const data = await response.json();
-
+  
       if (!response.ok) {
+        if (response.status === 401) {
+          // 토큰이 만료되었거나 유효하지 않은 경우
+          throw new Error("로그인이 만료되었습니다. 다시 로그인해주세요.");
+        }
+        const data = await response.json();
         throw new Error(data.message || '서버 오류가 발생했습니다.');
       }
-
+  
+      const data = await response.json();
       setSubmitStatus({
         type: 'success',
         message: data.message || '환자 상태가 성공적으로 등록되었습니다.'
       });
-
+  
     } catch (error) {
       setSubmitStatus({
         type: 'error',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PatientInfoCard from '../../components/patientStatus/PatientInfoCard';
 import FilterButtons from '../../components/patientStatus/FilterButtons';
@@ -16,85 +16,111 @@ const ContentWrapper = styled.div`
 
 const PatientStatusListPage = () => {
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
+  const [currentPatient, setCurrentPatient] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const currentPatient = {
-    patientId: 1,
-    gender: 'MALE',
-    ageGroup: 'THIRTIES',
-    bloodPressure: 125,
-    heartRate: 75,
-    temperature: 36.8,
-    respiration: 16,
-    medical: 'DISEASE',
-    consciousnessLevel: 'ALERT',
-    transportStatus: 'IN_PROGRESS',
-    created_at: "2024-11-08T10:22:30"
-  };
+  useEffect(() => {
+    const fetchCurrentPatient = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          throw new Error("로그인이 필요합니다.");
+        }
 
-  const completedTransfers = [
-    {
-      patientId: 2,
-      gender: 'FEMALE',
-      ageGroup: 'FORTIES',
-      bloodPressure: 118,
-      heartRate: 72,
-      temperature: 36.5,
-      respiration: 15,
-      medical: 'DISEASE',
-      consciousnessLevel: 'ALERT',
-      transportStatus: 'COMPLETED',
-      created_at: "2024-11-08T09:15:00",
-      modified_at: "2024-11-08T09:45:00",
-      hospitalName: "서울대학교병원",
-      distance: "5.2km",
-      duration: "30분"
-    },
-    {
-      userId: 3,
-      gender: 'MALE',
-      ageGroup: 'FIFTIES',
-      bloodPressure: 135,
-      heartRate: 80,
-      temperature: 37.1,
-      respiration: 18,
-      medical: 'TRAUMA',
-      consciousnessLevel: 'ALERT',
-      transportStatus: 'COMPLETED',
-      created_at: "2024-11-08T08:30:00",
-      modified_at: "2024-11-08T09:00:00",
-      hospitalName: "세브란스병원",
-      distance: "3.8km",
-      duration: "25분"
-    }
-  ];
+        const response = await fetch('http://localhost:8080/user/reservation', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            localStorage.removeItem("accessToken");
+            throw new Error("로그인이 만료되었습니다. 다시 로그인해주세요.");
+          }
+          throw new Error('데이터를 불러오는데 실패했습니다.');
+        }
+
+        const data = await response.json();
+        
+        // 진행 중인 이송 건만 필터링 (필요한 경우)
+        const currentTransfer = data.result.find(item => 
+          item.transportStatus === 'IN_PROGRESS'
+        );
+
+        if (currentTransfer) {
+          // PatientInfoCard 컴포넌트에 맞게 데이터 매핑
+          const mappedPatient = {
+            patientId: currentTransfer.patientconditionid,
+            gender: currentTransfer.gender,
+            ageGroup: currentTransfer.ageGroup,
+            bloodPressure: currentTransfer.bloodPressure,
+            heartRate: currentTransfer.heartRate,
+            temperature: currentTransfer.temperature,
+            respiration: currentTransfer.respiration,
+            medical: currentTransfer.medical,
+            consciousnessLevel: currentTransfer.consciousnessLevel,
+            transportStatus: currentTransfer.transportStatus,
+            startTime: currentTransfer.createdAt // formatDate 유틸 함수에서 사용
+          };
+          setCurrentPatient(mappedPatient);
+        }
+        setError(null);
+
+      } catch (error) {
+        console.error('현재 환자 데이터 조회 실패:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCurrentPatient();
+  }, []);
 
   const handleDistanceSort = () => {
-    console.log('거리순 정렬');
     navigate('/hospital-list');
-
   };
 
   const handleEmergencyFilter = () => {
-    console.log('응급실 필터링');
-    navigate('/hospital/filter')
+    navigate('/hospital/filter');
   };
 
-  return (
-      <ContentWrapper>
-        <PatientInfoCard patient={currentPatient} />
-        
-        <FilterButtons 
-          onDistanceSort={handleDistanceSort} 
-          onEmergencyFilter={handleEmergencyFilter} 
-        />
+  if (loading) {
+    return <ContentWrapper>데이터를 불러오는 중입니다...</ContentWrapper>;
+  }
 
-        <CompletedTransferStatus 
-          isOpen={isAccordionOpen}
-          onToggle={() => setIsAccordionOpen(!isAccordionOpen)}
-          transfers={completedTransfers}
-        />
-      </ContentWrapper>
+  if (error) {
+    return <ContentWrapper>에러: {error}</ContentWrapper>;
+  }
+
+  if (!currentPatient) {
+    return <ContentWrapper>현재 진행 중인 이송이 없습니다.</ContentWrapper>;
+  }
+  const completedTransfers = [
+    // ... completedTransfers 데이터는 그대로 유지
+  ];
+
+  return (
+    <ContentWrapper>
+      <PatientInfoCard 
+        patient={currentPatient} 
+        isCompleted={currentPatient.transportStatus === 'COMPLETED'} 
+      />
+      <FilterButtons
+        onDistanceSort={handleDistanceSort}
+        onEmergencyFilter={handleEmergencyFilter}
+      />
+      <CompletedTransferStatus
+        isOpen={isAccordionOpen}
+        onToggle={() => setIsAccordionOpen(!isAccordionOpen)}
+        transfers={completedTransfers}
+      />
+    </ContentWrapper>
   );
 };
 

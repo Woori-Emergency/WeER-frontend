@@ -9,7 +9,21 @@ export const CardWrapper = styled.div`
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding-bottom: 24px;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
 `;
+
+export const CardsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+`;
+
 
 export const Header = styled.div`
   padding: 20px 24px;
