@@ -9,7 +9,9 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
   const [autoLogin, setAutoLogin] = useState(false);
-  const token = localStorage.getItem('jwtToken'); // localStorage에서 token 가져오기
+  const accessToken = localStorage.getItem('accessToken'); // localStorage에서 token 가져오기
+  const refreshToken = localStorage.getItem('refreshToken');
+  const role = localStorage.getItem('role');
 
   useEffect(() => {
     const savedLoginId = localStorage.getItem('savedLoginId');
@@ -49,8 +51,11 @@ const LoginPage = () => {
         console.log('Login successful', data);
         
         // 서버에서 받은 JWT 토큰을 로컬 스토리지에 저장
-        if (data.token) {
-          localStorage.setItem('jwtToken', data.token);
+        if (data.accessToken) {
+          localStorage.setItem('accessToken', data.accessToken);
+          localStorage.setItem('refreshToken', data.refreshToken);
+          localStorage.setItem('role', data.role);
+          
         }
   
         // 로그인 성공 시 세션 스토리지 처리
@@ -73,7 +78,7 @@ const LoginPage = () => {
             navigate('/');
             break;
           case "ADMIN":
-            navigate('/admin/dashboard');
+            navigate('/admin/users');
             break;
           case "HOSPITAL_ADMIN":
             navigate('/hospital-booking-list');

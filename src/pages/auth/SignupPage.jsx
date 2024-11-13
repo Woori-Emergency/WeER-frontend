@@ -42,7 +42,7 @@ const SignupPage = () => {
     try {
       const response = await fetch(`http://localhost:8080/auth/check-login-id?loginId=${loginId}`);
       const isAvailable = await response.json();
-      setIdAvailable(isAvailable); // 서버 응답에 따라 ID 중복 여부 설정
+      setIdAvailable(!isAvailable); // 서버 응답에 따라 ID 중복 여부 설정
     } catch (error) {
       console.error("ID 중복:", error);
     }
@@ -53,7 +53,7 @@ const SignupPage = () => {
     try {
       const response = await fetch(`http://localhost:8080/auth/check-email?email=${email}`);
       const isAvailable = await response.json();
-      setEmailAvailable(isAvailable); // 서버 응답에 따라 이메일 중복 여부 설정
+      setEmailAvailable(!isAvailable); // 서버 응답에 따라 이메일 중복 여부 설정
     } catch (error) {
       console.error("이메일 중복:", error);
     }
@@ -125,6 +125,21 @@ const SignupPage = () => {
               maxWidth: '100%',
             }}
           >
+            <Form.Item
+              name="name"
+              label="이름"
+              tooltip="실명을 입력해주세요."
+              rules={[
+                {
+                  required: true,
+                  message: '이름을 입력해주세요.',
+                  whitespace: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
             <Form.Item
               name="loginId"
               label="아이디"
