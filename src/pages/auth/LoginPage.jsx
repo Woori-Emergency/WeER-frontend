@@ -30,7 +30,7 @@ const LoginPage = () => {
     };
   
     // Send login request using fetch
-    fetch('http://localhost:8080/auth/login-process', {
+    fetch('http://localhost:8080/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const LoginPage = () => {
         } else {
           localStorage.removeItem('autoLogin');
         }
-  
+        console.log(data.role)
         // 역할에 따라 리디렉션
         switch(data.role) {
           case "MEMBER":
