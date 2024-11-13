@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Map, MapMarker, CustomOverlayMap } from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 import * as S from './Map.styles';
 
 const MapContainer = styled.div`
   width: 100%;
-  height: 500px;
+  height: 450px;
   border-radius: 8px;
   overflow: hidden;
   margin: 20px 0;
@@ -13,28 +13,24 @@ const MapContainer = styled.div`
 
 const KakaoMap = () => {
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const [hospitals, setHospitals] = useState([]); // 백엔드 데이터 저장
+  const [markerSize, setMarkerSize] = useState({ width: 50, height: 55 }); // 마커 크기 상태
 
-  // 예시 병원 데이터
-  const hospitals = [
-    {
-      id: 1,
-      name: "A 종합병원",
-      position: { lat: 37.566826, lng: 126.9786567 },
-      status: "available",
-      distance: "1.5km",
-      waitingTime: "10분",
-    },
-    {
-      id: 2,
-      name: "B 대학병원",
-      position: { lat: 37.565826, lng: 126.9776567 },
-      status: "busy",
-      distance: "2.1km",
-      waitingTime: "30분",
-    },
-  ];
+  // 백엔드에서 병원 데이터 가져오기
+  useEffect(() => {
+    const fetchHospitals = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/hospital/seoul'); // 병원 데이터 API 호출
+        const data = await response.json();
+        setHospitals(data);
+      } catch (error) {
+        console.error("Failed to fetch hospital data:", error);
+      }
+    };
+    fetchHospitals();
+  }, []);
 
-  // 마커 색상 결정
+  // 마커 이미지 가져오기
   const getMarkerImage = (status) => {
     switch (status) {
       case 'available':
@@ -57,12 +53,12 @@ const KakaoMap = () => {
       >
         {hospitals.map((hospital) => (
           <React.Fragment key={hospital.id}>
-             <MapMarker
+            <MapMarker
               position={hospital.position}
               onClick={() => setSelectedMarker(selectedMarker === hospital.id ? null : hospital.id)}
               image={{
                 src: getMarkerImage(hospital.status),
-                size: { width: 50, height: 55 },
+                size: markerSize,
               }}
             />
             {selectedMarker === hospital.id && (
@@ -80,6 +76,12 @@ const KakaoMap = () => {
           </React.Fragment>
         ))}
       </Map>
+      <div style={{ marginTop: '10px', textAlign: 'center' }}>
+        {/* 마커 크기 조절 버튼 */}
+        <button onClick={() => setMarkerSize({ width: 40, height: 45 })}>작게</button>
+        <button onClick={() => setMarkerSize({ width: 50, height: 55 })}>보통</button>
+        <button onClick={() => setMarkerSize({ width: 60, height: 65 })}>크게</button>
+      </div>
     </MapContainer>
   );
 };
