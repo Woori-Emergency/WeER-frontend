@@ -75,16 +75,24 @@ export const ReservationButton = styled.button`
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 14px;
-  border: 1px solid #E97132; // 테두리 색상 추가
+  border: 1px solid #E97132;
   background: white;
   color: #E97132;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 4px;
+  transition: all 0.2s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: #d65f21;
+    color: white;
+  }
+
+  &:disabled {
+    border-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
   }
 `;
 
@@ -329,4 +337,10 @@ export const CloseButton = styled.button`
   &:hover {
     background: #2B4570;
   }
+`;
+
+export const ErrorMessage = styled.span`
+  color: #D64045;
+  font-size: 12px;
+  margin-top: 4px;
 `;

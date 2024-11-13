@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import { Link, useLocation } from 'react-router-dom'; 
 import { FaUserCircle } from 'react-icons/fa';
@@ -81,8 +81,7 @@ const LoginIcon = styled(FaUserCircle)`
 
 function Header() {
   const location = useLocation();
-  /* 로그인 후, 프로필로 바뀌는 것 확인하기 위함*/
-  const isLoggedIn = false; 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <HeaderContainer>
@@ -94,15 +93,23 @@ function Header() {
       </LogoContainer>
       
       <Nav>
-        <NavItem to="/" active={location.pathname === "/"}>메인</NavItem>
-        <NavItem to="/my-booking-requests" active={location.pathname === "/my-booking-requests"}>
+        <NavItem to="/" active={location.pathname === "/"}>
+          메인
+        </NavItem>
+        <NavItem 
+          to="/my-booking-requests" 
+          active={location.pathname === "/my-booking-requests"}
+        >
           예약 확인
         </NavItem>
-        <NavItem to="/patient-status-list" active={location.pathname === "/patient-status-list"}>
+        <NavItem 
+          to="/patient-status-list" 
+          active={location.pathname === "/patient-status-list"}
+        >
           환자 상태 내역
         </NavItem>
         {isLoggedIn && (
-          <NavItem 
+          <NavItem
             to="/patient-status-input"
             active={location.pathname === "/patient-status-input"}
           >
@@ -110,7 +117,7 @@ function Header() {
           </NavItem>
         )}
         {isLoggedIn ? (
-          <Profile />
+          <Profile /> // payload를 Profile 컴포넌트에 전달
         ) : (
           <LoginButton to="/login">
             <LoginIcon />
