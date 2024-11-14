@@ -9,7 +9,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
   const [autoLogin, setAutoLogin] = useState(false);
-  const accessToken = localStorage.getItem('accessToken'); // localStorage에서 token 가져오기
+  const accessToken = localStorage.getItem('accessToken'); // jwtToken
   const refreshToken = localStorage.getItem('refreshToken');
   const role = localStorage.getItem('role');
 
@@ -31,7 +31,7 @@ const LoginPage = () => {
       password: values.password,
     };
 
-    // Send login request using fetch
+    // 로그인 API 호출 
     fetch('http://localhost:8080/auth/login', {
       method: 'POST',
       headers: {
@@ -42,14 +42,12 @@ const LoginPage = () => {
     .then((response) => {
       if (!response.ok) {
         return response.json().then(error => {
-          throw error; // 에러 객체를 그대로 throw
+          throw error; 
         });
       }
       return response.json();
     })
       .then((data) => {
-        console.log('Login successful', data);
-
         // 서버에서 받은 JWT 토큰을 로컬 스토리지에 저장
         if (data.accessToken) {
           localStorage.setItem('accessToken', data.accessToken);
@@ -89,7 +87,7 @@ const LoginPage = () => {
       })
       .catch((error) => {
         console.error('Error during login:', error);
-        alert(error.message || '로그  인 중 오류가 발생했습니다. 다시 시도해주세요.');
+        alert(error.message || '로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
       });
   };
 
