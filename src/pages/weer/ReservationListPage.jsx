@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PatientVitals from '../../components/reservation/PatientVitals';
 import ReservationCard from '../../components/reservation/ReservationCard';
 import CompletedTransferList from '../../components/reservation/CompletedTransferList';
-import { formatDate } from '../../utils/dateUtils';
 import { 
 
   ContentWrapper,
 } from '../../styles/CommonStyles';
+import { getCurrentPatient } from '../../components/api/currentPatient';
 
 
 const Card = styled.div`
@@ -111,136 +111,94 @@ const CompletedTransferListContainer = styled.div`
 
 const ReservationListPage = () => {
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
+  const [currentPatient, setCurrentPatient] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const currentPatient = {
-    userId: 1,
-    gender: 'MALE',
-    ageGroup: 'THIRTIES',
-    bloodPressure: 125,
-    heartRate: 75,
-    temperature: 36.8,
-    respiration: 16,
-    medical: 'DISEASE',
-    consciousnessLevel: 'ALERT',
-    transportStatus: 'IN_PROGRESS',
-    startTime: "2024-11-08T10:22:30"
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+  
+    try {
+      const date = new Date(dateString);
+      return `이송 시작: ${new Intl.DateTimeFormat('ko-KR', {
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      }).format(date)}`;
+    } catch (error) {
+      if (error instanceof RangeError) {
+        // 날짜 문자열 파싱 실패 시 처리 로직
+        console.error('Invalid date format:', dateString);
+        return 'N/A';
+      } else {
+        throw error;
+      }
+    }
   };
+  
+  useEffect(() => {
+    const fetchPatient = async () => {
+      try {
+        setLoading(true);
+        const patient = await getCurrentPatient();
+        console.log(patient)
+        setCurrentPatient({
+          patientconditionid : patient.patientconditionid,
+          startTime: patient.createdAt, 
+          bloodPressure: patient.bloodPressure,
+          heartRate : patient.heartRate,
+          consciousnessLevel : patient.consciousnessLevel,
+          ageGroup : patient.ageGroup
+        });
+        console.log(formatDate(patient.createdAt));
+      } catch (error) {
+        console.error("환자 정보 조회 실패:", error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchPatient();
+  }, []);
 
   const reservations = [
-    {
-      id: 1,
-      hospitalName: "A 종합병원",
-      status: "APPROVED",
-      createdAt: "2024-11-08T10:30:00",
-      distance: "2.5km",
-      estimatedTime: "10분"
-    },
-    {
-      id: 2,
-      hospitalName: "B 대학병원",
-      status: "PENDING",
-      createdAt: "2024-11-08T10:32:00",
-      distance: "3.8km",
-      estimatedTime: "15분"
-    },
-    {
-      id: 3,
-      hospitalName: "C 병원",
-      status: "REJECTED",
-      createdAt: "2024-11-08T10:28:00",
-      distance: "5.2km",
-      estimatedTime: "20분"
-    }
+    // 예약 데이터
   ];
 
   const completedTransfers = [
-    {
-      userId: 2,
-      gender: 'FEMALE',
-      ageGroup: 'FORTIES',
-      bloodPressure: 118,
-      heartRate: 72,
-      temperature: 36.5,
-      respiration: 15,
-      medical: 'DISEASE',
-      consciousnessLevel: 'ALERT',
-      transportStatus: 'COMPLETED',
-      startTime: "2024-11-08T09:15:00",
-      endTime: "2024-11-08T09:45:00",
-      hospitalName: "서울대학교병원",
-      distance: "5.2km",
-      duration: "30분",
-      reservationHistory: [
-        {
-          id: 1,
-          hospitalName: "서울대학교병원",
-          status: "APPROVED",
-          createdAt: "2024-11-08T09:15:00",
-          distance: "5.2km",
-          estimatedTime: "30분"
-        },
-        {
-          id: 2,
-          hospitalName: "세브란스병원",
-          status: "REJECTED",
-          createdAt: "2024-11-08T09:10:00",
-          distance: "6.1km",
-          estimatedTime: "35분"
-        }
-      ]
-    },
-    {
-      userId: 3,
-      gender: 'MALE',
-      ageGroup: 'FIFTIES',
-      bloodPressure: 135,
-      heartRate: 80,
-      temperature: 37.1,
-      respiration: 18,
-      medical: 'TRAUMA',
-      consciousnessLevel: 'ALERT',
-      transportStatus: 'COMPLETED',
-      startTime: "2024-11-08T08:30:00",
-      endTime: "2024-11-08T09:00:00",
-      hospitalName: "세브란스병원",
-      distance: "3.8km",
-      duration: "25분",
-      reservationHistory: [
-        {
-          id: 1,
-          hospitalName: "세브란스병원",
-          status: "APPROVED",
-          createdAt: "2024-11-08T08:30:00",
-          distance: "3.8km",
-          estimatedTime: "25분"
-        },
-        {
-          id: 2,
-          hospitalName: "강남성모병원",
-          status: "PENDING",
-          createdAt: "2024-11-08T08:25:00",
-          distance: "4.5km",
-          estimatedTime: "30분"
-        }
-      ]
-    }
+    // 이송 완료 데이터
   ];
 
+  if (loading) {
+    return <ContentWrapper>로딩 중...</ContentWrapper>;
+  }
+
+  if (error) {
+    return <ContentWrapper>에러 발생: {error}</ContentWrapper>;
+  }
+
+  if (!currentPatient) {
+    return <ContentWrapper>환자 정보가 없습니다.</ContentWrapper>;
+  }
+
   return (
-      <ContentWrapper>
-        <Card>
-          <CardHeader>
-            <HeaderTitle>
-              <Title>환자 정보</Title>
-              <span>이송 시작: {formatDate(currentPatient.startTime)}</span>
-            </HeaderTitle>
-            <TransportStatus>이송중</TransportStatus>
-          </CardHeader>
+    <ContentWrapper>
+      <Card>
+        <CardHeader>
+          <HeaderTitle>
+            <Title>환자 정보</Title>
+            <span>{formatDate(currentPatient.startTime)}</span>
+          </HeaderTitle>
+          <TransportStatus>이송중</TransportStatus>
+        </CardHeader>
 
-          <PatientVitals patient={currentPatient} />
+        <PatientVitals patient={currentPatient} />
 
-          <SectionDivider />
-          <SectionTitle>병원 예약 현황</SectionTitle>
+        <SectionDivider />
+        <SectionTitle>병원 예약 현황</SectionTitle>
 
         <ReservationGrid>
           {reservations.map(reservation => (
@@ -250,39 +208,39 @@ const ReservationListPage = () => {
             />
           ))}
         </ReservationGrid>
-        </Card>
+      </Card>
 
-        <CompletedTransferSection>
-          <AccordionHeader onClick={() => setIsAccordionOpen(!isAccordionOpen)}>
-            <AccordionTitle>
-              이송 완료 내역
-              <span style={{ color: '#666', fontSize: '1rem', marginLeft: '0.5rem' }}>
-                ({completedTransfers.length}건)
-              </span>
-            </AccordionTitle>
-            <AccordionIcon isOpen={isAccordionOpen}>
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M6 9l6 6 6-6"/>
-              </svg>
-            </AccordionIcon>
-          </AccordionHeader>
+      <CompletedTransferSection>
+        <AccordionHeader onClick={() => setIsAccordionOpen(!isAccordionOpen)}>
+          <AccordionTitle>
+            이송 완료 내역
+            <span style={{ color: '#666', fontSize: '1rem', marginLeft: '0.5rem' }}>
+              ({completedTransfers.length}건)
+            </span>
+          </AccordionTitle>
+          <AccordionIcon isOpen={isAccordionOpen}>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </AccordionIcon>
+        </AccordionHeader>
 
-          {isAccordionOpen && (
-            <CompletedTransferListContainer>
-              <CompletedTransferList transfers={completedTransfers} />
-            </CompletedTransferListContainer>
-          )}
-        </CompletedTransferSection>
-      </ContentWrapper>
+        {isAccordionOpen && (
+          <CompletedTransferListContainer>
+            <CompletedTransferList transfers={completedTransfers} />
+          </CompletedTransferListContainer>
+        )}
+      </CompletedTransferSection>
+    </ContentWrapper>
   );
 };
 
