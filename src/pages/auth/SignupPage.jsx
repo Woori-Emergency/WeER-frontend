@@ -33,30 +33,24 @@ const tailFormItemLayout = {
 
 const SignupPage = () => {
   const [form] = Form.useForm();
-  const navigate = useNavigate(); // useNavigate 추가
+  const navigate = useNavigate();
   const [idAvailable, setIdAvailable] = useState(false); // ID 중복 체크 상태
   const [emailAvailable, setEmailAvailable] = useState(false); // 이메일 중복 체크 상태
 
   // ID 중복 체크 비동기 함수
   const checkIdAvailability = async (loginId) => {
-    try {
       const response = await fetch(`http://localhost:8080/auth/check-login-id?loginId=${loginId}`);
       const isAvailable = await response.json();
-      setIdAvailable(!isAvailable); // 서버 응답에 따라 ID 중복 여부 설정
-    } catch (error) {
-      console.error("ID 중복:", error);
-    }
+      setIdAvailable(isAvailable.result);
+
   };
 
   // 이메일 중복 체크 비동기 함수
   const checkEmailAvailability = async (email) => {
-    try {
       const response = await fetch(`http://localhost:8080/auth/check-email?email=${email}`);
       const isAvailable = await response.json();
-      setEmailAvailable(!isAvailable); // 서버 응답에 따라 이메일 중복 여부 설정
-    } catch (error) {
-      console.error("이메일 중복:", error);
-    }
+
+      setEmailAvailable(isAvailable.result);
   };
 
   // Form 제출 후 호출되는 함수 (회원가입)
@@ -83,17 +77,15 @@ const SignupPage = () => {
     .then((response) => {
       if (response.ok) {
         alert('회원가입 성공!');
-        navigate('/'); // 회원가입 성공 후 리다이렉트
+        navigate('/'); 
       } else {
-        // 상태 코드와 상태 메시지를 표시
         response.json().then((errorData) => {
-          alert('회원가입 실패 :  ${errorData.message}');
+          alert(`회원가입 실패 : ${errorData.message}`);
         });
       }
     })
     .catch((error) => {
       alert('회원가입 중 오류가 발생했습니다.');
-      console.error(error);
     });
 };
 
@@ -132,7 +124,7 @@ const SignupPage = () => {
               rules={[
                 {
                   required: true,
-                  message: '이름을 입력해주세요.',
+                  message: '이름을 입력해주세요;/',
                   whitespace: true,
                 },
               ]}

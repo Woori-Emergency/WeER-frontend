@@ -9,74 +9,7 @@ import {
 import { ContentWrapper } from '../../styles/CommonStyles';
 
 const HospitalAnnouncementPage = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchAnnouncements = async () => {
-      try {
-        const mockData = [
-          {
-            key: '1',
-            messageType: '응급메시지',
-            department: '응급실',
-            content: '*의료진 복족으로 119 내원시 모든 환자 수용 여부 확인 후 내원',
-            timestamp: '2024-10-29 09:00:00'
-          },
-          {
-            key: '2',
-            messageType: '응급메시지',
-            department: '응급실',
-            content: '[피부과/안과] 평일(08:00~17:00), 토요일(08:00~12:00)에만 진료 가능',
-            timestamp: '2024-10-29 09:00:00'
-          },
-          {
-            key: '3',
-            messageType: '응급메시지',
-            department: '응급실',
-            content: '[상부위장/소아청소년과/이비인후과/정신건강의학과] 평일 주간(08:00~17:00)에만 진료 가능',
-            timestamp: '2024-10-29 09:00:00'
-          },
-          {
-            key: '4',
-            messageType: '응급메시지',
-            department: '응급실',
-            content: 'White',
-            timestamp: '2024-10-29 09:00:00'
-          },
-          {
-            key: '5',
-            messageType: '진료불가 메시지',
-            department: '안과적 응급 수술',
-            content: '진료 불가',
-            timestamp: '2024-10-29 09:00:00'
-          },
-          {
-            key: '6',
-            messageType: '진료불가 메시지',
-            department: '수족지접합 외',
-            content: '진료 불가',
-            timestamp: '2024-10-29 09:00:00'
-          },
-          {
-            key: '7',
-            messageType: '진료불가 메시지',
-            department: '수족지접합',
-            content: '진료 불가',
-            timestamp: '2024-10-29 09:00:00'
-          }
-        ];
-
-        setData(mockData);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching announcements:', error);
-        setLoading(false);
-      }
-    };
-
-    fetchAnnouncements();
-  }, []);
+  const [hospitalName, setHospitalName] = useState('');
 
   const getCurrentDateTime = () => {
     const now = new Date();
@@ -90,24 +23,22 @@ const HospitalAnnouncementPage = () => {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   };
 
-  const handleGoBack = () =>{
+  const handleGoBack = () => {
     window.history.back();
-  }
+  };
 
   return (
-
     <ContentWrapper>
-          <HospitalHeader>
+      <HospitalHeader>
         <HospitalTitle>
-        성심의료재단강동성심병원 <RefreshIcon onClick={handleGoBack}></RefreshIcon>
+          {hospitalName || '병원 정보'} <RefreshIcon onClick={handleGoBack} />
         </HospitalTitle>
         <PageHeader>
           최신정보 : {getCurrentDateTime()} | 응급실/진료불가능 메시지
         </PageHeader>
       </HospitalHeader>
       <HospitalAnnouncement 
-        data={data} 
-        loading={loading}
+        setHospitalName={setHospitalName}
       />
     </ContentWrapper>
   );
