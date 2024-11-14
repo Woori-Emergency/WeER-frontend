@@ -39,26 +39,18 @@ const SignupPage = () => {
 
   // ID 중복 체크 비동기 함수
   const checkIdAvailability = async (loginId) => {
-    try {
       const response = await fetch(`http://localhost:8080/auth/check-login-id?loginId=${loginId}`);
       const isAvailable = await response.json();
       setIdAvailable(isAvailable.result);
-    } catch (error) {
-      console.error("ID 중복:", error);
-    }
+
   };
 
   // 이메일 중복 체크 비동기 함수
   const checkEmailAvailability = async (email) => {
-    try {
       const response = await fetch(`http://localhost:8080/auth/check-email?email=${email}`);
       const isAvailable = await response.json();
 
       setEmailAvailable(isAvailable.result);
-
-    } catch (error) {
-      console.error("이메일 중복:", error);
-    }
   };
 
   // Form 제출 후 호출되는 함수 (회원가입)
@@ -88,14 +80,12 @@ const SignupPage = () => {
         navigate('/'); 
       } else {
         response.json().then((errorData) => {
-          console.log(errorData);
           alert(`회원가입 실패 : ${errorData.message}`);
         });
       }
     })
     .catch((error) => {
       alert('회원가입 중 오류가 발생했습니다.');
-      console.error(error);
     });
 };
 
