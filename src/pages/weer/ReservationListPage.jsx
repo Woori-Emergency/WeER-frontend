@@ -8,7 +8,15 @@ import {
   ContentWrapper,
 } from '../../styles/CommonStyles';
 import { getCurrentPatient } from '../../components/api/currentPatient';
+import { getCurrentPatientReservation } from '../../components/api/currentReservation';
+import { useGeoLocation } from '../../components/GeoLocation/GeoLocation';
 
+
+const GEOLOCATION_OPTIONS = {
+  enableHighAccuracy: false,
+  timeout: 1000 * 15,
+  maximumAge: 1000 * 60 * 5 * 10
+};
 
 const Card = styled.div`
   background: white;
@@ -112,8 +120,10 @@ const CompletedTransferListContainer = styled.div`
 const ReservationListPage = () => {
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   const [currentPatient, setCurrentPatient] = useState(null);
+  const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const {latitude, longitude, error: locationError } = useGeoLocation(GEOLOCATION_OPTIONS);
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -121,15 +131,15 @@ const ReservationListPage = () => {
     try {
       const date = new Date(dateString);
       return `이송 시작: ${new Intl.DateTimeFormat('ko-KR', {
-        month: 'numeric',
-        day: 'numeric',
+        year: 'numeric',
+        month: 'long',  
+        day: 'numeric', 
         hour: 'numeric',
         minute: '2-digit',
-        hour12: true,
+        hourCycle: 'h23', 
       }).format(date)}`;
     } catch (error) {
       if (error instanceof RangeError) {
-        // 날짜 문자열 파싱 실패 시 처리 로직
         console.error('Invalid date format:', dateString);
         return 'N/A';
       } else {
@@ -143,16 +153,22 @@ const ReservationListPage = () => {
       try {
         setLoading(true);
         const patient = await getCurrentPatient();
-        console.log(patient)
+        console.log(patient);
         setCurrentPatient({
-          patientconditionid : patient.patientconditionid,
-          startTime: patient.createdAt, 
+          patientconditionid: patient.patientconditionid,
+          startTime: patient.createdAt,
           bloodPressure: patient.bloodPressure,
-          heartRate : patient.heartRate,
-          consciousnessLevel : patient.consciousnessLevel,
-          ageGroup : patient.ageGroup
+          heartRate: patient.heartRate,
+          consciousnessLevel: patient.consciousnessLevel,
+          ageGroup: patient.ageGroup,
+          gender: patient.gender
         });
         console.log(formatDate(patient.createdAt));
+        
+          const reservationData = await getCurrentPatientReservation();
+          setReservations(Array.isArray(reservationData) ? reservationData : []);
+          console.log(reservationData);
+        
       } catch (error) {
         console.error("환자 정보 조회 실패:", error);
         setError(error.message);
@@ -162,11 +178,8 @@ const ReservationListPage = () => {
     };
   
     fetchPatient();
-  }, []);
-
-  const reservations = [
-    // 예약 데이터
-  ];
+  }, []); 
+  
 
   const completedTransfers = [
     // 이송 완료 데이터
