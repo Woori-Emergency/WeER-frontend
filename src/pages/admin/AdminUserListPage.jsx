@@ -22,10 +22,13 @@ function AdminUserListPage() {
   const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const itemsPerPage = 5;
 
   useEffect(() => {
+    setIsLoading(true);
     fetch('http://localhost:8080/user/list')
       .then(response => {
         if (!response.ok) {
@@ -34,10 +37,17 @@ function AdminUserListPage() {
         return response.json();
       })
       .then(data => {
-        console.log("Fetched users:", data); // 데이터 로깅
-        setUsers(data);
+        // API 응답 데이터 구조 확인 및 변환
+        const userArray = Array.isArray(data) ? data : data.content || data.users || [];
+        console.log("Fetched users:", userArray);
+        setUsers(userArray);
+        setIsLoading(false);
       })
-      .catch(error => console.error("Error fetching users:", error));
+      .catch(error => {
+        console.error("Error fetching users:", error);
+        setError(error.message);
+        setIsLoading(false);
+      });
   }, []);
 
   const handleOpenEditModal = () => {
@@ -61,31 +71,52 @@ function AdminUserListPage() {
         return response.json();
       })
       .then((updatedUser) => {
-        console.log("Updated user:", updatedUser); // 업데이트된 데이터 로깅
+        console.log("Updated user:", updatedUser);
         setUsers(users.map(user => user.id === updatedUser.id ? updatedUser : user));
         setIsModalOpen(false);
-        setSelectedUserIds([]); // 수정 후 선택 해제
+        setSelectedUserIds([]);
       })
-      .catch(error => console.error("Error updating user:", error));
+      .catch(error => {
+        console.error("Error updating user:", error);
+        alert("사용자 정보 업데이트 중 오류가 발생했습니다.");
+      });
   };
 
-  const displayedUsers = users.slice(
+  // 검색된 사용자 필터링
+  const filteredUsers = users.filter(user => 
+    user.name?.toLowerCase().includes(search.toLowerCase()) ||
+    user.email?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const displayedUsers = filteredUsers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  const totalPages = Math.ceil(users.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+
+  if (isLoading) {
+    return <PageContainer>데이터를 불러오는 중...</PageContainer>;
+  }
+
+  if (error) {
+    return <PageContainer>오류 발생: {error}</PageContainer>;
+  }
 
   return (
     <PageContainer>
       <ControlsContainer>
-        <SearchBar search={search} onSearchChange={setSearch} onSearch={() => setCurrentPage(1)} />
+        <SearchBar 
+          search={search} 
+          onSearchChange={setSearch} 
+          onSearch={() => setCurrentPage(1)} 
+        />
       </ControlsContainer>
-      <UserTable 
-        users={displayedUsers} 
-        selectedUserIds={selectedUserIds} 
-        setSelectedUserIds={setSelectedUserIds} 
-      />      
+      <UserTable
+        users={displayedUsers}
+        selectedUserIds={selectedUserIds}
+        setSelectedUserIds={setSelectedUserIds}
+      />
     </PageContainer>
   );
 }
