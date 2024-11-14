@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import * as S from './HospitalCard.styles';
+import IcuSection from '../IcuSection/IcuSection';
 
 const HospitalCardItem = ({ hospitalData, onReservation }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -7,15 +8,18 @@ const HospitalCardItem = ({ hospitalData, onReservation }) => {
     const [reservationError, setReservationError] = useState(null);
 
     const handleReservation = async () => {
+        if (isReservationRequested) return; // 이미 예약 요청된 경우 중복 실행 방지
+        
         try {
             const token = localStorage.getItem('accessToken');
             if (!token) {
                 throw new Error('로그인이 필요합니다');
             }
-
-            await onReservation();
-            setIsReservationRequested(true);
+    
             setReservationError(null);
+            await onReservation(); // 부모 컴포넌트의 handleReservation 실행
+            setIsReservationRequested(true); // 성공시에만 상태 변경
+            
         } catch (error) {
             console.error('예약 요청 중 오류 발생:', error);
             setReservationError(error.message);
@@ -23,25 +27,14 @@ const HospitalCardItem = ({ hospitalData, onReservation }) => {
         }
     };
 
-    const equipmentData = {
-        regularVentilator: { available: true, count: 5 },
-        prematureVentilator: { available: false, count: 0 },
-        incubator: { available: true, count: 3 },
-        crrt: { available: true, count: 2 },
-        ecmo: { available: false, count: 0 },
-        temperatureController: { available: true, count: 1 },
-        hyperbaricChamber: { available: false, count: 0 },
-        ctScanner: { available: true, count: 1 },
-        mri: { available: true, count: 1 },
-        angiographer: { available: false, count: 0 },
-    };
+    
 
     return (
         <S.CardWrapper>
             <S.Header>
                 <S.HospitalInfo>
                     <S.HospitalName>
-                        {hospitalData.hospitalName}
+                        {hospitalData.name}
                     </S.HospitalName>
                     <S.StatusInfo>
                         <S.StatusDot />
@@ -70,7 +63,7 @@ const HospitalCardItem = ({ hospitalData, onReservation }) => {
                     </div>
                 </S.ButtonGroup>
 
-                {isModalOpen && (
+                {/* {isModalOpen && (
                     <S.ModalOverlay onClick={() => setIsModalOpen(false)}>
                         <S.Modal onClick={(e) => e.stopPropagation()}>
                             <S.ModalTitle>장비 정보</S.ModalTitle>
@@ -95,7 +88,7 @@ const HospitalCardItem = ({ hospitalData, onReservation }) => {
                             </S.CloseButton>
                         </S.Modal>
                     </S.ModalOverlay>
-                )}
+                )} */}
             </S.Header>
 
             <S.ContentLayout>
@@ -143,56 +136,14 @@ const HospitalCardItem = ({ hospitalData, onReservation }) => {
 
                 <S.Section>
                     <S.SectionTitle>중환자실</S.SectionTitle>
-                    <S.InfoGrid>
-                        <S.GridRow>
-                            <S.Label>일반</S.Label>
-                            <S.Value>8/15</S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>내과</S.Label>
-                            <S.Value>None</S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>외과</S.Label>
-                            <S.Value>None</S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>음압격리</S.Label>
-                            <S.Value>2/2</S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>심장내과</S.Label>
-                            <S.Value>2/2</S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>신경외과</S.Label>
-                            <S.Value>None</S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>소아</S.Label>
-                            <S.Value>None</S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>신경과</S.Label>
-                            <S.Value>None</S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>흉부외과</S.Label>
-                            <S.Value>None</S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>신생아</S.Label>
-                            <S.Value>2/2</S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>화상</S.Label>
-                            <S.Value>2/2</S.Value>
-                        </S.GridRow>
-                    </S.InfoGrid>
+                    <IcuSection hospitalId={hospitalData.hospitalId} />
                 </S.Section>
             </S.ContentLayout>
 
-            <S.NoticeLink to="/hospital-notice">
+            <S.NoticeLink 
+            to="/hospital-notice" 
+            state={{ hospitalId: hospitalData.hospitalId, hospitalName: hospitalData.name}}
+          >
                 <S.NoticeBar />
                 <S.NoticeIcon>📢</S.NoticeIcon>
                 알림을 확인할 수 있습니다.

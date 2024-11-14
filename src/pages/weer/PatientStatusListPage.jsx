@@ -17,6 +17,7 @@ const ContentWrapper = styled.div`
 const PatientStatusListPage = () => {
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   const [currentPatient, setCurrentPatient] = useState(null);
+  const [completedTransfers, setCompletedTransfers] = useState([]);  // 완료된 이송 상태 저장
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -52,6 +53,23 @@ const PatientStatusListPage = () => {
           item.transportStatus === 'IN_PROGRESS'
         );
 
+        const completedTransfersList = data.result.filter(item => 
+          item.transportStatus === 'COMPLETED'
+        ).map(item => ({
+          patientId: item.patientconditionid,
+          gender: item.gender,
+          ageGroup: item.ageGroup,
+          bloodPressure: item.bloodPressure,
+          heartRate: item.heartRate,
+          temperature: item.temperature,
+          respiration: item.respiration,
+          medical: item.medical,
+          consciousnessLevel: item.consciousnessLevel,
+          transportStatus: item.transportStatus,
+          startTime: item.createdAt,
+          endTime: item.modifiedAt
+        }));
+
         if (currentTransfer) {
           // PatientInfoCard 컴포넌트에 맞게 데이터 매핑
           const mappedPatient = {
@@ -68,6 +86,7 @@ const PatientStatusListPage = () => {
             startTime: currentTransfer.createdAt // formatDate 유틸 함수에서 사용
           };
           setCurrentPatient(mappedPatient);
+          setCompletedTransfers(completedTransfersList);
         }
         setError(null);
 
@@ -101,9 +120,6 @@ const PatientStatusListPage = () => {
   if (!currentPatient) {
     return <ContentWrapper>현재 진행 중인 이송이 없습니다.</ContentWrapper>;
   }
-  const completedTransfers = [
-    // ... completedTransfers 데이터는 그대로 유지
-  ];
 
   return (
     <ContentWrapper>

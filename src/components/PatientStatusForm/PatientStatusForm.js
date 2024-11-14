@@ -176,7 +176,7 @@ const PatientStatusForm = ({
           <S.DiseaseButtonGroup>
             {[
               { value: 'DISEASE', label: '질병' },
-              { value: 'NON-DISEASE', label: '질병 외' }
+              { value: 'NON_DISEASE', label: '질병 외' }
             ].map((option) => (
               <S.DiseaseButton
                 key={option.value}
