@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Button } from 'antd';
 
 export const ProfileContainer = styled.div`
   display: flex;
@@ -7,10 +8,6 @@ export const ProfileContainer = styled.div`
   padding: 8px;
   border-radius: 8px;
   cursor: pointer;
-  
-  &:hover {
-    background-color: #f5f5f5;
-  }
 `;
 
 export const ProfileImage = styled.div`
@@ -28,6 +25,12 @@ export const ProfileInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+`;
+
+export const UserRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;
 
 export const UserName = styled.div`
@@ -58,5 +61,18 @@ export const ProfileTypeButton = styled.button`
 
   &:hover {
     background-color: #f5f5f5;
+  }
+`;
+
+// 로그아웃 아이콘 버튼 스타일
+export const LogoutIconButton = styled(Button)`
+  border: none;
+  background: transparent;
+  color: #E97132;
+  cursor: pointer;
+  font-size: 18px;
+
+  &:hover {
+    color: #d65f21;
   }
 `;
