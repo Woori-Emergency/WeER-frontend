@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as S from './HospitalCard.styles';
 import IcuSection from '../IcuSection/IcuSection';
 import Emergency from '../ER/Emergency';

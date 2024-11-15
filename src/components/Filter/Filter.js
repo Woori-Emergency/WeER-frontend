@@ -17,7 +17,7 @@ const Filter = () => {
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   const [isDistrictDropdownOpen, setIsDistrictDropdownOpen] = useState(false);
-  const { location, error: locationError } = useGeoLocation(geolocationOptions);
+  const { location: geoLocation, error: locationError } = useGeoLocation(geolocationOptions);
 
   const navigate = useNavigate();
   // 응급실
@@ -36,7 +36,7 @@ const Filter = () => {
     '코호트 격리':"hv27",
     '음압 격리':"hv29",
     '일반 격리':"hv30",
-    '소아 격리':"hv27",
+    '소아 격리':"hv28",
     '소아 음압 격리':"hv15",
     '소아 일반 격리':"hv16",
   }
@@ -179,13 +179,15 @@ const Filter = () => {
       ...mapSectionData(icuItems, icuKeyMapping),
       ...mapSectionData(equipmentItems, equipKeyMapping),
       city: selectedCity,
-      district: selectedDistrict || null
+      state: selectedDistrict
     };
     console.log(backendData);
+    console.log(geoLocation.latitude);
+    console.log(geoLocation.longitude);
 
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await fetch(`http://localhost:8080/hospital/info?lat=${lat}&lon=${lon}`, {
+      const response = await fetch(`http://localhost:8080/hospital/info?lat=${geoLocation.latitude}&lon=${geoLocation.longitude}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -199,12 +201,10 @@ const Filter = () => {
       }
 
       const data = await response.json();
-      console.log("data 반환")
-      console.log(data);
+      console.log("네비게이션 전 - hospitalData:", data.result);
       navigate('/hospital-list', { 
         state: { 
-          hospitals: data,
-          filters: backendData
+          hospitalData : data.result
         } 
       });
     } catch (error) {
@@ -328,7 +328,7 @@ const Filter = () => {
         </S.SelectAllButton>
       </S.FilterSection>
 
-      <S.SearchButton onClick={() => handleSubmit(location.latitude, location.longitude)}>
+      <S.SearchButton onClick={() => handleSubmit(geoLocation.latitude, geoLocation.longitude)}>
         검색
       </S.SearchButton>
     </S.Container>
