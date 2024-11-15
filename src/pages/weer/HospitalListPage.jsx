@@ -1,22 +1,19 @@
 import React from 'react';
-import HospitalCard from '../../components/HospitalCard/HospitalCard';
-import { ContentWrapper } from '../../styles/CommonStyles';
-import styled from 'styled-components';
 
-const HospitalListContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 24px 0;
-`;
-
-const HospitalListPage = () => {
+const HospitalListPage = ({ hospitals }) => {
   return (
-    <ContentWrapper>
-      <HospitalListContainer>
-        <HospitalCard />
-      </HospitalListContainer>
-    </ContentWrapper>
+    <div>
+      <h2>Nearby Hospitals</h2>
+      <ul>
+        {hospitals.map((hospital) => (
+          <li key={hospital.hospitalId}>
+            <h3>{hospital.name}</h3>
+            <p>거리: {hospital.roadDistance}m</p>
+            <p>예상 소요시간: {hospital.duration}s</p>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 

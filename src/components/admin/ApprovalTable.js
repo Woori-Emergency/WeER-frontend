@@ -8,27 +8,21 @@ const CustomPagination = styled.div`
   .ant-pagination-item-active a {
     color: #E97132 !important;
   }
-
   .ant-pagination-item-active {
     border-color: #E97132 !important;
   }
-
   .ant-pagination-item a {
     color: #E97132;
   }
-
   .ant-pagination-item:hover a {
     color: #E97132;
   }
-
   .ant-pagination-item:hover {
     border-color: #E97132;
   }
-
   .ant-pagination-prev, .ant-pagination-next {
     color: #E97132;
   }
-
   .ant-pagination-prev:hover .ant-pagination-item-link,
   .ant-pagination-next:hover .ant-pagination-item-link {
     color: #E97132 !important;
@@ -39,24 +33,32 @@ const CustomPagination = styled.div`
 const ApprovalTable = ({ data, loading, onStatusChange }) => {
   const [loadings, setLoadings] = useState([]);
 
+  // 승인 또는 반려 처리 함수
   const handleApproval = async (userId, approve) => {
+    const token = localStorage.getItem('accessToken'); // access token 불러오기
     const index = data.findIndex((user) => user.key === userId);
     setLoadings((prevLoadings) => {
       const newLoadings = [...prevLoadings];
       newLoadings[index] = true;
       return newLoadings;
     });
-
+  
     try {
-      // 서버에 승인 또는 반려 요청
-      const response = await fetch(`http://localhost:8080/user/approve-signup/${userId}?approve=${approve}`, {
+      // 문자열 값 'APPROVED' 또는 'UNAPPROVED'를 approve 파라미터에 전달
+      const approveValue = approve ? 'APPROVED' : 'UNAPPROVED';
+  
+      const response = await fetch(`http://localhost:8080/user/approve-signup/${userId}?approve=${approveValue}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Authorization': `Bearer ${token}`, // Authorization 헤더 추가
+          'Content-Type': 'application/json',
+        },
       });
+  
       if (!response.ok) throw new Error('Failed to update status');
-
+  
       message.success(`User has been ${approve ? 'approved' : 'rejected'}`);
-      onStatusChange(userId, approve ? '승인됨' : '반려됨');
+      onStatusChange(userId, approve ? 'APPROVED' : 'UNAPPROVED');
     } catch (error) {
       console.error('Error updating status:', error);
       message.error('Failed to update user status');
@@ -118,9 +120,10 @@ const ApprovalTable = ({ data, loading, onStatusChange }) => {
             type="primary"
             loading={loadings[record.key]}
             onClick={() => handleApproval(record.key, true)}
+            disabled={status === 'APPROVED'} // 승인된 경우 버튼 비활성화
             style={{
-              backgroundColor: '#E97132', // 버튼 배경 색상 설정
-              borderColor: '#E97132', // 버튼 테두리 색상 설정
+              backgroundColor: '#E97132',
+              borderColor: '#E97132',
             }}
           >
             승인
@@ -130,9 +133,10 @@ const ApprovalTable = ({ data, loading, onStatusChange }) => {
             danger
             loading={loadings[record.key]}
             onClick={() => handleApproval(record.key, false)}
+            disabled={status === 'UNAPPROVED'} // 반려된 경우 버튼 비활성화
             style={{
-              color: '#E97132', // 텍스트 색상
-              borderColor: '#E97132', // 버튼 테두리 색상
+              color: '#E97132',
+              borderColor: '#E97132',
             }}
           >
             반려

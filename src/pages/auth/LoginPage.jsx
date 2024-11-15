@@ -9,9 +9,6 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
   const [autoLogin, setAutoLogin] = useState(false);
-  const accessToken = localStorage.getItem('accessToken'); // jwtToken
-  const refreshToken = localStorage.getItem('refreshToken');
-  const role = localStorage.getItem('role');
 
   useEffect(() => {
     const savedLoginId = localStorage.getItem('savedLoginId');
@@ -31,7 +28,7 @@ const LoginPage = () => {
       password: values.password,
     };
 
-    // 로그인 API 호출 
+    // 로그인 API 호출
     fetch('http://localhost:8080/auth/login', {
       method: 'POST',
       headers: {
@@ -42,55 +39,58 @@ const LoginPage = () => {
     .then((response) => {
       if (!response.ok) {
         return response.json().then(error => {
-          throw error; 
+          throw error;
         });
       }
       return response.json();
     })
-      .then((data) => {
-        // 서버에서 받은 JWT 토큰을 로컬 스토리지에 저장
-        if (data.accessToken) {
-          localStorage.setItem('accessToken', data.accessToken);
-          localStorage.setItem('refreshToken', data.refreshToken);
-          localStorage.setItem('role', data.role);
-          
-        }
+    .then((data) => {
+      // 서버에서 받은 JWT 토큰과 만료시간을 로컬 스토리지에 저장
+      if (data.accessToken) {
+        localStorage.setItem('accessToken', data.accessToken);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        localStorage.setItem('role', data.role);
 
-        // 로그인 성공 시 세션 스토리지 처리
-        if (rememberMe) {
-          sessionStorage.setItem('savedLoginRole', data);
-        } else {
-          sessionStorage.removeItem('savedLoginId');
-        }
+        // Set token expiry time (example: 1 hour from now)
+        const expiryTime = Date.now() + 3600 * 1000;
+        localStorage.setItem('tokenExpiry', expiryTime);
+      }
 
-        if (autoLogin) {
-          localStorage.setItem('autoLogin', true);
+      // 자동 로그인 설정
+      if (rememberMe) {
+        sessionStorage.setItem('savedLoginRole', data);
+      } else {
+        sessionStorage.removeItem('savedLoginId');
+      }
 
-        } else {
-          localStorage.removeItem('autoLogin');
-        }
-        console.log(data.role)
-        // 역할에 따라 리디렉션
-        switch(data.role) {
-          case "MEMBER":
-            navigate('/');
-            break;
-          case "ADMIN":
-            navigate('/admin/users');
-            break;
-          case "HOSPITAL_ADMIN":
-            navigate('/hospital-booking-list');
-            break;
-          default:
-            navigate('/');
-        }
-      })
-      .catch((error) => {
-        console.error('Error during login:', error);
-        alert(error.message || '로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
-      });
+      if (autoLogin) {
+        localStorage.setItem('autoLogin', true);
+      } else {
+        localStorage.removeItem('autoLogin');
+      }
+
+      console.log("User role:", data.role);
+
+      // 역할에 따라 리디렉션
+      switch(data.role) {
+        case "MEMBER":
+          navigate('/');
+          break;
+        case "ADMIN":
+          navigate('/admin/users');
+          break;
+        case "HOSPITAL_ADMIN":
+          navigate('/hospital-booking-list');
+          break;
+        default:
+          navigate('/');
+      }
+    })
+    .catch((error) => {
+      console.error('Error during login:', error);
+      alert(error.message || '로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+    });
   };
-
 
   return (
     <div style={{ 
@@ -112,10 +112,6 @@ const LoginPage = () => {
             onClick={() => navigate('/')}
           />
         </div>
-
-        {/* <Title level={2} style={{ marginBottom: '30px' }}>
-          로그인
-        </Title> */}
 
         <Form
           name="login"
