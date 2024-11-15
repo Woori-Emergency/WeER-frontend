@@ -20,6 +20,8 @@ const HospitalCard = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
+    console.log("받은 hospitalData:", location.state?.hospitalData);
+    
     const getAuthHeaders = useCallback(() => {
         const token = localStorage.getItem('accessToken');
         if (!token) {
@@ -66,7 +68,7 @@ const HospitalCard = () => {
         }
     }, [getAuthHeaders, handleApiError]);
 
-    const getCurrentPatient = async () => {
+    const getCurrentPatient = useCallback(async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/user/reservation`, {
                 method: 'GET',
@@ -82,7 +84,6 @@ const HospitalCard = () => {
                 throw new Error(data.message || '환자 정보를 가져오는데 실패했습니다');
             }
     
-            // data.result가 배열인 경우
             if (Array.isArray(data.result)) {
                 if (data.result.length > 0) {
                     return data.result[0].patientconditionid;
@@ -90,7 +91,6 @@ const HospitalCard = () => {
                 throw new Error('환자 정보가 없습니다');
             }
             
-            // data.result가 객체인 경우
             if (data.result && typeof data.result === 'object') {
                 return data.result.patientconditionid || data.result.patientConditionId;
             }
@@ -101,7 +101,7 @@ const HospitalCard = () => {
             handleApiError(error);
             throw error;
         }
-    };
+    }, [getAuthHeaders, handleApiError]);
     
     const handleReservation = useCallback(async (hospitalId) => {
         try {
@@ -135,27 +135,29 @@ const HospitalCard = () => {
             handleApiError(error);
             throw error;
         }
-    }, [getAuthHeaders, handleApiError]);
+    }, [getAuthHeaders, handleApiError, getCurrentPatient]);
 
-    // 장비 정보도 가져오기
-    // hospital/detail
-    
     useEffect(() => {
-        const searchData = location?.state;
-        
-        if (searchData?.hospitals) {
-            setHospitals(Array.isArray(searchData.hospitals) ? searchData.hospitals : []);
+        // hospitalData가 있으면 hospitals state를 업데이트하지 않음
+        if (location.state?.hospitalData) {
+            setLoading(false);
+            return;
+        }
+
+        // 기존 로직
+        if (location.state?.hospitals) {
+            setHospitals(Array.isArray(location.state.hospitals) ? location.state.hospitals : []);
             setLoading(false);
         } else if (geoLocation) {
             fetchHospitals(geoLocation.latitude, geoLocation.longitude);
         }
-    }, [geoLocation, location, fetchHospitals]);
+    }, [geoLocation, location.state, fetchHospitals]);
 
     if (locationError) {
         return <div>위치 정보를 가져오는데 실패했습니다: {locationError}</div>;
     }
 
-    if (!geoLocation && !location?.state?.hospitals) {
+    if (!geoLocation && !location?.state?.hospitals && !location?.state?.hospitalData) {
         return <div>위치 정보를 가져오는 중...</div>;
     }
 
@@ -167,6 +169,21 @@ const HospitalCard = () => {
         return <div>{error}</div>;
     }
 
+    // hospitalData가 있으면 단일 병원 카드만 렌더링
+    if (location.state?.hospitalData) {
+        const hospitalData = location.state.hospitalData;
+        return (
+            <S.CardsContainer>
+                <HospitalCardItem
+                    key={hospitalData.hospitalId}
+                    hospitalData={hospitalData}
+                    onReservation={() => handleReservation(hospitalData.hospitalId)}
+                />
+            </S.CardsContainer>
+        );
+    }
+
+    // 그 외의 경우 hospitals 배열을 렌더링
     return (
         <S.CardsContainer>
             {hospitals.map((hospital, index) => (
@@ -178,7 +195,6 @@ const HospitalCard = () => {
             ))}
         </S.CardsContainer>
     );
-            }
-
+};
 
 export default HospitalCard;
