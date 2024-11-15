@@ -1,13 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import * as S from './HospitalFilteredCard.styles';
-import IcuSection from '../IcuSection/IcuSection';
+import React, { useEffect, useState } from 'react';
+import { checkHospitalReservation } from '../../utils/checkReservation';
 import Emergency from '../ER/Emergency';
 import EquipmentStatusModal from '../Equipments/Equipments';
+import IcuSection from '../IcuSection/IcuSection';
+import * as S from './HospitalFilteredCard.styles';
+
 
 const HospitalCardItem = ({ hospitalData, onReservation }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isReservationRequested, setIsReservationRequested] = useState(false);
     const [reservationError, setReservationError] = useState(null);
+
+    useEffect(() => {
+            const updateReservationStatus = async () => {
+                const hasReservation = await checkHospitalReservation(hospitalData.hospitalId);
+                setIsReservationRequested(hasReservation);
+            };
+    
+            updateReservationStatus();
+        }, [hospitalData.hospitalId]);
 
     const handleReservation = async () => {
         if (isReservationRequested) return; // 이미 예약 요청된 경우 중복 실행 방지
@@ -27,6 +38,7 @@ const HospitalCardItem = ({ hospitalData, onReservation }) => {
             setReservationError(error.message);
             setIsReservationRequested(false);
         }
+
     };
 
     return (
@@ -89,22 +101,6 @@ const HospitalCardItem = ({ hospitalData, onReservation }) => {
             </S.NoticeLink>
         </S.CardWrapper>
     );
-};
-
-const getEquipmentLabel = (key) => {
-    const labels = {
-        regularVentilator: '인공호흡기 일반',
-        prematureVentilator: '인공호흡기 조산아용',
-        incubator: '인큐베이터',
-        crrt: 'CRRT',
-        ecmo: 'ECMO',
-        temperatureController: '중심체온조절 장치',
-        hyperbaricChamber: '고압 산소 치료기',
-        ctScanner: 'CT 스캔',
-        mri: 'MRI',
-        angiographer: '혈관촬영기'
-    };
-    return labels[key];
 };
 
 export default HospitalCardItem;
