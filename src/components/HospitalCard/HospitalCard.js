@@ -108,9 +108,18 @@ const HospitalCard = () => {
             let patientConditionId = null;
 
             if (Array.isArray(data.result) && data.result.length > 0) {
-                patientConditionId = data.result[0].patientconditionid;
+                // transportStatus가 IN_PROGRESS인 환자 찾기
+                const inProgressPatient = data.result.find(patient => 
+                    patient.transportStatus === "IN_PROGRESS"
+                );
+                if (inProgressPatient) {
+                    patientConditionId = inProgressPatient.patientconditionid;
+                }
             } else if (data.result && typeof data.result === 'object') {
-                patientConditionId = data.result.patientconditionid || data.result.patientConditionId;
+                // 단일 객체에서 transportStatus가 IN_PROGRESS인 경우만 처리
+                if (data.result.transportStatus === "IN_PROGRESS") {
+                    patientConditionId = data.result.patientconditionid || data.result.patientConditionId;
+                }
             }
 
             if (!patientConditionId) {
@@ -128,6 +137,7 @@ const HospitalCard = () => {
     const handleReservation = useCallback(async (hospitalId) => {
         try {
             const patientConditionId = await getCurrentPatient();
+            console.log("환자 정보" , patientConditionId);
             
             if (!patientConditionId) {
                 throw new Error('환자 상태 ID를 가져올 수 없습니다');
