@@ -1,27 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import * as S from './HospitalCard.styles';
-import IcuSection from '../IcuSection/IcuSection';
+import React, { useEffect, useState } from 'react';
+import { checkHospitalReservation } from '../../utils/checkReservation';
 import Emergency from '../ER/Emergency';
 import EquipmentStatusModal from '../Equipments/Equipments';
+import IcuSection from '../IcuSection/IcuSection';
+import * as S from './HospitalCard.styles';
 
 const HospitalCardItem = ({ hospitalData, onReservation }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isReservationRequested, setIsReservationRequested] = useState(false);
     const [reservationError, setReservationError] = useState(null);
 
+    useEffect(() => {
+        const updateReservationStatus = async () => {
+            const hasReservation = await checkHospitalReservation(hospitalData.hospitalId);
+            setIsReservationRequested(hasReservation);
+        };
+
+        updateReservationStatus();
+    }, [hospitalData.hospitalId]);
+
     const handleReservation = async () => {
-        if (isReservationRequested) return; // 이미 예약 요청된 경우 중복 실행 방지
-        
+        if (isReservationRequested) return;
+
         try {
             const token = localStorage.getItem('accessToken');
             if (!token) {
                 throw new Error('로그인이 필요합니다');
             }
-    
             setReservationError(null);
-            await onReservation(); // 부모 컴포넌트의 handleReservation 실행
-            setIsReservationRequested(true); // 성공시에만 상태 변경
-            
+            await onReservation();
+            setIsReservationRequested(true);
         } catch (error) {
             console.error('예약 요청 중 오류 발생:', error);
             setReservationError(error.message);
@@ -89,22 +97,6 @@ const HospitalCardItem = ({ hospitalData, onReservation }) => {
             </S.NoticeLink>
         </S.CardWrapper>
     );
-};
-
-const getEquipmentLabel = (key) => {
-    const labels = {
-        regularVentilator: '인공호흡기 일반',
-        prematureVentilator: '인공호흡기 조산아용',
-        incubator: '인큐베이터',
-        crrt: 'CRRT',
-        ecmo: 'ECMO',
-        temperatureController: '중심체온조절 장치',
-        hyperbaricChamber: '고압 산소 치료기',
-        ctScanner: 'CT 스캔',
-        mri: 'MRI',
-        angiographer: '혈관촬영기'
-    };
-    return labels[key];
 };
 
 export default HospitalCardItem;

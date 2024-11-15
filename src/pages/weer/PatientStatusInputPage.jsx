@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import PatientStatusForm from '../../components/PatientStatusForm/PatientStatusForm';
-import * as S from '../../components/PatientStatusForm/PatientStatusForm.styles';
 import styled from 'styled-components';
+import PatientStatusForm from '../../components/PatientStatusForm/PatientStatusForm';
 
 const ContentWrapper = styled.div`
   padding: 20px;

@@ -1,22 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import PatientVitals from '../../components/reservation/PatientVitals';
-import ReservationCard from '../../components/reservation/ReservationCard';
-import CompletedTransferList from '../../components/reservation/CompletedTransferList';
-import { 
-
-  ContentWrapper,
-} from '../../styles/CommonStyles';
 import { getCurrentPatient } from '../../components/api/currentPatient';
 import { getCurrentPatientReservation } from '../../components/api/currentReservation';
-import { useGeoLocation } from '../../components/GeoLocation/GeoLocation';
-
-
-const GEOLOCATION_OPTIONS = {
-  enableHighAccuracy: false,
-  timeout: 1000 * 15,
-  maximumAge: 1000 * 60 * 5 * 10
-};
+import CompletedTransferList from '../../components/reservation/CompletedTransferList';
+import PatientVitals from '../../components/reservation/PatientVitals';
+import ReservationCard from '../../components/reservation/ReservationCard';
+import {
+  ContentWrapper,
+} from '../../styles/CommonStyles';
+import { formatDate } from '../../utils/dateUtils';
 
 const Card = styled.div`
   background: white;
@@ -123,31 +115,7 @@ const ReservationListPage = () => {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const {latitude, longitude, error: locationError } = useGeoLocation(GEOLOCATION_OPTIONS);
 
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-  
-    try {
-      const date = new Date(dateString);
-      return `이송 시작: ${new Intl.DateTimeFormat('ko-KR', {
-        year: 'numeric',
-        month: 'long',  
-        day: 'numeric', 
-        hour: 'numeric',
-        minute: '2-digit',
-        hourCycle: 'h23', 
-      }).format(date)}`;
-    } catch (error) {
-      if (error instanceof RangeError) {
-        console.error('Invalid date format:', dateString);
-        return 'N/A';
-      } else {
-        throw error;
-      }
-    }
-  };
-  
   useEffect(() => {
     const fetchPatient = async () => {
       try {
@@ -203,7 +171,7 @@ const ReservationListPage = () => {
         <CardHeader>
           <HeaderTitle>
             <Title>환자 정보</Title>
-            <span>{formatDate(currentPatient.startTime)}</span>
+            <span> 이송 시작 : {formatDate(currentPatient.startTime)}</span>
           </HeaderTitle>
           <TransportStatus>이송중</TransportStatus>
         </CardHeader>
