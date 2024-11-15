@@ -163,7 +163,7 @@ const Filter = () => {
     );
   };
 
-  const handleSubmit = async (lat, lon) => {
+  const prepareBackendData = () => {
     const mapSectionData = (items, mapping) => {
       return Object.entries(items).reduce((acc, [key, value]) => {
         const backendKey = mapping[key];
@@ -174,13 +174,18 @@ const Filter = () => {
       }, {});
     };
 
-    const backendData = {
+    return {
       ...mapSectionData(erItems, erKeyMapping),
       ...mapSectionData(icuItems, icuKeyMapping),
       ...mapSectionData(equipmentItems, equipKeyMapping),
       city: selectedCity,
       state: selectedDistrict
     };
+  };
+
+  // 수정된 handleSubmit 함수
+  const handleSubmit = async (lat, lon) => {
+    const backendData = prepareBackendData();
     console.log(backendData);
     console.log(geoLocation.latitude);
     console.log(geoLocation.longitude);
@@ -202,7 +207,7 @@ const Filter = () => {
 
       const data = await response.json();
       console.log("네비게이션 전 - hospitalData:", data.result);
-      navigate('/hospital-list', { 
+      navigate('/hospital-filterd-list', { 
         state: { 
           hospitalData : data.result
         } 

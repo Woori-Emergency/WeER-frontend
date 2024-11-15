@@ -20,6 +20,7 @@ import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminUserListPage from './pages/admin/AdminUserListPage';
 import AdminApprovalPage from './pages/admin/AdminApprovalPage';
 import HospitalBookingListPage from './pages/hospital_admin/HospitalBookingListPage';
+import HospitalFilteredList from './pages/weer/HospitalFilteredList';
 
 const Container = styled.div`
   display: flex;
@@ -50,6 +51,7 @@ function App() {
           <Route path="/signup-complete" element={<SignupCompletePage />} />
           <Route path="/hospital-list" element={<HospitalListPage />} />
           <Route path="/hospital/filter" element={<HospitalFilterPage />} />
+          <Route path="/hospital-filterd-list" element={<HospitalFilteredList />} />
           <Route path="/patient-status-input" element={<PatientStatusInputPage />} />
           <Route path="/patient-status-list" element={<PatientStatusListPage />} />
           <Route path="/hospital-notice" element={<HospitalNoticePage />} />
