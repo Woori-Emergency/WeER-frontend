@@ -5,6 +5,7 @@ import KakaoMap from '../../components/Map/Map';
 import FilterButtons from '../../components/patientStatus/FilterButtons';
 import { ContentWrapper, TopContainer } from '../../styles/CommonStyles';
 import { useGeoLocation } from '../../components/GeoLocation/GeoLocation';
+import { useNavigate } from 'react-router-dom';
 
 const MainPage = () => {
   const { location, error } = useGeoLocation();
@@ -14,6 +15,7 @@ const MainPage = () => {
     lng: 126.9786567,
   });
   const [range, setRange] = useState(1000); // 초기 범위 (100m)
+  const navigate = useNavigate();
   
   useEffect(() => {
     if (location.latitude && location.longitude) {
@@ -51,17 +53,29 @@ const MainPage = () => {
     }
   }, [location, range]); 
 
+    // 거리순 정렬
+  // TODO
+  const handleDistanceSort = () => {
+    navigate('/hospital-list');
+  };
+
+  // 필터링 검색
+  // TODO
+  const handleFilterSearch = () => {
+    navigate('/hospital/filter');
+  };
+
   return (
     <ContentWrapper>
       <TopContainer>
         <Search onSearch={() => {}} />
         <StatusButtons onStatusChange={() => {}} />
       </TopContainer>
-
       <KakaoMap center={mapCenter} hospitals={hospitals} />
-
-      <FilterButtons onDistanceSort={() => {}} onEmergencyFilter={() => {}} />
-
+      <FilterButtons 
+        onDistanceSort={handleDistanceSort}
+        onEmergencyFilter={handleFilterSearch}
+      />
     </ContentWrapper>
   );
 };
