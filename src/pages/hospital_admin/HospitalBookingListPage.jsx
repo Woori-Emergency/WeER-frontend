@@ -18,6 +18,7 @@ import {
 } from '../../components/HospitalBookingList/HospitalBookingListComponents';
 import { PageWrapper } from '../../styles/CommonStyles';
 import { API_BASE_URL, getAuthHeaders } from '../../components/api/config';
+import { formatDate } from '../../utils/dateUtils';
 
 const hospitalId = 1;
 const HospitalBookingListPage = () => {
@@ -36,9 +37,11 @@ const HospitalBookingListPage = () => {
         const bookingData = await response.json();
         
         if (!response.ok) throw new Error(bookingData.message || '데이터를 불러오는데 실패했습니다.');
-        console.log(bookingData);
+
         const patientConditionIds = bookingData.result.map(request => request.patientconditionid);
         const patients = patientConditionIds.join(',');
+
+        console.log("bookingData : {}",bookingData.result);
           // 추가 요청으로 각 환자의 상세 정보를 가져온다.  
         const patientInfoResponse = await fetch(`${API_BASE_URL}/hospitals/patients-info/${patients}`, {
           method: 'GET',
@@ -46,7 +49,7 @@ const HospitalBookingListPage = () => {
         });
 
         const patientInfoData = await patientInfoResponse.json();
-
+        
         if (!patientInfoResponse.ok) throw new Error(patientInfoData.message || '환자 정보를 불러오는데 실패했습니다.');
         console.log("patientInfoData : {} ",patientInfoData);
 
@@ -55,8 +58,7 @@ const HospitalBookingListPage = () => {
           return {
             // 예약 관련 정보
             id: bookingRequest.id,
-            status: bookingRequest.status,
-            requestTime: bookingRequest.requestTime,
+            reservationStatus: bookingRequest.reservationStatus,
             patientconditionid: bookingRequest.patientconditionid,
             // 환자 상태 정보
             patientInfo: {
@@ -67,7 +69,8 @@ const HospitalBookingListPage = () => {
               bloodPressure: patientInfo.bloodPressure,
               heartRate: patientInfo.heartRate,
               temperature: patientInfo.temperature,
-              respiration: patientInfo.respiration
+              respiration: patientInfo.respiration,
+              createdAt: patientInfo.createdAt
             }
           };
         });
@@ -82,18 +85,23 @@ const HospitalBookingListPage = () => {
     fetchReservations();
   }, []);
 
-  const handleApprove = async (reservationId) => {
+  const handleApprove = async (request) => {
+    
+    console.log(request);
     try {
-      const response = await fetch('http://localhost:8080/hospitals/approve', {
+      const response = await fetch(`${API_BASE_URL}/hospitals/approve`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           headers: getAuthHeaders()
         },
         body: JSON.stringify({
-          reservationId,
+          reservationId: request.reservationId,
           hospitalId,
-          reservationStatus: 'APPROVED'
+          patientconditionId: request.patientconditionid,
+          reservationStatus: 'APPROVED',
+          createdAt: request.createdAt,
+          modifiedAt: new Date().toISOString()
         })
       });
       
@@ -102,7 +110,7 @@ const HospitalBookingListPage = () => {
       
       if (data.success) {
         setBookingRequests(bookingRequests.map(req => 
-          req.id === reservationId ? { ...req, status: 'APPROVED' } : req
+          req.id === request.reservationId ? { ...req, reservationStatus: 'APPROVED' } : req
         ));
       }
     } catch (err) {
@@ -110,18 +118,21 @@ const HospitalBookingListPage = () => {
     }
   };
 
-  const handleReject = async (reservationId) => {
+  const handleReject = async (request) => {
     try {
-      const response = await fetch('http://localhost:8080/hospitals/decline', {
+      const response = await fetch(`${API_BASE_URL}/hospitals/decline`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           headers: getAuthHeaders()
         },
         body: JSON.stringify({
-          reservationId,
+          reservationId: request.reservationId,
           hospitalId,
-          reservationStatus: 'DECLINED'
+          patientconditionId: request.patientconditionid,
+          reservationStatus: 'DECLINED',
+          createdAt: request.createdAt,
+          modifiedAt: new Date().toISOString()
         })
       });
       
@@ -130,7 +141,7 @@ const HospitalBookingListPage = () => {
       
       if (data.success) {
         setBookingRequests(bookingRequests.map(req => 
-          req.id === reservationId ? { ...req, status: 'DECLINED' } : req
+          req.id === request.reservationId ? { ...req, reservationStatus: 'DECLINED' } : req
         ));
       }
     } catch (err) {
@@ -140,9 +151,9 @@ const HospitalBookingListPage = () => {
 
   const getStatusText = (status) => {
     switch(status) {
-      case 'pending': return '이송중';
-      case 'approved': return '승인됨';
-      case 'rejected': return '반려됨';
+      case 'PENDING': return '이송중';
+      case 'APPROVED': return '승인됨';
+      case 'DECLINED': return '반려됨';
       default: return '';
     }
   };
@@ -153,7 +164,7 @@ const HospitalBookingListPage = () => {
       <Header>
         <Title>환자 상태 정보</Title>
         <PendingBadge>
-          대기 중: {bookingRequests.filter(r => r.status === 'pending').length}
+          대기 중: {bookingRequests.filter(r => r.reservationStatus === 'PENDING').length}
         </PendingBadge>
       </Header>
 
@@ -164,21 +175,37 @@ const HospitalBookingListPage = () => {
               <CardHeader>
                 <CardTitle>
                   <h2 style={{ fontWeight: 'bold', fontSize: '18px' }}>환자 정보</h2>
-                  <RequestTime>이송 시작: {request.requestTime}</RequestTime>
+                  <RequestTime>이송 시작: {formatDate(request.patientInfo.createdAt)}</RequestTime>
                 </CardTitle>
-                <StatusBadge status={request.status}>
-                  {getStatusText(request.status)}
+                <StatusBadge reservationStatus={request.reservationStatus}>
+                  {getStatusText(request.reservationStatus)}
                 </StatusBadge>
               </CardHeader>
 
               <InfoGrid>
                 <InfoCard>
                   <InfoLabel>성별</InfoLabel>
-                  <InfoValue>{request.patientInfo.gender}</InfoValue>
+                  <InfoValue>{
+                    request.patientInfo.gender === 'MALE' ? '남성' :
+                    request.patientInfo.gender === 'FEMALE' ? '여성' :
+                    request.patientInfo.gender}
+
+                  </InfoValue>
                 </InfoCard>
                 <InfoCard>
                   <InfoLabel>연령대</InfoLabel>
-                  <InfoValue>{request.patientInfo.age}</InfoValue>
+                  <InfoValue>{
+                    
+                    request.patientInfo.age === 'INFANT_TODDLER' ? '영유아' :
+                    request.patientInfo.age === 'TEEN' ? '10대' :
+                    request.patientInfo.age === 'TWENTIES' ? '20대' :
+                    request.patientInfo.age === 'THIRTIES' ? '30대' :
+                    request.patientInfo.age === 'FORTIES' ? '40대' :
+                    request.patientInfo.age === 'FIFTIES' ? '50대' :
+                    request.patientInfo.age === 'SIXTIES' ? '60대' :
+                    request.patientInfo.age === 'SEVENTIES_PLUS' ? '70대 이상' :
+                    request.patientInfo}
+                  </InfoValue>
                 </InfoCard>
                 <InfoCard>
                   <InfoLabel>진료 구분</InfoLabel>
@@ -191,37 +218,37 @@ const HospitalBookingListPage = () => {
               </InfoGrid>
 
               <InfoGrid>
-                <InfoCard bgcolor="#FEF2F2">
+                <InfoCard bgColor="#FEF2F2">
                   <InfoLabel>혈압</InfoLabel>
                   <InfoValue>{request.patientInfo.bloodPressure}</InfoValue>
                 </InfoCard>
-                <InfoCard bgcolor="#FEF3C7">
+                <InfoCard bgColor="#FEF3C7">
                   <InfoLabel>맥박</InfoLabel>
                   <InfoValue>{request.patientInfo.heartRate}</InfoValue>
                 </InfoCard>
-                <InfoCard bgcolor="#FEF9C3">
+                <InfoCard bgColor="#FEF9C3">
                   <InfoLabel>체온</InfoLabel>
                   <InfoValue>{request.patientInfo.temperature}</InfoValue>
                 </InfoCard>
-                <InfoCard bgcolor="#EFF6FF">
+                <InfoCard bgColor="#EFF6FF">
                   <InfoLabel>호흡수</InfoLabel>
                   <InfoValue>{request.patientInfo.respiration}</InfoValue>
                 </InfoCard>
               </InfoGrid>
 
-              {request.status === 'pending' && (
+              {request.reservationStatus === 'PENDING' && (
                 <ButtonContainer>
                   <Button 
                     variant="outline"
                     onClick={() => {
-                      handleReject(request.id);
+                      handleReject(request);
                     }}
                   >
                     반려
                   </Button>
                   <Button 
                     onClick={() => {
-                      handleApprove(request.id);
+                      handleApprove(request);
                     }}
                   >
                     승인
