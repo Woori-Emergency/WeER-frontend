@@ -126,6 +126,10 @@ const PatientStatusInputPage = () => {
         type: 'success',
         message: data.message || '환자 상태가 성공적으로 등록되었습니다.'
       });
+
+
+      alert('환자 상태가 성공적으로 등록되었습니다.');
+      navigate('/patient-status-list');
   
     } catch (error) {
       setSubmitStatus({
