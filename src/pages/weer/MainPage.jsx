@@ -3,100 +3,65 @@ import Search from '../../components/Search/Search';
 import StatusButtons from '../../components/StatusButtons/StatusButtons';
 import KakaoMap from '../../components/Map/Map';
 import FilterButtons from '../../components/patientStatus/FilterButtons';
-import {
-  ContentWrapper,
-  TopContainer,
-} from '../../styles/CommonStyles';
-import { useNavigate } from 'react-router-dom';
+import { ContentWrapper, TopContainer } from '../../styles/CommonStyles';
+import { useGeoLocation } from '../../components/GeoLocation/GeoLocation';
 
 const MainPage = () => {
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState(null);
+  const { location, error } = useGeoLocation();
+  const [hospitals, setHospitals] = useState([]);
   const [mapCenter, setMapCenter] = useState({
     lat: 37.566826,
     lng: 126.9786567,
   });
-  const [hospitals, setHospitals] = useState([]); // 병원 데이터를 저장할 상태 변수
-  const [filteredHospitals, setFilteredHospitals] = useState([]); // 필터링된 병원 리스트
-
-  // 병원 데이터 가져오기
+  const [range, setRange] = useState(1000); // 초기 범위 (100m)
+  
   useEffect(() => {
-    const fetchHospitals = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/api/hospital/seoul'); // 백엔드 API 호출
-        if (!response.ok) {
-          throw new Error('Failed to fetch hospital data');
+    if (location.latitude && location.longitude) {
+      console.log("Current Location:", location.latitude, location.longitude);
+
+      const fetchHospitals = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:8080/hospital/distance?lat=${location.latitude}&lon=${location.longitude}&range=${range}`,
+            { method: 'POST' }
+          );
+          const data = await response.json();
+          if (data.status === 200) {
+            const formattedHospitals = data.result.map((hospital) => ({
+              ...hospital,
+              duration: Math.ceil(hospital.duration),
+               // 초 단위를 분 단위로 변환
+            }));
+            console.log(data.result.duration);
+            setHospitals(formattedHospitals);
+          } else {
+            console.warn("Failed to fetch hospital data.");
+          }
+        } catch (error) {
+          console.error("Error fetching hospital data:", error);
         }
-        const result = await response.json();
-        setHospitals(result);
-        setFilteredHospitals(result); // 초기에는 모든 병원을 표시
-      } catch (error) {
-        console.error("Error fetching hospital data:", error);
-      }
-    };
+      };
 
-    fetchHospitals();
-  }, []);
+      fetchHospitals(); 
 
-  // 검색 처리
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    const filtered = hospitals.filter((hospital) =>
-      hospital.name.includes(query)
-    );
-    setFilteredHospitals(filtered);
-
-    // 검색 결과에 따라 지도 중심 변경
-    if (filtered.length > 0) {
       setMapCenter({
-        lat: filtered[0].latitude,
-        lng: filtered[0].longitude,
+        lat: location.latitude,
+        lng: location.longitude,
       });
-    } else {
-      alert('검색 결과가 없습니다.');
     }
-  };
-
-  // 상태 필터 처리
-  const handleStatusChange = (status) => {
-    setSelectedStatus(status);
-    // 예를 들어, "이용 가능" 상태에 맞게 필터링할 수 있음
-    const filtered = hospitals.filter((hospital) => hospital.status === status);
-    setFilteredHospitals(filtered);
-  };
-
-  // 거리순 정렬
-  // TODO
-  const handleDistanceSort = () => {
-    navigate('/hospital-list');
-  };
-
-  // 필터링 검색
-  // TODO
-  const handleFilterSearch = () => {
-    navigate('/hospital/filter');
-  };
+  }, [location, range]); 
 
   return (
     <ContentWrapper>
       <TopContainer>
-        <Search onSearch={handleSearch} />
-        <StatusButtons
-          onStatusChange={handleStatusChange}
-          selectedStatus={selectedStatus}
-        />
+        <Search onSearch={() => {}} />
+        <StatusButtons onStatusChange={() => {}} />
       </TopContainer>
 
-      <KakaoMap
-        center={mapCenter}
-        hospitals={filteredHospitals} // 필터링된 병원 데이터 전달
-      />
+      <KakaoMap center={mapCenter} hospitals={hospitals} />
 
-      <FilterButtons 
-        onDistanceSort={handleDistanceSort}
-        onEmergencyFilter={handleFilterSearch}
-      />
+      <FilterButtons onDistanceSort={() => {}} onEmergencyFilter={() => {}} />
+
     </ContentWrapper>
   );
 };

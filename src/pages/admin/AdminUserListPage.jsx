@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import UserTable from '../../components/admin/UserTable';
 import SearchBar from '../../components/admin/SearchBar';
@@ -16,6 +17,7 @@ const ControlsContainer = styled.div`
 `;
 
 function AdminUserListPage() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -28,8 +30,32 @@ function AdminUserListPage() {
   const itemsPerPage = 5;
 
   useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    const userRole = localStorage.getItem('role');
+    const tokenExpiry = parseInt(localStorage.getItem('tokenExpiry'), 10);
+    const currentTime = Date.now();
+
+    // 권한 확인 및 토큰 만료 확인
+    if (!token || userRole !== 'ADMIN') {
+      alert("관리자 권한이 필요합니다.");
+      navigate('/login');
+      return;
+    }
+
+    if (tokenExpiry && currentTime > tokenExpiry) {
+      alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+      localStorage.clear(); // 만료된 토큰 정보 삭제
+      navigate('/login');
+      return;
+    }
+
+    // 사용자 목록 가져오기
     setIsLoading(true);
-    fetch('http://localhost:8080/user/list')
+    fetch('http://localhost:8080/user/list', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
       .then(response => {
         if (!response.ok) {
           throw new Error("Failed to fetch user list");
@@ -37,9 +63,7 @@ function AdminUserListPage() {
         return response.json();
       })
       .then(data => {
-        // API 응답 데이터 구조 확인 및 변환
-        const userArray = Array.isArray(data) ? data : data.content || data.users || [];
-        console.log("Fetched users:", userArray);
+        const userArray = Array.isArray(data.result) ? data.result : [];
         setUsers(userArray);
         setIsLoading(false);
       })
@@ -48,7 +72,7 @@ function AdminUserListPage() {
         setError(error.message);
         setIsLoading(false);
       });
-  }, []);
+  }, [navigate]);
 
   const handleOpenEditModal = () => {
     if (selectedUserIds.length === 1) {
@@ -61,9 +85,13 @@ function AdminUserListPage() {
   };
 
   const handleSaveUser = (updatedData) => {
+    const token = localStorage.getItem('accessToken');
     fetch(`http://localhost:8080/user/update/${editingUser.id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
       body: JSON.stringify(updatedData),
     })
       .then(response => {
@@ -71,7 +99,6 @@ function AdminUserListPage() {
         return response.json();
       })
       .then((updatedUser) => {
-        console.log("Updated user:", updatedUser);
         setUsers(users.map(user => user.id === updatedUser.id ? updatedUser : user));
         setIsModalOpen(false);
         setSelectedUserIds([]);
@@ -82,7 +109,6 @@ function AdminUserListPage() {
       });
   };
 
-  // 검색된 사용자 필터링
   const filteredUsers = users.filter(user => 
     user.name?.toLowerCase().includes(search.toLowerCase()) ||
     user.email?.toLowerCase().includes(search.toLowerCase())
