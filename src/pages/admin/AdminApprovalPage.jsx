@@ -1,37 +1,36 @@
-// src/pages/admin/AdminApprovalPage.jsx
+// AdminApprovalPage.jsx
 import React, { useState, useEffect } from 'react';
 import { message } from 'antd';
 import styled from 'styled-components';
 import ApprovalTable from '../../components/admin/ApprovalTable';
 
-// ApprovalTable을 감싸는 컨테이너에 여백 추가
 const Container = styled.div`
   padding: 20px 40px;
-  margin-top: 10px; // 헤더와의 간격
+  margin-top: 10px;
 `;
 
 const AdminApprovalPage = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 데이터 가져오기
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const response = await fetch('http://localhost:8080/user/signup-requests');
+        const response = await fetch('http://localhost:8080/user/signup-request');
         if (!response.ok) throw new Error('Failed to fetch data');
         const result = await response.json();
+        console.log('Fetched data:', result);
 
-        // approved 필드를 상태에 반영하여 변환
-        const formattedData = result.map((user) => ({
-          key: user.userId,
-          name: user.name,
-          loginId: user.loginId,
-          email: user.email,
-          organization: user.organization,
-          certificate: user.certificate,
-          createdAt: user.createdAt,
-          status: user.approved ? '승인됨' : '대기중', // approved에 따라 상태 표시
+        // 데이터를 ApprovalTable 형식에 맞게 변환
+        const formattedData = result.result.map((user) => ({
+          key: user.userId,             // unique key
+          name: user.name,               // 이름
+          loginId: user.loginId,         // 아이디
+          email: user.email,             // 메일
+          organization: user.organization, // 기관
+          certificate: user.certificate, // 자격번호
+          createdAt: user.createdAt,     // 요청일자
+          status: user.approved ? '승인됨' : '대기중', // 상태
         }));
 
         setData(formattedData);
@@ -45,10 +44,9 @@ const AdminApprovalPage = () => {
     fetchRequests();
   }, []);
 
-  // 개별 사용자 승인 또는 반려 요청 처리
   const handleApproval = async (userId, approve) => {
     try {
-      const response = await fetch(`http://localhost:8080/user/approve-signup/${userId}?approve=${approve}`, {
+      const response = await fetch(`http://localhost:8080/user/approve-signup/${userId}?approved=${approve}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -60,7 +58,6 @@ const AdminApprovalPage = () => {
 
       const result = await response.json();
 
-      // approved에 따라 상태 업데이트
       setData((prevData) =>
         prevData.map((user) =>
           user.key === userId ? { ...user, status: approve ? '승인됨' : '반려됨' } : user

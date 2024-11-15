@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import * as S from './HospitalCard.styles';
 import IcuSection from '../IcuSection/IcuSection';
+import Emergency from '../ER/Emergency';
+import EquipmentStatusModal from '../Equipments/Equipments';
 
 const HospitalCardItem = ({ hospitalData, onReservation }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,8 +28,6 @@ const HospitalCardItem = ({ hospitalData, onReservation }) => {
             setIsReservationRequested(false);
         }
     };
-
-    
 
     return (
         <S.CardWrapper>
@@ -62,80 +62,19 @@ const HospitalCardItem = ({ hospitalData, onReservation }) => {
                         )}
                     </div>
                 </S.ButtonGroup>
-
-                {/* {isModalOpen && (
-                    <S.ModalOverlay onClick={() => setIsModalOpen(false)}>
-                        <S.Modal onClick={(e) => e.stopPropagation()}>
-                            <S.ModalTitle>장비 정보</S.ModalTitle>
-                            <S.ModalContent>
-                                <S.EquipmentGrid>
-                                    {Object.entries(equipmentData).map(([key, value]) => (
-                                        <S.EquipmentItem key={key}>
-                                            <S.EquipmentLabel>
-                                                {getEquipmentLabel(key)}
-                                            </S.EquipmentLabel>
-                                            <S.EquipmentStatus available={value.available}>
-                                                {value.available 
-                                                    ? `${value.count}대 사용 가능` 
-                                                    : '사용 불가능'}
-                                            </S.EquipmentStatus>
-                                        </S.EquipmentItem>
-                                    ))}
-                                </S.EquipmentGrid>
-                            </S.ModalContent>
-                            <S.CloseButton onClick={() => setIsModalOpen(false)}>
-                                닫기
-                            </S.CloseButton>
-                        </S.Modal>
-                    </S.ModalOverlay>
-                )} */}
+                <EquipmentStatusModal 
+  isOpen={isModalOpen}
+  onClose={() => setIsModalOpen(false)}
+  hospitalId={hospitalData.hospitalId}
+/>
             </S.Header>
 
             <S.ContentLayout>
                 <S.Section>
-                    <S.SectionTitle>응급실</S.SectionTitle>
-                    <S.InfoGrid>
-                        <S.GridRow>
-                            <S.Label>일반</S.Label>
-                            <S.Value>
-                                <S.StatusIcon isAvailable={true} />
-                                8/15
-                            </S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>코호트 격리</S.Label>
-                            <S.Value>None</S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>음압격리</S.Label>
-                            <S.Value>
-                                <S.StatusIcon isAvailable={true} />
-                                2/2
-                            </S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>일반격리</S.Label>
-                            <S.Value>
-                                <S.StatusIcon isAvailable={false} />
-                                0/3
-                            </S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>외상소생실</S.Label>
-                            <S.Value>None</S.Value>
-                        </S.GridRow>
-                        <S.GridRow>
-                            <S.Label>소아</S.Label>
-                            <S.Value>
-                                <S.StatusIcon isAvailable={true} />
-                                3/3
-                            </S.Value>
-                        </S.GridRow>
-                    </S.InfoGrid>
+                    <Emergency hospitalId={hospitalData.hospitalId} />
                 </S.Section>
 
                 <S.Section>
-                    <S.SectionTitle>중환자실</S.SectionTitle>
                     <IcuSection hospitalId={hospitalData.hospitalId} />
                 </S.Section>
             </S.ContentLayout>

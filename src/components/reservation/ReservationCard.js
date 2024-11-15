@@ -90,11 +90,11 @@ const ReservationCard = ({ reservation }) => {
 
   return (
     <Card>
-      <Header status={reservation.status}>
+      <Header status={reservation.reservationStatus}>
         <HospitalName>
           {reservation.hospitalName}
-          <StatusBadge status={reservation.status}>
-            {getStatusText(reservation.status)}
+          <StatusBadge status={reservation.reservationStatus}>
+            {getStatusText(reservation.reservationStatus)}
           </StatusBadge>
         </HospitalName>
       </Header>
@@ -102,10 +102,6 @@ const ReservationCard = ({ reservation }) => {
         <DetailItem>
           <DetailLabel>예약 시각</DetailLabel>
           <DetailValue>{formatDate(reservation.createdAt)}</DetailValue>
-        </DetailItem>
-        <DetailItem>
-          <DetailLabel>예상 소요시간</DetailLabel>
-          <DetailValue>{reservation.estimatedTime} ({reservation.distance})</DetailValue>
         </DetailItem>
       </Details>
     </Card>

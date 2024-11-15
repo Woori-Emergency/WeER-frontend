@@ -1,11 +1,10 @@
-// App.js
-
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Header from './components/common/Header';
 import AdminHeader from './components/common/AdminHeader';
 import Footer from './components/common/Footer';
+import ProtectedRoute from './components/routes/AdminRoute';
 
 import MainPage from './pages/weer/MainPage';
 import LoginPage from './pages/auth/LoginPage';
@@ -22,7 +21,6 @@ import AdminUserListPage from './pages/admin/AdminUserListPage';
 import AdminApprovalPage from './pages/admin/AdminApprovalPage';
 import HospitalBookingListPage from './pages/hospital_admin/HospitalBookingListPage';
 
-// 레이아웃 스타일 정의
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -36,18 +34,14 @@ const Content = styled.main`
 function App() {
   const location = useLocation();
 
-  // 특정 경로에서 헤더 숨기기
   const hideHeaderRoutes = ['/login', '/signup', '/signup-complete'];
+  const isAdminRoute = location.pathname.startsWith('/admin') || location.pathname.startsWith('/hospital-admin');
   const showHeader = !hideHeaderRoutes.includes(location.pathname);
-
-  // 관리자 페이지 경로에 대한 조건 확인
-  const isAdminRoute = location.pathname.startsWith('/admin');
 
   return (
     <Container>
       {showHeader && (isAdminRoute ? <AdminHeader /> : <Header />)}
 
-      {/* 메인 컨텐츠 */}
       <Content>
         <Routes>
           <Route path="/" element={<MainPage />} />
@@ -60,14 +54,18 @@ function App() {
           <Route path="/patient-status-list" element={<PatientStatusListPage />} />
           <Route path="/hospital-notice" element={<HospitalNoticePage />} />
           <Route path="/my-booking-requests" element={<ReservationListPage />} />
-          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-          <Route path="/admin/users" element={<AdminUserListPage />} />
-          <Route path="/admin/approvals" element={<AdminApprovalPage />} />
+
+          <Route element={<ProtectedRoute allowedRoles="ADMIN" />}>
+            <Route path="/admin" element={<AdminUserListPage />} />
+            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+            <Route path="/admin/users" element={<AdminUserListPage />} />
+            <Route path="/admin/approvals" element={<AdminApprovalPage />} />
+          </Route>
+
           <Route path="/hospital-booking-list" element={<HospitalBookingListPage />} />
         </Routes>
       </Content>
 
-      {/* 하단의 Footer */}
       <Footer />
     </Container>
   );

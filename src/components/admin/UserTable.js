@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Popconfirm, Table, Typography, message } from 'antd';
 import styled from 'styled-components';
 
-// 커스텀 스타일링 추가
 const CustomPagination = styled.div`
   .ant-pagination-item-active a {
     color: #E97132 !important;
@@ -72,37 +71,19 @@ const EditableCell = ({
   );
 };
 
-const UserTable = () => {
+const UserTable = ({ users, selectedUserIds, setSelectedUserIds }) => {
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState('');
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/user/list');
-        if (!response.ok) throw new Error('Failed to fetch data');
-        const result = await response.json();
-
-        const formattedData = result.map((user) => ({
-          key: user.loginId,
-          loginId: user.loginId,
-          name: user.name,
-          tel: user.tel,
-          organization: user.organization,
-          createdAt: user.createdAt,
-        }));
-        setData(formattedData);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+    // users 데이터를 업데이트할 때 key 속성을 추가합니다.
+    const formattedData = users.map((user, index) => ({
+      ...user,
+      key: user.loginId || index, // loginId가 고유한 키라고 가정
+    }));
+    setData(formattedData);
+  }, [users]);
 
   const isEditing = (record) => record.key === editingKey;
 
@@ -113,11 +94,11 @@ const UserTable = () => {
       tel: record.tel,
       organization: record.organization,
     });
-    setEditingKey(record.key);
+    setEditingKey(record.key); // 편집할 레코드의 키를 설정하여 특정 행만 편집 모드로 전환
   };
 
   const cancel = () => {
-    setEditingKey('');
+    setEditingKey(''); // 편집 모드를 취소합니다.
   };
 
   const save = async (key) => {
@@ -128,11 +109,13 @@ const UserTable = () => {
 
       if (index > -1) {
         const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
+        const updatedItem = { ...item, ...row };
+        newData.splice(index, 1, updatedItem);
         setData(newData);
         setEditingKey('');
 
-        await fetch(`http://localhost:8080/user/update/${key}`, {
+        // loginId를 사용하여 API 요청 경로 설정
+        await fetch(`http://localhost:8080/user/update-by-loginId/${key}`, { // URL에 loginId 사용
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -197,7 +180,7 @@ const UserTable = () => {
           <Typography.Link
             disabled={editingKey !== ''}
             onClick={() => edit(record)}
-            style={{ color: '#E97132' }} // 수정 링크 색상 변경
+            style={{ color: '#E97132' }}
           >
             수정
           </Typography.Link>
@@ -234,10 +217,9 @@ const UserTable = () => {
           dataSource={data}
           columns={mergedColumns}
           rowClassName="editable-row"
-          loading={loading}
           pagination={{
             onChange: cancel,
-            position: ["bottomCenter"], // 페이지네이션을 하단 중앙에 위치
+            position: ["bottomCenter"],
           }}
         />
       </CustomPagination>
