@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import PatientStatusForm from '../../components/PatientStatusForm/PatientStatusForm';
+import { getCurrentPatient } from '../../components/api/currentPatient';
 
 const ContentWrapper = styled.div`
   padding: 20px;
@@ -13,6 +15,7 @@ const ContentWrapper = styled.div`
 
 
 const PatientStatusInputPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     gender: 'UNKNOWN',
     ageGroup: 'UNKNOWN',
@@ -26,7 +29,27 @@ const PatientStatusInputPage = () => {
   
   const [errors, setErrors] = useState({});
   const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
+  const [hasExistingPatient, setHasExistingPatient] = useState(false);
 
+  useEffect(() => {
+    const checkCurrentPatient = async () => {
+      try {
+        await getCurrentPatient();
+        setHasExistingPatient(true);
+      } catch (error) {
+        console.log('이송 중인 환자가 없습니다. 새로운 환자 정보를 입력할 수 있습니다.');
+      }
+    };
+
+    checkCurrentPatient();
+  }, []);
+
+  useEffect(() => {
+    if (hasExistingPatient) {
+      alert('현재 이송 중인 환자가 있습니다!');
+      navigate('/patient-status-list');
+    }
+  }, [hasExistingPatient, navigate]);
   const validateForm = () => {
     const newErrors = {};
     
@@ -59,7 +82,7 @@ const PatientStatusInputPage = () => {
     if (!validateForm()) {
       return;
     }
-  
+
     try {
       const token = localStorage.getItem("accessToken"); // "accessToken"에서 "jwtToken"으로 변경
       console.log(token);
