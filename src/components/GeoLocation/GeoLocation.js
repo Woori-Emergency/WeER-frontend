@@ -1,41 +1,28 @@
+// src/components/GeoLocation/GeoLocation.js
 import { useState, useEffect } from 'react';
 
-export const useGeoLocation = (options = {}) => {
-    const [location, setLocation] = useState(null);
-    const [error, setError] = useState('');
+export const useGeoLocation = () => {
+  const [location, setLocation] = useState({ latitude: null, longitude: null });
+  const [error, setError] = useState(null);
 
-    // 위치 정보 가져오기 성공 시 호출되는 함수
-    const handleSuccess = (pos) => {
-        const { latitude, longitude } = pos.coords;
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by your browser');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
         setLocation({
-            latitude,
-            longitude,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
         });
-    };
-
-    // 위치 정보 가져오기 실패 시 호출되는 함수
-    const handleError = (err) => {
+      },
+      (err) => {
         setError(err.message);
-    };
+      }
+    );
+  }, []);
 
-    useEffect(() => {
-        // navigator.geolocation 존재 여부 확인
-        const { geolocation } = navigator;
-        
-        // geolocation이 지원되지 않는 경우
-        if (!geolocation) {
-            setError('Geolocation is not supported.');
-            return;
-        }
-
-        // 현재 위치 가져오기
-        geolocation.getCurrentPosition(
-            handleSuccess,
-            handleError,
-            options
-        );
-    }, [options]); // options가 변경될 때마다 effect 실행
-
-    return { location, error };
+  return { location, error };
 };
-

@@ -1,7 +1,11 @@
-import React from 'react';
+// src/components/common/AdminHeader.js
+
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
+import Profile from '../Profile/Profile';
+import { jwtDecode } from 'jwt-decode'; 
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -68,11 +72,47 @@ const LoginIcon = styled(FaUserCircle)`
 
 function AdminHeader() {
   const location = useLocation();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userPayload, setUserPayload] = useState(null);
+
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          setIsLoggedIn(true);
+          setUserPayload(decoded);
+        } catch (error) {
+          console.error("토큰 디코딩 실패:", error);
+          handleLogout();
+        }
+      } else {
+        setIsLoggedIn(false);
+        setUserPayload(null);
+      }
+    };
+
+    checkLoginStatus();
+    window.addEventListener('storage', checkLoginStatus);
+
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+    };
+  }, []);
+
+  // 로그아웃 처리 함수
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("role");
+    setIsLoggedIn(false);
+    setUserPayload(null);
+  };
 
   return (
     <HeaderContainer>
       <LogoContainer>
-        {/* 로고 이미지를 클릭 시 메인 페이지로 이동하도록 Link 추가 */}
         <Link to="/">
           <LogoImage src="/weer_logo.png" alt="Logo" />
         </Link>
@@ -89,10 +129,14 @@ function AdminHeader() {
         <NavItem to="/admin/dashboard" active={location.pathname === "/admin/dashboard"}>
           대시보드
         </NavItem>
-        <LoginButton to="/login">
-          <LoginIcon />
-          로그인
-        </LoginButton>
+        {isLoggedIn ? (
+          <Profile payload={userPayload} onLogout={handleLogout} />
+        ) : (
+          <LoginButton to="/login">
+            <LoginIcon />
+            로그인
+          </LoginButton>
+        )}
       </Nav>
     </HeaderContainer>
   );

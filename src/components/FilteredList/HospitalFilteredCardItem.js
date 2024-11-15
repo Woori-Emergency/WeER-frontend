@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import * as S from './HospitalCard.styles';
+import * as S from './HospitalFilteredCard.styles';
 import IcuSection from '../IcuSection/IcuSection';
 import Emergency from '../ER/Emergency';
 import EquipmentStatusModal from '../Equipments/Equipments';

@@ -95,7 +95,9 @@ function Header() {
           setUserPayload(decoded);
         } catch (error) {
           console.error("토큰 디코딩 실패:", error);
-          localStorage.removeItem("jwtToken");
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("role");
           setIsLoggedIn(false);
           setUserPayload(null);
         }
