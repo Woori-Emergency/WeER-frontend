@@ -140,15 +140,10 @@ const HospitalCard = () => {
     useEffect(() => {
         // hospitalData가 있으면 hospitals state를 업데이트하지 않음
         if (location.state?.hospitalData) {
+            setHospitals(Array.isArray(location.state.hospitalData) ? location.state.hospitalData : []);
             setLoading(false);
             return;
-        }
-
-        // 기존 로직
-        if (location.state?.hospitals) {
-            setHospitals(Array.isArray(location.state.hospitals) ? location.state.hospitals : []);
-            setLoading(false);
-        } else if (geoLocation) {
+        }else if (geoLocation) {
             fetchHospitals(geoLocation.latitude, geoLocation.longitude);
         }
     }, [geoLocation, location.state, fetchHospitals]);
@@ -171,15 +166,16 @@ const HospitalCard = () => {
 
     // hospitalData가 있으면 단일 병원 카드만 렌더링
     if (location.state?.hospitalData) {
-        const hospitalData = location.state.hospitalData;
         return (
             <S.CardsContainer>
+                {hospitals.map((hospital, index) => (
                 <HospitalCardItem
-                    key={hospitalData.hospitalId}
-                    hospitalData={hospitalData}
-                    onReservation={() => handleReservation(hospitalData.hospitalId)}
+                    key={hospital.hospitalId || index}
+                    hospitalData={hospital}
+                    onReservation={() => handleReservation(hospital.hospitalId)}
                 />
-            </S.CardsContainer>
+            ))}
+        </S.CardsContainer>
         );
     }
 
