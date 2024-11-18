@@ -10,3 +10,13 @@ export const getAuthHeaders = () => {
     'Authorization': `Bearer ${token}`
   };
 };
+
+export const getRole = () => {
+  const role = localStorage.getItem("role");
+  return role;
+}
+
+export const getToken = () => {
+  const token = localStorage.getItem('accessToken');
+  return token;
+}
