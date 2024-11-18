@@ -103,7 +103,7 @@ const PatientStatusInputPage = () => {
 
       console.log(JSON.stringify(patientData));
   
-      const response = await fetch('http://localhost:8080/hospital/patient', { 
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospital/patient`, { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

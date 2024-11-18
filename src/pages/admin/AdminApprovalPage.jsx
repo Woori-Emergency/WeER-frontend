@@ -1,6 +1,6 @@
 // AdminApprovalPage.jsx
-import React, { useState, useEffect } from 'react';
 import { message } from 'antd';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ApprovalTable from '../../components/admin/ApprovalTable';
 
@@ -16,7 +16,7 @@ const AdminApprovalPage = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const response = await fetch('http://localhost:8080/user/signup-request');
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/signup-request`);
         if (!response.ok) throw new Error('Failed to fetch data');
         const result = await response.json();
         console.log('Fetched data:', result);
@@ -46,7 +46,7 @@ const AdminApprovalPage = () => {
 
   const handleApproval = async (userId, approve) => {
     try {
-      const response = await fetch(`http://localhost:8080/user/approve-signup/${userId}?approved=${approve}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/approve-signup/${userId}?approved=${approve}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });

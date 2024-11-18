@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import { Form, Input, Popconfirm, Table, Typography, message } from 'antd';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const CustomPagination = styled.div`
@@ -115,7 +115,7 @@ const UserTable = ({ users, selectedUserIds, setSelectedUserIds }) => {
         setEditingKey('');
 
         // loginId를 사용하여 API 요청 경로 설정
-        await fetch(`http://localhost:8080/user/update-by-loginId/${key}`, { // URL에 loginId 사용
+        await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/update-by-loginId/${key}`, { // URL에 loginId 사용
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

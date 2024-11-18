@@ -1,16 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useGeoLocation } from '../GeoLocation/GeoLocation';
 import * as S from './HospitalCard.styles';
 import HospitalCardItem from './HospitalCardItem';
-import { useGeoLocation } from '../GeoLocation/GeoLocation';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 const GEOLOCATION_OPTIONS = {
     enableHighAccuracy: true, // 정확도 향상
     timeout: 1000 * 15,
     maximumAge: 1000 * 60 * 5
 };
-
-const API_BASE_URL = 'http://localhost:8080';
 
 const HospitalCard = () => {
     const [hospitals, setHospitals] = useState([]);
@@ -56,7 +54,7 @@ const HospitalCard = () => {
         try {
             setLoading(true);
             const response = await fetch(
-                `${API_BASE_URL}/hospital/distance?lat=${lat}&lon=${lon}&range=50`,
+                `${process.env.REACT_APP_API_BASE_URL}/hospital/distance?lat=${lat}&lon=${lon}&range=50`,
                 {
                     method: 'POST',
                     headers: getAuthHeaders()
@@ -87,7 +85,7 @@ const HospitalCard = () => {
 
     const getCurrentPatient = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/user/reservation`, {
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/reservation`, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });
@@ -140,7 +138,7 @@ const HospitalCard = () => {
                 throw new Error('환자 상태 ID를 가져올 수 없습니다');
             }
             
-            const response = await fetch(`${API_BASE_URL}/hospital/reserve`, {
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospital/reserve`, {
                 method: 'POST',
                 headers: getAuthHeaders(),
                 body: JSON.stringify({

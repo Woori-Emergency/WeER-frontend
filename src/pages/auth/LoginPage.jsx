@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Form, Input, Row, Col, Typography } from 'antd';
+import { Button, Checkbox, Col, Form, Input, Row, Typography } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
 
@@ -29,7 +29,7 @@ const LoginPage = () => {
     };
 
     // 로그인 API 호출
-    fetch('http://localhost:8080/auth/login', {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

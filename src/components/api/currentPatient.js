@@ -1,8 +1,8 @@
-import { API_BASE_URL, getAuthHeaders } from './config';
+import { getAuthHeaders } from './config';
 
 export const getCurrentPatient = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/user/reservation`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/reservation`, {
         method: 'GET',
         headers: getAuthHeaders()
       });

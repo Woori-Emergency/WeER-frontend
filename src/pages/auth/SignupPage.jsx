@@ -1,6 +1,6 @@
+import { Button, Col, Form, Input, Select, Typography } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Col, Form, Input, Row, Select, Typography } from 'antd';
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -39,7 +39,7 @@ const SignupPage = () => {
 
   // ID 중복 체크 비동기 함수
   const checkIdAvailability = async (loginId) => {
-      const response = await fetch(`http://localhost:8080/auth/check-login-id?loginId=${loginId}`);
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/check-login-id?loginId=${loginId}`);
       const isAvailable = await response.json();
       setIdAvailable(isAvailable.result);
 
@@ -47,7 +47,7 @@ const SignupPage = () => {
 
   // 이메일 중복 체크 비동기 함수
   const checkEmailAvailability = async (email) => {
-      const response = await fetch(`http://localhost:8080/auth/check-email?email=${email}`);
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/check-email?email=${email}`);
       const isAvailable = await response.json();
 
       setEmailAvailable(isAvailable.result);
@@ -67,7 +67,7 @@ const SignupPage = () => {
     };
 
     // 회원가입 API 호출
-    fetch('http://localhost:8080/auth/signup', {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
