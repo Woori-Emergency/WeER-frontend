@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from 'react';
-import styled from 'styled-components';
-import { Link, useLocation } from 'react-router-dom'; 
-import { FaUserCircle } from 'react-icons/fa';
-import Profile from '../Profile/Profile';
 import { jwtDecode } from 'jwt-decode';
+import React, { useEffect, useState } from 'react';
+import { FaUserCircle } from 'react-icons/fa';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import Profile from '../Profile/Profile';
+import { getRole, getToken } from '../api/config';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -23,18 +24,6 @@ const LogoImage = styled.img`
   width: 150px;
   height: 50px;
   margin-right: 5px;
-`;
-
-const LogoText = styled.div`
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  line-height: 1.2;
-`;
-
-const Subtitle = styled.div`
-  font-size: 12px;
-  color: #666;
 `;
 
 const Nav = styled.nav`
@@ -82,27 +71,34 @@ const LoginIcon = styled(FaUserCircle)`
 
 function Header() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState(null);
   const [userPayload, setUserPayload] = useState(null);
 
   useEffect(() => {
-    const checkLoginStatus = () => {
-      const token = localStorage.getItem("accessToken");
+    const checkLoginStatus = async() => {
+      const token = await getToken();
+      const role = await getRole();
+      console.log(role);
       if (token) {
         try {
           const decoded = jwtDecode(token);
           setIsLoggedIn(true);
+          setRole(role);
           setUserPayload(decoded);
+          if (role === 'HOSPITAL_ADMIN' && location.pathname === '/') {
+            navigate('/hospital-booking-list');
+          }
         } catch (error) {
-          console.error("토큰 디코딩 실패:", error);
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
-          localStorage.removeItem("role");
+          console.error("토큰 가져오기 실패:", error);
           setIsLoggedIn(false);
+          setRole(null);
           setUserPayload(null);
         }
       } else {
         setIsLoggedIn(false);
+        setRole(role);
         setUserPayload(null);
       }
     };
@@ -113,42 +109,57 @@ function Header() {
     return () => {
       window.removeEventListener('storage', checkLoginStatus);
     };
-  }, []);
+  }, [location.pathname, navigate]);
 
   return (
     <HeaderContainer>
       <LogoContainer>
-        <Link to="/">
+        <Link to="/" active={location.pathname === "/" ? 1 : 0}>
           <LogoImage src="/weer_logo.png" alt="Logo" />
         </Link>
       </LogoContainer>
       
       <Nav>
-        <NavItem to="/" active={location.pathname === "/"}>
-          메인
-        </NavItem>
+      {isLoggedIn && (
+  <>
+    {role === 'MEMBER' && (
+      <>
         <NavItem 
           to="/my-booking-requests" 
-          active={location.pathname === "/my-booking-requests"}
+          active={location.pathname === "/my-booking-requests" ? 1 : 0}
         >
           예약 확인
         </NavItem>
+        
         <NavItem 
           to="/patient-status-list" 
-          active={location.pathname === "/patient-status-list"}
+          active={location.pathname === "/patient-status-list" ? 1 : 0}
         >
           환자 상태 내역
         </NavItem>
-        {isLoggedIn && (
-          <NavItem
-            to="/patient-status-input"
-            active={location.pathname === "/patient-status-input"}
-          >
-            환자 상태 기입
-          </NavItem>
-        )}
+        
+        <NavItem
+          to="/patient-status-input"
+          active={location.pathname === "/patient-status-input" ? 1 : 0}
+        >
+          환자 상태 기입
+        </NavItem>
+      </>
+    )}
+    
+    {role === 'HOSPITAL_ADMIN' && (
+      <NavItem
+        to="/hospital-booking-list"
+        active={location.pathname === "/hospital-booking-list" ? 1 : 0}
+      >
+        예약 승인/반려
+      </NavItem>
+    )}
+  </>
+)}
+        
         {isLoggedIn ? (
-          <Profile payload={userPayload} /> // payload 전달
+          <Profile payload={userPayload} />
         ) : (
           <LoginButton to="/login">
             <LoginIcon />
