@@ -47,7 +47,7 @@ const PatientStatusInputPage = () => {
   useEffect(() => {
     if (hasExistingPatient) {
       alert('현재 이송 중인 환자가 있습니다!');
-      navigate('/patient-status-list');
+      navigate('/my-booking-requests');
     }
   }, [hasExistingPatient, navigate]);
   const validateForm = () => {
