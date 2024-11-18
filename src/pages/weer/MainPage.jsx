@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 const MainPage = () => {
   const { location, error } = useGeoLocation();
   const [hospitals, setHospitals] = useState([]);
+  const [selectedHospital, setSelectedHospital] = useState('');
   const [mapCenter, setMapCenter] = useState({
     lat: 37.566826,
     lng: 126.9786567,
@@ -68,7 +69,7 @@ const MainPage = () => {
   return (
     <ContentWrapper>
       <TopContainer>
-        <Search onSearch={() => {}} />
+        <Search setSelectedHospital={setSelectedHospital} />
         <StatusButtons onStatusChange={() => {}} />
       </TopContainer>
       <KakaoMap center={mapCenter} hospitals={hospitals} />
