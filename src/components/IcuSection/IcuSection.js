@@ -1,24 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { formatValue } from '../../utils/formatValue';
 import * as S from '../HospitalCard/HospitalCard.styles';  // 기존 스타일 재사용
 
 const IcuSection = ({ hospitalId }) => {
     const [icuData, setIcuData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-
-    const formatValue = (current, total) => {
-      if (
-        current === 0 && total === 0 || 
-        current === null || total === null ||
-        current === undefined || total === undefined
-      ) {
-        return 'None';
-      }
-      return `${current}/${total}`;
-    };
-  
+    
     useEffect(() => {
       const fetchIcuData = async () => {
         try {
