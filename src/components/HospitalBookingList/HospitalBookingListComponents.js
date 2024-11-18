@@ -64,14 +64,14 @@ const StatusBadge = styled.span`
   border-radius: 9999px;
   font-size: 14px;
   background-color: ${props => {
-    switch(props.status) {
-      case 'pending': return '#FCD34D';
-      case 'approved': return '#10B981';
-      case 'rejected': return '#EF4444';
+    switch(props.reservationStatus) {
+      case 'PENDING': return '#FCD34D';
+      case 'APPROVED': return '#10B981';
+      case 'DECLINED': return '#EF4444';
       default: return '#E5E7EB';
     }
   }};
-  color: ${props => props.status === 'pending' ? '#000' : '#FFF'};
+  color: ${props => props.reservationStatus === 'PENDING' ? '#000' : '#FFF'};
 `;
 
 const InfoGrid = styled.div`
