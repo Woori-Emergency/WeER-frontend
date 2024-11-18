@@ -110,24 +110,38 @@ const ButtonContainer = styled.div`
 
 const Button = styled.button`
   padding: 8px 24px;
-  border-radius: 6px;
+  border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
+  transition: background-color 0.2s;
   
-  ${props => props.variant === 'outline' 
+  ${props => props.variant === 'outline'
     ? `
       border: 1px solid #E5E7EB;
       background: transparent;
+      color: #E97132;
+      
       &:hover {
-        background: #F3F4F6;
+        background: rgba(233, 113, 50, 0.1);
+      }
+      
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(233, 113, 50, 0.2);
       }
     `
     : `
-      background: #3B82F6;
+      background: #E97132;
       color: white;
       border: none;
+      
       &:hover {
-        background: #2563EB;
+        background: #d65f21;
+      }
+      
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(233, 113, 50, 0.2);
       }
     `
   }

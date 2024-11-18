@@ -133,9 +133,9 @@ const ReservationListPage = () => {
         });
         console.log(formatDate(patient.createdAt));
         
-          const reservationData = await getCurrentPatientReservation();
-          setReservations(Array.isArray(reservationData) ? reservationData : []);
-          console.log(reservationData);
+        const reservationData = await getCurrentPatientReservation();
+        setReservations(Array.isArray(reservationData) ? reservationData : []);
+        console.log("Res:", reservationData);
         
       } catch (error) {
         console.error("환자 정보 조회 실패:", error);
