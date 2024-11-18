@@ -22,9 +22,6 @@ const HospitalCard = () => {
 
     const getAuthHeaders = useCallback(() => {
         const token = localStorage.getItem('accessToken');
-        if (!token) {
-            throw new Error('AUTH_ERROR: 인증 토큰이 없습니다.');
-        }
         return {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
