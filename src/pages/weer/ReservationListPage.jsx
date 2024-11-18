@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { getCurrentPatient } from '../../components/api/currentPatient';
 import { getCurrentPatientReservation } from '../../components/api/currentReservation';
-import CompletedTransferList from '../../components/reservation/CompletedTransferList';
-import PatientVitals from '../../components/reservation/PatientVitals';
+import FilterButtons from '../../components/patientStatus/FilterButtons';
+import PatientInfoCard from '../../components/patientStatus/PatientInfoCard';
 import ReservationCard from '../../components/reservation/ReservationCard';
 import {
   ContentWrapper,
@@ -15,36 +16,8 @@ const Card = styled.div`
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-`;
-
-const CardHeader = styled.div`
-  padding: 1.5rem;
-  background: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const HeaderTitle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-`;
-
-const Title = styled.h2`
-  margin: 0;
-  font-size: 1.5rem;
-  color: #333;
-`;
-
-const TransportStatus = styled.div`
-  background: #ffc107;
-  color: #856404;
-  padding: 0.5rem 1.25rem;
-  border-radius: 9999px;
-  font-weight: 600;
-  font-size: 1.1rem;
+  margin-bottom : 15px;
+  
 `;
 
 const SectionDivider = styled.div`
@@ -115,6 +88,7 @@ const ReservationListPage = () => {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -127,6 +101,8 @@ const ReservationListPage = () => {
           startTime: patient.createdAt,
           bloodPressure: patient.bloodPressure,
           heartRate: patient.heartRate,
+          temperature: patient.temperature,
+          respiration: patient.respiration,
           consciousnessLevel: patient.consciousnessLevel,
           ageGroup: patient.ageGroup,
           gender: patient.gender
@@ -147,11 +123,14 @@ const ReservationListPage = () => {
   
     fetchPatient();
   }, []); 
-  
 
-  const completedTransfers = [
-    // 이송 완료 데이터
-  ];
+  const handleDistanceSort = () => {
+    navigate('/hospital-list');
+  };
+
+  const handleEmergencyFilter = () => {
+    navigate('/hospital/filter');
+  };
 
   if (loading) {
     return <ContentWrapper>로딩 중...</ContentWrapper>;
@@ -168,15 +147,7 @@ const ReservationListPage = () => {
   return (
     <ContentWrapper>
       <Card>
-        <CardHeader>
-          <HeaderTitle>
-            <Title>환자 정보</Title>
-            <span> 이송 시작 : {formatDate(currentPatient.startTime)}</span>
-          </HeaderTitle>
-          <TransportStatus>이송중</TransportStatus>
-        </CardHeader>
-
-        <PatientVitals patient={currentPatient} />
+        <PatientInfoCard patient={currentPatient} />
 
         <SectionDivider />
         <SectionTitle>병원 예약 현황</SectionTitle>
@@ -190,37 +161,10 @@ const ReservationListPage = () => {
           ))}
         </ReservationGrid>
       </Card>
-
-      <CompletedTransferSection>
-        <AccordionHeader onClick={() => setIsAccordionOpen(!isAccordionOpen)}>
-          <AccordionTitle>
-            이송 완료 내역
-            <span style={{ color: '#666', fontSize: '1rem', marginLeft: '0.5rem' }}>
-              ({completedTransfers.length}건)
-            </span>
-          </AccordionTitle>
-          <AccordionIcon isOpen={isAccordionOpen}>
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M6 9l6 6 6-6"/>
-            </svg>
-          </AccordionIcon>
-        </AccordionHeader>
-
-        {isAccordionOpen && (
-          <CompletedTransferListContainer>
-            <CompletedTransferList transfers={completedTransfers} />
-          </CompletedTransferListContainer>
-        )}
-      </CompletedTransferSection>
+      <FilterButtons
+        onDistanceSort={handleDistanceSort}
+        onEmergencyFilter={handleEmergencyFilter}
+      />
     </ContentWrapper>
   );
 };

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import PatientInfoCard from '../../components/patientStatus/PatientInfoCard';
-import FilterButtons from '../../components/patientStatus/FilterButtons';
-import CompletedTransferStatus from '../../components/patientStatus/CompletedTransferStatus';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import CompletedTransferStatus from '../../components/patientStatus/CompletedTransferStatus';
+import PatientInfoCard from '../../components/patientStatus/PatientInfoCardList';
+
 
 const ContentWrapper = styled.div`
   padding: 20px;
@@ -126,10 +126,6 @@ const PatientStatusListPage = () => {
       <PatientInfoCard 
         patient={currentPatient} 
         isCompleted={currentPatient.transportStatus === 'COMPLETED'} 
-      />
-      <FilterButtons
-        onDistanceSort={handleDistanceSort}
-        onEmergencyFilter={handleEmergencyFilter}
       />
       <CompletedTransferStatus
         isOpen={isAccordionOpen}

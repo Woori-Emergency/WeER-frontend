@@ -128,14 +128,14 @@ function Header() {
           to="/my-booking-requests" 
           active={location.pathname === "/my-booking-requests" ? 1 : 0}
         >
-          예약 확인
+          실시간 환자 예약 확인
         </NavItem>
         
         <NavItem 
           to="/patient-status-list" 
           active={location.pathname === "/patient-status-list" ? 1 : 0}
         >
-          환자 상태 내역
+          이송 환자 리스트 
         </NavItem>
         
         <NavItem
