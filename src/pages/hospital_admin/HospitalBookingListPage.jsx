@@ -19,6 +19,7 @@ import {
 import { API_BASE_URL, getAuthHeaders } from '../../components/api/config';
 import { formatDate } from '../../utils/dateUtils';
 
+//TODO: Need to Impl
 const hospitalId = 14;
 
 const ContentWrapper = styled.div`
@@ -85,8 +86,11 @@ const HospitalBookingListPage = () => {
             id: bookingRequest.id,
             reservationStatus: bookingRequest.reservationStatus,
             patientconditionid: bookingRequest.patientconditionid,
-            reservationId: bookingRequest.id,
+            reservationId: bookingRequest.reservationId,
+            hospitalId: bookingRequest.hospitalId,
             createdAt: bookingRequest.createdAt,
+            modifiedAt: bookingRequest.modifiedAt,
+            
             patientInfo: {
               gender: safePatientInfo.gender,
               age: safePatientInfo.ageGroup,
@@ -124,7 +128,7 @@ const HospitalBookingListPage = () => {
         },
         body: JSON.stringify({
           reservationId: request.reservationId,
-          hospitalId,
+          hospitalId: request.hospitalId,
           patientconditionId: request.patientconditionid,
           reservationStatus: 'APPROVED',
           createdAt: request.createdAt,
@@ -155,7 +159,7 @@ const HospitalBookingListPage = () => {
         },
         body: JSON.stringify({
           reservationId: request.reservationId,
-          hospitalId,
+          hospitalId: request.hospitalId,
           patientconditionId: request.patientconditionid,
           reservationStatus: 'DECLINED',
           createdAt: request.createdAt,
