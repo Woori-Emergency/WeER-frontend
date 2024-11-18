@@ -26,7 +26,7 @@ const HospitalBookingListPage = () => {
   const [bookingRequests, setBookingRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [bookingData, setBookingData] = useState([]);
   useEffect(() => {
     const fetchReservations = async () => {
       try {
@@ -248,7 +248,7 @@ const HospitalBookingListPage = () => {
                   </Button>
                   <Button 
                     onClick={() => {
-                      handleApprove(request);
+                      handleApprove(bookingData.result);
                     }}
                   >
                     승인
