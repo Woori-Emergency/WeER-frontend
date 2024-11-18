@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
 import { formatValue } from '../../utils/formatValue';
-import * as S from '../HospitalCard/HospitalCard.styles';  // 기존 스타일 재사용
+import * as S from '../HospitalCard/HospitalCard.styles'; // 기존 스타일 재사용
 
 const IcuSection = ({ hospitalId }) => {
     const [icuData, setIcuData] = useState(null);
@@ -12,7 +11,7 @@ const IcuSection = ({ hospitalId }) => {
       const fetchIcuData = async () => {
         try {
           setLoading(true);
-          const response = await fetch(`http://localhost:8080/hospital/detail?hospitalid=${hospitalId}`, {
+          const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospital/detail?hospitalid=${hospitalId}`, {
             method : 'GET',
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import * as S from './Filter.styles';
-import locationData from '../../data/koprov.json'; 
-import { useGeoLocation } from '../GeoLocation/GeoLocation';
 import { useNavigate } from 'react-router-dom';
+import locationData from '../../data/koprov.json';
+import { useGeoLocation } from '../GeoLocation/GeoLocation';
+import * as S from './Filter.styles';
 
 const geolocationOptions = {
   enableHighAccuracy: false,  // 일반적인 정확도 사용
@@ -192,7 +192,7 @@ const Filter = () => {
 
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await fetch(`http://localhost:8080/hospital/info?lat=${geoLocation.latitude}&lon=${geoLocation.longitude}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospital/info?lat=${geoLocation.latitude}&lon=${geoLocation.longitude}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -16,7 +16,7 @@ import {
   StatusBadge,
   Title
 } from '../../components/HospitalBookingList/HospitalBookingListComponents';
-import { API_BASE_URL, getAuthHeaders } from '../../components/api/config';
+import { getAuthHeaders } from '../../components/api/config';
 import { formatDate } from '../../utils/dateUtils';
 
 //TODO: Need to Impl
@@ -39,7 +39,7 @@ const HospitalBookingListPage = () => {
   useEffect(() => {
     const fetchReservations = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/hospitals/reservations/${hospitalId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospitals/reservations/${hospitalId}`, {
           method: 'GET',
           headers: getAuthHeaders()
         });
@@ -51,7 +51,7 @@ const HospitalBookingListPage = () => {
         const patientConditionIds = bookingData.result.map(request => request.patientconditionid);
         const patients = patientConditionIds.join(',');
 
-        const patientInfoResponse = await fetch(`${API_BASE_URL}/hospitals/patients-info/${patients}`, {
+        const patientInfoResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospitals/patients-info/${patients}`, {
           method: 'GET',
           headers: getAuthHeaders()
         });
@@ -120,7 +120,7 @@ const HospitalBookingListPage = () => {
 
   const handleApprove = async (request) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/hospitals/approve`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospitals/approve`, {
         method: 'POST',
         headers: {
           ...getAuthHeaders(),
@@ -151,7 +151,7 @@ const HospitalBookingListPage = () => {
 
   const handleReject = async (request) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/hospitals/decline`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospitals/decline`, {
         method: 'POST',
         headers: {
           ...getAuthHeaders(),

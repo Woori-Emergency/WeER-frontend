@@ -30,7 +30,7 @@ const PatientStatusListPage = () => {
           throw new Error("로그인이 필요합니다.");
         }
 
-        const response = await fetch('http://localhost:8080/user/reservation', {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/reservation`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

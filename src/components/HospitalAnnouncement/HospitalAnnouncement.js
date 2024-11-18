@@ -1,9 +1,7 @@
-import React, { useEffect, useCallback, useState } from 'react';
 import { Table, Typography } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { CustomPagination } from './HospitalAnnouncement.styles';
-
-const API_BASE_URL = 'http://localhost:8080';
 
 const HospitalAnnouncement = ({ setHospitalName }) => {
   const location = useLocation();
@@ -48,7 +46,7 @@ const HospitalAnnouncement = ({ setHospitalName }) => {
       setError(null);
       
       const response = await fetch(
-        `${API_BASE_URL}/hospital/announcement?hospitalid=${hospitalId}`,
+        `${process.env.REACT_APP_API_BASE_URL}/hospital/announcement?hospitalid=${hospitalId}`,
         {
           method: 'GET',
           headers: getAuthHeaders()

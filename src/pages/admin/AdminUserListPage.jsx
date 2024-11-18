@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import UserTable from '../../components/admin/UserTable';
 import SearchBar from '../../components/admin/SearchBar';
+import UserTable from '../../components/admin/UserTable';
 
 const PageContainer = styled.div`
   padding: 20px;
@@ -51,7 +51,7 @@ function AdminUserListPage() {
 
     // 사용자 목록 가져오기
     setIsLoading(true);
-    fetch('http://localhost:8080/user/list', {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/user/list`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -86,7 +86,7 @@ function AdminUserListPage() {
 
   const handleSaveUser = (updatedData) => {
     const token = localStorage.getItem('accessToken');
-    fetch(`http://localhost:8080/user/update/${editingUser.id}`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/user/update/${editingUser.id}`, {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',
