@@ -40,7 +40,6 @@ const KakaoMap = ({ center, hospitals = [], selectedHospital }) => {
 
   // 병원을 선택했을 때 자동으로 선택된 병원의 마커를 클릭
   useEffect(()=>{
-    console.log("Map.js <selectedHospital> : ", selectedHospital);
     if(selectedHospital){
       const hospital = hospitals.find((h) => h.hospitalId === selectedHospital);
       if(hospital){

@@ -40,8 +40,6 @@ const MainPage = () => {
               duration: Math.ceil(hospital.duration),
                // 초 단위를 분 단위로 변환
             }));
-            console.log(data.result.duration);
-            console.log("formattedHospitals : ",formattedHospitals);
             setHospitals(formattedHospitals);
           } else {
             console.warn("Failed to fetch hospital data.");
@@ -73,13 +71,8 @@ const MainPage = () => {
   };
   
   const searchHospitalSelect = async (value) =>{
-    console.log("value",value);
-    console.log("hospitals : ",hospitals);
     const selectedHospitalData = hospitals.find(hospital => hospital.name === value);
-    console.log("selectedHospitalData :",selectedHospitalData);
     if(selectedHospitalData){
-      console.log("선택된 병원 데이터: ",selectedHospitalData);
-
       setMapCenter({
         lat: selectedHospitalData.latitude,
         lng: selectedHospitalData.longitude
