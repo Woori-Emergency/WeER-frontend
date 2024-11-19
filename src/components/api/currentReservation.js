@@ -1,9 +1,9 @@
-import { API_BASE_URL, getAuthHeaders } from './config';
+import { getAuthHeaders } from './config';
 import { getCurrentPatient } from './currentPatient';
  
 const getHospitalName = async (hospitalId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/hospital/detail?hospitalid=${hospitalId}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospital/detail?hospitalid=${hospitalId}`, {
         method: 'GET',
         headers: getAuthHeaders()
       });
@@ -27,7 +27,7 @@ const getHospitalName = async (hospitalId) => {
       console.log("환자 아이디", patient.patientconditionid);
   
       // 2. 환자의 예약 정보 조회
-      const response = await fetch(`${API_BASE_URL}/hospital/patient/${patient.patientconditionid}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospital/patient/${patient.patientconditionid}`, {
         method: 'GET',
         headers: getAuthHeaders()
       });

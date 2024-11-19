@@ -47,7 +47,7 @@ const PatientStatusInputPage = () => {
   useEffect(() => {
     if (hasExistingPatient) {
       alert('현재 이송 중인 환자가 있습니다!');
-      navigate('/patient-status-list');
+      navigate('/my-booking-requests');
     }
   }, [hasExistingPatient, navigate]);
   const validateForm = () => {
@@ -103,7 +103,7 @@ const PatientStatusInputPage = () => {
 
       console.log(JSON.stringify(patientData));
   
-      const response = await fetch('http://localhost:8080/hospital/patient', { 
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospital/patient`, { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useGeoLocation } from '../../components/GeoLocation/GeoLocation';
+import KakaoMap from '../../components/Map/Map';
 import Search from '../../components/Search/Search';
 import StatusButtons from '../../components/StatusButtons/StatusButtons';
-import KakaoMap from '../../components/Map/Map';
 import FilterButtons from '../../components/patientStatus/FilterButtons';
 import { ContentWrapper, TopContainer } from '../../styles/CommonStyles';
 import { useGeoLocation } from '../../components/GeoLocation/GeoLocation';
@@ -30,7 +32,7 @@ const MainPage = () => {
       const fetchHospitals = async () => {
         try {
           const response = await fetch(
-            `http://localhost:8080/hospital/distance?lat=${location.latitude}&lon=${location.longitude}&range=${range}`,
+            `${process.env.REACT_APP_API_BASE_URL}/hospital/distance?lat=${location.latitude}&lon=${location.longitude}&range=${range}`,
             { method: 'POST' }
           );
           const data = await response.json();

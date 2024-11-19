@@ -48,7 +48,7 @@ const Search = ({ setSelectedHospital }) => {
       options={options}
       onSearch={handleSearch}
       onSelect={handleSelect}
-      style={{ width: '100%', borderRadius: '8px' }}
+      style={{ width: '100%', borderRadius: '8px',    }}
       placeholder="소속 병원을 검색하세요"
     >
       <Input 

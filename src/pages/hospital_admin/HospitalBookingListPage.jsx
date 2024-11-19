@@ -16,7 +16,7 @@ import {
   StatusBadge,
   Title
 } from '../../components/HospitalBookingList/HospitalBookingListComponents';
-import { API_BASE_URL, getAuthHeaders } from '../../components/api/config';
+import { getAuthHeaders } from '../../components/api/config';
 import { formatDate } from '../../utils/dateUtils';
 
 //TODO: Need to Impl
@@ -39,7 +39,7 @@ const HospitalBookingListPage = () => {
   useEffect(() => {
     const fetchReservations = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/hospitals/reservations/${hospitalId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospitals/reservations/${hospitalId}`, {
           method: 'GET',
           headers: getAuthHeaders()
         });
@@ -51,7 +51,7 @@ const HospitalBookingListPage = () => {
         const patientConditionIds = bookingData.result.map(request => request.patientconditionid);
         const patients = patientConditionIds.join(',');
 
-        const patientInfoResponse = await fetch(`${API_BASE_URL}/hospitals/patients-info/${patients}`, {
+        const patientInfoResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospitals/patients-info/${patients}`, {
           method: 'GET',
           headers: getAuthHeaders()
         });
@@ -106,7 +106,7 @@ const HospitalBookingListPage = () => {
               memo: safePatientInfo.memo
             }
           };
-        });
+        }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setBookingRequests(enrichedRequests);
         setLoading(false);
       } catch (err) { 
@@ -120,7 +120,7 @@ const HospitalBookingListPage = () => {
 
   const handleApprove = async (request) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/hospitals/approve`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospitals/approve`, {
         method: 'POST',
         headers: {
           ...getAuthHeaders(),
@@ -137,21 +137,29 @@ const HospitalBookingListPage = () => {
       });
       
       const data = await response.json();
+      console.log('API Response:', data);
+  
       if (!response.ok) throw new Error(data.message);
       
-      if (data.success) {
-        setBookingRequests(bookingRequests.map(req => 
-          req.id === request.reservationId ? { ...req, reservationStatus: 'APPROVED' } : req
-        ));
+      // data.success 대신 status === 200 확인
+      if (response.status === 200) {
+        setBookingRequests(prevRequests => 
+          prevRequests.map(req => 
+            req.reservationId === request.reservationId
+              ? { ...req, reservationStatus: data.result }
+              : req
+          )
+        );
       }
     } catch (err) {
+      console.error('Error:', err);
       setError('승인 처리 중 오류가 발생했습니다.');
     }
   };
-
+  
   const handleReject = async (request) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/hospitals/decline`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospitals/decline`, {
         method: 'POST',
         headers: {
           ...getAuthHeaders(),
@@ -168,14 +176,22 @@ const HospitalBookingListPage = () => {
       });
       
       const data = await response.json();
+      console.log('API Response:', data);
+  
       if (!response.ok) throw new Error(data.message);
       
-      if (data.success) {
-        setBookingRequests(bookingRequests.map(req => 
-          req.id === request.reservationId ? { ...req, reservationStatus: 'DECLINED' } : req
-        ));
+      // data.success 대신 status === 200 확인
+      if (response.status === 200) {
+        setBookingRequests(prevRequests => 
+          prevRequests.map(req => 
+            req.reservationId === request.reservationId
+              ? { ...req, reservationStatus: data.result }
+              : req
+          )
+        );
       }
     } catch (err) {
+      console.error('Error:', err);
       setError('반려 처리 중 오류가 발생했습니다.');
     }
   };
@@ -283,8 +299,10 @@ const HospitalBookingListPage = () => {
                       반려
                     </Button>
                     <Button 
-                      onClick={() => handleApprove(request)}
-                    >
+                      onClick={() => {
+                        console.log('Approve button clicked for request:', request);
+                        handleApprove(request);
+                      }}>
                       승인
                     </Button>
                   </ButtonContainer>

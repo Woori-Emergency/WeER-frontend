@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import PatientInfoCard from '../../components/patientStatus/PatientInfoCard';
-import FilterButtons from '../../components/patientStatus/FilterButtons';
-import CompletedTransferStatus from '../../components/patientStatus/CompletedTransferStatus';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import CompletedTransferStatus from '../../components/patientStatus/CompletedTransferStatus';
+import PatientInfoCard from '../../components/patientStatus/PatientInfoCardList';
+
 
 const ContentWrapper = styled.div`
   padding: 20px;
@@ -30,7 +30,7 @@ const PatientStatusListPage = () => {
           throw new Error("로그인이 필요합니다.");
         }
 
-        const response = await fetch('http://localhost:8080/user/reservation', {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/reservation`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -126,10 +126,6 @@ const PatientStatusListPage = () => {
       <PatientInfoCard 
         patient={currentPatient} 
         isCompleted={currentPatient.transportStatus === 'COMPLETED'} 
-      />
-      <FilterButtons
-        onDistanceSort={handleDistanceSort}
-        onEmergencyFilter={handleEmergencyFilter}
       />
       <CompletedTransferStatus
         isOpen={isAccordionOpen}

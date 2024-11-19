@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const PageContainer = styled.div`
@@ -40,7 +40,7 @@ function AdminDashboardPage() {
 
   // 대시보드 데이터 가져오기
   useEffect(() => {
-    fetch('/user/dashboard')
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/user/dashboard`)
       .then(response => response.json())
       .then(data => setStats({
         totalUsers: data.totalUsers,

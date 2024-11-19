@@ -1,6 +1,6 @@
 // src/components/admin/ApprovalTable.js
+import { Button, Table, message } from 'antd';
 import React, { useState } from 'react';
-import { Table, Button, message } from 'antd';
 import styled from 'styled-components';
 
 // 페이지네이션과 제목 스타일을 위한 커스텀 스타일 컴포넌트
@@ -47,7 +47,7 @@ const ApprovalTable = ({ data, loading, onStatusChange }) => {
       // 문자열 값 'APPROVED' 또는 'UNAPPROVED'를 approve 파라미터에 전달
       const approveValue = approve ? 'APPROVED' : 'UNAPPROVED';
   
-      const response = await fetch(`http://localhost:8080/user/approve-signup/${userId}?approve=${approveValue}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/approve-signup/${userId}?approve=${approveValue}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`, // Authorization 헤더 추가
