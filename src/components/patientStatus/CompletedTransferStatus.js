@@ -29,8 +29,11 @@ const HospitalName = styled.h3`
 `;
 
 const TransferInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.9rem;
   color: #666;
-  font-size: 0.875rem;
 `;
 
 const TransferStatus = styled.div`
@@ -39,6 +42,21 @@ const TransferStatus = styled.div`
   padding: 0.5rem 1rem;
   border-radius: 9999px;
   font-weight: 500;
+`;
+
+const TransferInfoItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const TransferLabel = styled.span`
+  font-weight: 500;
+  min-width: 45px;  // 라벨들을 일정한 너비로 정렬
+`;
+
+const TransferValue = styled.span`
+  color: #333;
 `;
 
 const InfoGrid = styled.div`
@@ -100,6 +118,7 @@ const AccordionIcon = styled.span`
 `;
 
 const CompletedTransferStatus = ({ isOpen, onToggle, transfers }) => {
+  console.log(transfers)
   return (
     <CompletedTransfersSection>
       <AccordionHeader onClick={onToggle}>
@@ -131,11 +150,15 @@ const CompletedTransferStatus = ({ isOpen, onToggle, transfers }) => {
             <div>
               <HospitalName>{transfer.hospitalName}</HospitalName>
               <TransferInfo>
-                이송 거리: {transfer.distance} (소요시간: {transfer.duration})
-              </TransferInfo>
-              <TransferInfo>
-                시작: {formatDate(transfer.startTime)} | 완료: {formatDate(transfer.endTime)}
-              </TransferInfo>
+  <TransferInfoItem>
+    <TransferLabel>시작:</TransferLabel>
+    <TransferValue>{formatDate(transfer.startTime)}</TransferValue>
+  </TransferInfoItem>
+  <TransferInfoItem>
+    <TransferLabel>완료:</TransferLabel>
+    <TransferValue>{formatDate(transfer.endTime)}</TransferValue>
+  </TransferInfoItem>
+</TransferInfo>
             </div>
             <TransferStatus>이송 완료</TransferStatus>
           </HospitalHeader>

@@ -81,3 +81,12 @@ export const ActionButton = styled.button`
     background-color: #f8f9fa;
   }
 `;
+
+export const CenteredContent = styled.div`
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+min-height: 60vh;
+width: 100%;
+`;

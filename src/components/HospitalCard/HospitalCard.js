@@ -15,6 +15,8 @@ const HospitalCard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { location: geoLocation, error: locationError } = useGeoLocation(GEOLOCATION_OPTIONS);
+    const [noPatientError, setNoPatientError] = useState(false);
+
     const location = useLocation();
     const navigate = useNavigate();
 

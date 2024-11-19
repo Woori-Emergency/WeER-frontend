@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import NoTransfer from '../../components/NoTransfer/NoTransfer';
 import CompletedTransferStatus from '../../components/patientStatus/CompletedTransferStatus';
 import PatientInfoCard from '../../components/patientStatus/PatientInfoCardList';
 
@@ -47,6 +48,7 @@ const PatientStatusListPage = () => {
         }
 
         const data = await response.json();
+        console.log(data)
         
         // 진행 중인 이송 건만 필터링 (필요한 경우)
         const currentTransfer = data.result.find(item => 
@@ -70,6 +72,8 @@ const PatientStatusListPage = () => {
           endTime: item.modifiedAt
         }));
 
+        setCompletedTransfers(completedTransfersList);
+
         if (currentTransfer) {
           // PatientInfoCard 컴포넌트에 맞게 데이터 매핑
           const mappedPatient = {
@@ -86,7 +90,6 @@ const PatientStatusListPage = () => {
             startTime: currentTransfer.createdAt // formatDate 유틸 함수에서 사용
           };
           setCurrentPatient(mappedPatient);
-          setCompletedTransfers(completedTransfersList);
         }
         setError(null);
 
@@ -118,14 +121,21 @@ const PatientStatusListPage = () => {
   }
 
   if (!currentPatient) {
-    return <ContentWrapper>현재 진행 중인 이송이 없습니다.</ContentWrapper>;
+    return <ContentWrapper>
+      <NoTransfer/>
+       <CompletedTransferStatus
+        isOpen={isAccordionOpen}
+        onToggle={() => setIsAccordionOpen(!isAccordionOpen)}
+        transfers={completedTransfers}
+      />
+    </ContentWrapper>
   }
 
   return (
     <ContentWrapper>
       <PatientInfoCard 
         patient={currentPatient} 
-        isCompleted={currentPatient.transportStatus === 'COMPLETED'} 
+        onCompleted={currentPatient.transportStatus === 'COMPLETED'} 
       />
       <CompletedTransferStatus
         isOpen={isAccordionOpen}
