@@ -66,7 +66,7 @@
         password: values.password,
         tel: values.tel,
         certificate: values.certificate,
-        organization: selectedHospital || values.organization,
+        organization: selectedHospital,
       };
     
 
