@@ -25,6 +25,33 @@ const CardTitleSection = styled.div`
   gap: 0.5rem;
 `;
 
+const TitleRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+`;
+
+const StatusTag = styled.div`
+  background: ${props => props.isCompleted ? '#dcfce7' : '#fef9c3'};
+  color: ${props => props.isCompleted ? '#166534' : '#854d0e'};
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+
+  &::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+`;
+
 const CardTitle = styled.h2`
   margin: 0;
   font-size: 1.5rem;
@@ -38,28 +65,23 @@ const TransportInfo = styled.span`
   margin-left: auto;
 `;
 
-const TransportStatus = styled.div`
-  background: ${props => props.isCompleted ? '#4ade80' : '#ffc107'};
-  color: ${props => props.isCompleted ? '#166534' : '#856404'};
-  padding: 0.5rem 1.25rem;
-  border-radius: 9999px;
-  font-weight: 600;
-  font-size: 1.1rem;
-  margin-left: 1rem;
-`;
-
 const CompleteButton = styled.button`
-  background: #3b82f6;
-  color: white;
-  padding: 0.5rem 1.25rem;
+  background: white;
+  color: #E97132;
+  padding: 0.5rem 1rem;
+  border: 1px solid #E97132;
   border-radius: 0.375rem;
-  font-weight: 600;
-  border: none;
+  font-weight: 500;
+  font-size: 0.875rem;
   cursor: pointer;
-  margin-left: 1rem;
+  transition: all 0.2s ease;
   
   &:hover {
-    background: #2563eb;
+    background: #FFF4ED;
+  }
+
+  &:active {
+    background: #FFE9DC;
   }
 `;
 
@@ -203,21 +225,16 @@ const PatientInfoCard = ({ patient, onComplete }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitleSection>
-          <CardTitle>현재 이송중인 환자</CardTitle>
-          <TransportInfo>이송 시작: {formatDate(patient.startTime)}</TransportInfo>
-        </CardTitleSection>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <TransportStatus isCompleted={isCompleted}>
-            {isCompleted ? '이송 완료' : '이송중'}
-          </TransportStatus>
-          {!isCompleted && (
-            <CompleteButton onClick={() => setShowModal(true)}>
-              이송 완료
-            </CompleteButton>
-          )}
-        </div>
-      </CardHeader>
+      <CardTitleSection>
+        <CardTitle>현재 이송중인 환자</CardTitle>
+        <TransportInfo>이송 시작: {formatDate(patient.startTime)}</TransportInfo>
+      </CardTitleSection>
+      {!isCompleted && (
+        <CompleteButton onClick={() => setShowModal(true)}>
+          이송 완료
+        </CompleteButton>
+      )}
+    </CardHeader>
 
       {showModal && (
         <ModalOverlay>

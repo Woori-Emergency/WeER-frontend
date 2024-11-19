@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { formatDate } from '../../utils/dateUtils';
+import { getAuthHeaders } from '../api/config';
 
 const Card = styled.div`
   background: white;
@@ -37,18 +38,86 @@ const TransportInfo = styled.span`
   margin-left: auto;
 `;
 
-const TransportStatus = styled.div`
-  background: #ffc107;
-  color: #856404;
-  padding: 0.5rem 1.25rem;
-  border-radius: 9999px;
-  font-weight: 600;
-  font-size: 1.1rem;
-  margin-left: 1rem;
-`;
 
 const CardContent = styled.div`
   padding: 1.5rem;
+`;
+
+const CompleteButton = styled.button`
+  background: white;
+  color: #E97132;
+  padding: 0.5rem 1rem;
+  border: 1px solid #E97132;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #FFF4ED;
+  }
+
+  &:active {
+    background: #FFE9DC;
+  }
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  width: 400px;
+  max-width: 90%;
+`;
+
+const ModalTitle = styled.h3`
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+`;
+
+const ModalButtons = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+`;
+
+const ModalButton = styled.button`
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  
+  ${props => props.primary ? `
+    background: #3b82f6;
+    color: white;
+    &:hover {
+      background: #2563eb;
+    }
+  ` : `
+    background: #e5e7eb;
+    color: #374151;
+    &:hover {
+      background: #d1d5db;
+    }
+  `}
 `;
 
 const InfoGrid = styled.div`
@@ -97,16 +166,68 @@ const getAgeGroupText = (ageGroup) => {
   return ageGroupMap[ageGroup] || ageGroup;
 };
 
-const PatientInfoCard = ({ patient, isCompleted = false }) => {
+const PatientInfoCard = ({ patient, onCompleted = false }) => {
+  const [isCompleted, setIsCompleted] = useState(patient.status === 'COMPLETED');
+  const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  console.log(patient);
+
+  const handleComplete = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`/hospital/patient/${patient.patientId}/complete`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+      });
+  
+      if (!response.ok) {
+        throw new Error('이송 완료 처리 중 오류가 발생했습니다.');
+      }
+  
+      setIsCompleted(true);
+      setShowModal(false);
+      if (onCompleted) {
+        onCompleted();
+      }
+      window.location.reload();
+    } catch (error) {
+      console.error('Error details:', error);
+      alert(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <Card>
       <CardHeader>         
   <CardTitleSection>   
     <CardTitle>현재 이송중인 환자</CardTitle>            
     <TransportInfo>이송 시작: {formatDate(patient.startTime)}</TransportInfo>                
-  </CardTitleSection>         
-  <TransportStatus>{isCompleted ? '이송 완료' : '이송중'}</TransportStatus>       
+  </CardTitleSection> 
+  {!isCompleted && (
+        <CompleteButton onClick={() => setShowModal(true)}>
+          이송 완료
+        </CompleteButton>
+      )}        
+    
 </CardHeader>
+{showModal && (
+        <ModalOverlay>
+          <ModalContent>
+            <ModalTitle>이송 완료 확인</ModalTitle>
+            <p>정말 이송을 완료하시겠습니까?</p>
+            <ModalButtons>
+              <ModalButton onClick={() => setShowModal(false)}>
+                취소
+              </ModalButton>
+              <ModalButton primary onClick={handleComplete}>
+                확인
+              </ModalButton>
+            </ModalButtons>
+          </ModalContent>
+        </ModalOverlay>
+      )}
       
       <CardContent>
         <InfoGrid>
