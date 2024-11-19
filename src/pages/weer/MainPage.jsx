@@ -40,7 +40,6 @@ const MainPage = () => {
               duration: Math.ceil(hospital.duration),
                // 초 단위를 분 단위로 변환
             }));
-            console.log(data.result.duration);
             setHospitals(formattedHospitals);
           } else {
             console.warn("Failed to fetch hospital data.");
@@ -72,38 +71,19 @@ const MainPage = () => {
   };
   
   const searchHospitalSelect = async (value) =>{
-    const selectedHospitalData = hospitalList.find(hospital => hospital.name === value);
-    if(!selectedHospitalData) return;
-    console.log(selectedHospitalData);
-    try{
-      const response = await fetch(`${API_BASE_URL}/hospital/detail?hospitalid=${selectedHospitalData.id}`)
-      console.log(response);
-      const data = await response.json();
-      if (data.status === 200){
-        setSelectedHospital(value);
-        form.setFieldValue({organization: value});
-        console.log("검색창 Form = ",form);
-        if (data.result) {
-          const formattedHospital = {
-            ...data.result,
-            duration: Math.ceil(data.result.duration || 0)
-          };
-          setHospitals([formattedHospital]);
-
-          setMapCenter({
-            lat: formattedHospital.latitude,
-            lng: formattedHospital.longitude
-          });
-        }
-      }
-    } catch (error){
-      console.error("검색창 에러 : ", error);
+    const selectedHospitalData = hospitals.find(hospital => hospital.name === value);
+    if(selectedHospitalData){
+      setMapCenter({
+        lat: selectedHospitalData.latitude,
+        lng: selectedHospitalData.longitude
+      });
+      
+      setSelectedHospital(selectedHospitalData.hospitalId);
+     } else {
+       console.warn("검색된 병원이 hospitals에 없습니다.");
     }
   };
   
-
-  
-
   return (
     <ContentWrapper>
       <TopContainer>
@@ -112,7 +92,7 @@ const MainPage = () => {
               />
         <StatusButtons onStatusChange={() => {}} />
       </TopContainer>
-      <KakaoMap center={mapCenter} hospitals={hospitals} />
+      <KakaoMap center={mapCenter} hospitals={hospitals} selectedHospital={selectedHospital} />
       <FilterButtons 
         onDistanceSort={handleDistanceSort}
         onEmergencyFilter={handleFilterSearch}

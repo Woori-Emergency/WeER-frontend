@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Map, MapMarker, CustomOverlayMap } from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 import * as S from './Map.styles';
@@ -18,7 +18,7 @@ const MARKER_IMAGES = {
   unavailable: '/images/marker/unavailable.png',
 };
 
-const KakaoMap = ({ center, hospitals = [] }) => {
+const KakaoMap = ({ center, hospitals = [], selectedHospital }) => {
   const [selectedMarker, setSelectedMarker] = useState(null);
 
   // 거리(m)를 km로 변환하는 함수
@@ -37,6 +37,16 @@ const KakaoMap = ({ center, hospitals = [] }) => {
     if (hvec >= 5) return MARKER_IMAGES.busy;
     return MARKER_IMAGES.unavailable;
   };
+
+  // 병원을 선택했을 때 자동으로 선택된 병원의 마커를 클릭
+  useEffect(()=>{
+    if(selectedHospital){
+      const hospital = hospitals.find((h) => h.hospitalId === selectedHospital);
+      if(hospital){
+        setSelectedMarker(hospital.hospitalId);
+      }
+    }
+  }, [selectedHospital, hospitals]);
 
   return (
     <MapContainer>
