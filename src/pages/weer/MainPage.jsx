@@ -6,8 +6,6 @@ import Search from '../../components/Search/Search';
 import StatusButtons from '../../components/StatusButtons/StatusButtons';
 import FilterButtons from '../../components/patientStatus/FilterButtons';
 import { ContentWrapper, TopContainer } from '../../styles/CommonStyles';
-import { useGeoLocation } from '../../components/GeoLocation/GeoLocation';
-import { useNavigate } from 'react-router-dom';
 import { Form } from 'antd';
 import { hospitalList } from '../../data/HospitalList';
 import { API_BASE_URL } from '../../components/api/config';
