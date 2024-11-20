@@ -1,0 +1,85 @@
+pipeline {
+    agent any
+    
+    environment {
+        ENV_VARS = credentials('react-env-vars')
+        CI = 'false'
+        AWS_CREDENTIAL = credentials('aws-credentials')
+        CLOUDFRONT = credentials('cloudfrontId')
+        FEBUCKET = credentials('bucket')
+        REGION = credentials('aws-region')
+        FEGITHUB = credentials('fe-github')
+    }
+    
+    stages {
+        stage('Git Clone') {
+            steps {
+                git(
+                    url: env.FEGITHUB,
+                    branch: 'develop'
+                )
+            }
+        }
+        
+        stage('Prepare Environment') {
+            steps {
+                script {
+                    def envContent = readFile(file: env.ENV_VARS)
+                    writeFile file: '.env', text: envContent
+                    sh 'ls -la .env'
+                }
+            }
+        }
+        
+        stage('React Build') {
+            tools {
+                nodejs '18.3.1'  
+            }
+            steps {
+                dir('FE pipeline') {  
+                    sh 'CI=false npm install'
+                    sh 'CI=false npm run build'
+                }
+            }
+        }
+
+        stage('S3 Upload Test') {
+            steps {
+                dir('build') {
+                    withAWS(credentials: env.AWS_CREDENTIAL, region: env.REGION) {
+                     sh '''
+                echo "Testing single file upload..."
+                aws s3 cp index.html ${FEBUCKET}/index.html
+                
+                if [ $? -eq 0 ]; then
+                    echo "Single file upload successful, uploading all files..."
+                    aws s3 cp . ${FEBUCKET}/ --recursive
+                else
+                    echo "Single file upload failed"
+                    exit 1
+                fi
+            '''
+                }
+}
+            }
+        }
+        
+        stage('CloudFront Invalidation') {
+            steps {
+                sh 'aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT} --paths "/*"'
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo 'Cleaning up workspace'
+        }
+        success {
+            echo 'Build and deployment successful!'
+        }
+        failure {
+            echo 'Build or deployment failed'
+        }
+    }
+}
