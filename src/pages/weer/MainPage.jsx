@@ -7,9 +7,6 @@ import StatusButtons from '../../components/StatusButtons/StatusButtons';
 import FilterButtons from '../../components/patientStatus/FilterButtons';
 import { ContentWrapper, TopContainer } from '../../styles/CommonStyles';
 import { Form } from 'antd';
-import { hospitalList } from '../../data/HospitalList';
-import { API_BASE_URL } from '../../components/api/config';
-
 
 const MainPage = () => {
   const { location, error } = useGeoLocation();
