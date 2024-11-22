@@ -18,10 +18,9 @@ import {
 } from '../../components/HospitalBookingList/HospitalBookingListComponents';
 import { getAuthHeaders } from '../../components/api/config';
 import { formatDate } from '../../utils/dateUtils';
+import { hospitalList } from '../../data/HospitalList';
 
 //TODO: Need to Impl
-const hospitalId = 14;
-
 const ContentWrapper = styled.div`
   padding: 20px;
   max-width: 1200px;
@@ -32,19 +31,45 @@ const ContentWrapper = styled.div`
 `;
 
 const HospitalBookingListPage = () => {
+
   const [bookingRequests, setBookingRequests] = useState([]);
+  const [hospital, setHospital ] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  useEffect(() => {
+    const fetchHospitalName = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospitals/hospital-name`, {
+          method: 'GET',
+          headers: getAuthHeaders()
+        });
+        
+        if (!response.ok) {
+          throw new Error('병원 정보를 가져오는데 실패했습니다.');
+        }
+        
+        const data = await response.json();
+        const hospitalData = hospitalList.find(
+          (hospital) => hospital.name === data.result);
+        setHospital(hospitalData);
+
+      } catch (err) {
+        console.error('병원 정보 조회 실패:', err);
+      }
+    };
+
+    fetchHospitalName();
+  }, []);
 
   useEffect(() => {
+    if (!hospital) return;
     const fetchReservations = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospitals/reservations/${hospitalId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospitals/reservations/${hospital.id}`, {
           method: 'GET',
           headers: getAuthHeaders()
         });
         const bookingData = await response.json();
-        console.log(bookingData.result);
         
         if (!response.ok) throw new Error(bookingData.message || '데이터를 불러오는데 실패했습니다.');
 
@@ -116,7 +141,7 @@ const HospitalBookingListPage = () => {
     };
   
     fetchReservations();
-  }, []);
+  }, [hospital]);
 
   const handleApprove = async (request) => {
     try {
@@ -232,7 +257,7 @@ const HospitalBookingListPage = () => {
   return (
     <ContentWrapper>
         <Header>
-          <Title>환자 상태 정보</Title>
+          <Title>{hospital.name} 예약 환자 상태 정보</Title>
           <PendingBadge>
             대기 중: {bookingRequests.filter(r => r.reservationStatus === 'PENDING').length}
           </PendingBadge>
