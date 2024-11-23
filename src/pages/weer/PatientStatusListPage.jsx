@@ -48,7 +48,7 @@ const PatientStatusListPage = () => {
         }
 
         const data = await response.json();
-        console.log(data)
+        
         
         // 진행 중인 이송 건만 필터링 (필요한 경우)
         const currentTransfer = data.result.find(item => 

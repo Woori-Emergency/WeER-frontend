@@ -27,8 +27,8 @@ const MainPage = () => {
       const fetchHospitals = async () => {
         try {
           const response = await fetch(
-            `${process.env.REACT_APP_API_BASE_URL}/hospital/distance?lat=${location.latitude}&lon=${location.longitude}&range=${range}`,
-            { method: 'POST' }
+            `${process.env.REACT_APP_API_BASE_URL}/hospital/location?lat=${location.latitude}&lon=${location.longitude}&range=${range}`,
+            { method: 'GET' }
           );
           const data = await response.json();
           if (data.status === 200) {
@@ -36,7 +36,7 @@ const MainPage = () => {
               ...hospital,
               duration: Math.ceil(hospital.duration),
                // 초 단위를 분 단위로 변환
-            }));
+            }));            
             setHospitals(formattedHospitals);
           } else {
             console.warn("Failed to fetch hospital data.");
@@ -68,14 +68,16 @@ const MainPage = () => {
   };
   
   const searchHospitalSelect = async (value) =>{
-    const selectedHospitalData = hospitals.find(hospital => hospital.name === value);
+    const selectedHospitalData = hospitals.find(hospital => hospital.hospitalName === value);
     if(selectedHospitalData){
+      
       setMapCenter({
         lat: selectedHospitalData.latitude,
         lng: selectedHospitalData.longitude
       });
       
-      setSelectedHospital(selectedHospitalData.hospitalId);
+      setSelectedHospital(selectedHospitalData.hospitalName);
+      
      } else {
        console.warn("검색된 병원이 hospitals에 없습니다.");
     }
