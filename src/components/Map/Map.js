@@ -43,7 +43,6 @@ const KakaoMap = ({ center, hospitals = [], selectedHospital }) => {
     if(selectedHospital){
       const hospital = hospitals.find((h) => h.hospitalName === selectedHospital);
       if(hospital){
-        console.log("Map.js -> hospital {}",hospital);
         setSelectedMarker(hospital.hospitalName);
       }
     }
