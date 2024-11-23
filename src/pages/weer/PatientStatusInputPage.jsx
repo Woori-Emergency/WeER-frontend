@@ -85,7 +85,6 @@ const PatientStatusInputPage = () => {
 
     try {
       const token = localStorage.getItem("accessToken"); // "accessToken"에서 "jwtToken"으로 변경
-      console.log(token);
       if (!token) {
         throw new Error("로그인이 필요합니다.");
       }
@@ -101,7 +100,7 @@ const PatientStatusInputPage = () => {
         medical: formData.diseaseStatus
       };
 
-      console.log(JSON.stringify(patientData));
+      
   
       const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospital/patient`, { 
         method: 'POST',

@@ -162,7 +162,7 @@ const HospitalBookingListPage = () => {
       });
       
       const data = await response.json();
-      console.log('API Response:', data);
+    
   
       if (!response.ok) throw new Error(data.message);
       
@@ -201,7 +201,7 @@ const HospitalBookingListPage = () => {
       });
       
       const data = await response.json();
-      console.log('API Response:', data);
+      
   
       if (!response.ok) throw new Error(data.message);
       
