@@ -9,6 +9,8 @@ pipeline {
         FEBUCKET = credentials('bucket')
         REGION = credentials('aws-region')
         FEGITHUB = credentials('fe-github')
+        GCP_BUCKET = credentials('gcp-bucket')
+        GCP_CREDENTIAL = 'gcpCredentials'
     }
     
     stages {
@@ -61,6 +63,18 @@ pipeline {
             '''
                 }
 }
+            }
+        }
+
+        stage('Store to GCS'){
+            steps{
+                script{
+                    googleStorageUpload(
+                        credentialsId: env.GCP_CREDENTIAL,
+                        bucket: "gs://${env.GCP_BUCKET}",
+                        pattern: 'build/**/*'
+                    )
+                }
             }
         }
         
