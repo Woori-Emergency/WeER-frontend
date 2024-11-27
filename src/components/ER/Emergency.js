@@ -51,6 +51,9 @@ const Emergency = ({ hospitalId }) => {
               <S.Label>일반</S.Label>
               <S.Value>
                 {(() => {
+                  console.log(erData.emergencyId)
+                  console.log(erData.hpid)
+                  console.log(hospitalId)
                   const value = formatValue(erData.hvec, erData.hvs01);
                   return (
                     <>
