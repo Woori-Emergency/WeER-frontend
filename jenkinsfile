@@ -29,28 +29,28 @@ pipeline {
         
         stage('React Build') {
             tools {
-                nodejs '18.3.1'  
+                nodejs '18.3.1'
             }
             steps {
-                dir('FE pipeline') {  
+                dir('FE pipeline') {
                     sh 'CI=false npm install'
                     sh 'CI=false npm run build'
                 }
             }
         }
-
+        
         stage("sonarqube") {
-        			steps{
-          				script{
-            				def scannerHome = tool 'sonarqube-scanner';            
-                            withSonarQubeEnv(credentialsId:"fe-jenkins-token",installationName:'SonarServer') {
-              					sh "${scannerHome}/bin/sonar-scanner"
-            				}
-          				}
-        			}
-
-
-
+            steps {
+                script {
+                    def scannerHome = tool 'sonarqube-scanner'
+                    withSonarQubeEnv(credentialsId: "fe-jenkins-token", installationName: 'SonarServer') {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
+                }
+            }
+        }
+    }
+    
     post {
         always {
             echo 'Cleaning up workspace'
