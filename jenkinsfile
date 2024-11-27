@@ -1,13 +1,13 @@
 pipeline {
     agent any
-    
+
     environment {
         ENV_VARS = credentials('react-env-vars')
         CI = 'false'
         FEGITHUB = credentials('fe-github')
         AWS_CREDENTIAL = credentials('aws-credentials')
     }
-    
+
     stages {
         stage('Git Clone') {
             steps {
@@ -17,7 +17,7 @@ pipeline {
                 )
             }
         }
-        
+
         stage('Prepare Environment') {
             steps {
                 script {
@@ -27,7 +27,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('React Build') {
             tools {
                 nodejs '18.3.1'
@@ -39,24 +39,25 @@ pipeline {
                 }
             }
         }
-        
-        stage("sonarqube") {
+
+        stage('sonarqube') {
             steps {
                 script {
                     def scannerHome = tool 'sonarqube'
                     withSonarQubeEnv(credentialsId: "fe-jenkins-token", installationName: 'SonarServer') {
                         sh "${scannerHome}/bin/sonar-scanner"
                     }
+                }
                 timeout(time: 1, unit: 'HOURS') {
-                def qg = waitForQualityGate()
-                if (qg.status != 'OK') {
-                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                    def qg = waitForQualityGate()
+                    if (qg.status != 'OK') {
+                        error "Pipeline aborted due to quality gate failure: ${qg.status}"
                     }
                 }
             }
         }
     }
-    
+
     post {
         always {
             echo 'Cleaning up workspace'
