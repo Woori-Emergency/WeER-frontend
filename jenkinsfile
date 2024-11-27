@@ -4,6 +4,7 @@ pipeline {
     environment {
         ENV_VARS = credentials('react-env-vars')
         CI = 'false'
+        FEGITHUB = credentials('fe-github')
         AWS_CREDENTIAL = credentials('aws-credentials')
     }
     
@@ -12,7 +13,7 @@ pipeline {
             steps {
                 git(
                     url: env.FEGITHUB,
-                    branch: 'develop'
+                    branch: 'feat/91'
                 )
             }
         }
