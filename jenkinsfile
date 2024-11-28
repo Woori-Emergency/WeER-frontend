@@ -12,21 +12,21 @@ pipeline {
     }
 
     stages {
-        stage('Git Clone') {
-            steps {
-                git(
-                    url: env.FEGITHUB,
-                    branch: 'feat/91'
-                )
-            }
-        }
-
         stage('SonarQube Analysis') {
             steps {
                 script {
                     def scannerHome = tool 'sonarqube'
                     withSonarQubeEnv(credentialsId: 'fe-jenkins-token', installationName: 'SonarServer') {
-                        sh "${scannerHome}/bin/sonar-scanner"
+                        if (env.CHANGE_ID) {
+                            sh """
+                                ${scannerHome}/bin/sonar-scanner \
+                                -Dsonar.pullrequest.branch=${env.BRANCH_NAME} \
+                                -Dsonar.pullrequest.key=${env.CHANGE_ID} \
+                                -Dsonar.pullrequest.base=develop
+                            """
+                        } else {
+                            sh "${scannerHome}/bin/sonar-scanner"
+                        }
                     }
                 }
             }
