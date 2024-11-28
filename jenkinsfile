@@ -6,8 +6,6 @@ pipeline {
         CI = 'false'
         FEGITHUB = credentials('fe-github')
         AWS_CREDENTIAL = credentials('aws-credentials')
-        SONAR_CREDENTIAL = credentials('fe-jenkins-token')
-
     }
 
     stages {
@@ -42,23 +40,24 @@ pipeline {
             }
         }
 
-stage('sonarqube') {
-    steps {
-        script {
-            def scannerHome = tool 'sonarqube'
-            withSonarQubeEnv(credentialsId: "fe-jenkins-token", installationName: 'SonarServer') {
-            sh "${scannerHome}/bin/sonar-scanner"
-        }
-        script {
-            timeout(time: 1, unit: 'HOURS') {
-                def qg = waitForQualityGate()
-                if (qg.status != 'OK') {
-                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
+        stage('sonarqube') {
+            steps {
+                script {
+                    def scannerHome = tool 'sonarqube'
+                    withSonarQubeEnv(credentialsId: "fe-jenkins-token", installationName: 'SonarServer') {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
+                }
+                script {
+                    timeout(time: 1, unit: 'HOURS') {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
                 }
             }
         }
-    }
-}
     }
 
     post {
