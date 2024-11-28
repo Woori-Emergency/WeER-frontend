@@ -72,7 +72,9 @@ pipeline {
                     googleStorageUpload(
                         credentialsId: env.GCP_CREDENTIAL,
                         bucket: "gs://${env.GCP_BUCKET}",
-                        pattern: 'build/**/*'
+                        pattern: 'build/**/*',
+                        pathPrefix: 'build', // 'build/' 경로를 제거하여 루트에 업로드
+                        flatten: true
                     )
                 }
             }
