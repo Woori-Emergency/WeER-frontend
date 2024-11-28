@@ -6,6 +6,8 @@ pipeline {
         CI = 'false'
         FEGITHUB = credentials('fe-github')
         AWS_CREDENTIAL = credentials('aws-credentials')
+        SONAR_CREDENTIAL = credentials('fe-jenkins-token')
+
     }
 
     stages {
@@ -44,7 +46,7 @@ pipeline {
             steps {
                 script {
                     def scannerHome = tool 'sonarqube'
-                    withSonarQubeEnv(credentialsId: "fe-jenkins-token", installationName: 'SonarServer') {
+                    withSonarQubeEnv(credentialsId: env.SONAR_CREDENTIAL, installationName: 'SonarServer') {
                         sh "${scannerHome}/bin/sonar-scanner"
                     }
                 }
