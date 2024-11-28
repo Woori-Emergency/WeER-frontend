@@ -42,24 +42,24 @@ pipeline {
             }
         }
 
-        stage('sonarqube') {
-            steps {
-                script {
-                    def scannerHome = tool 'sonarqube'
-                    withSonarQubeEnv(credentialsId: env.SONAR_CREDENTIAL, installationName: 'SonarServer') {
-                        sh "${scannerHome}/bin/sonar-scanner"
-                    }
-                }
-                script {
-                    timeout(time: 1, unit: 'HOURS') {
-                        def qg = waitForQualityGate()
-                        if (qg.status != 'OK') {
-                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
-                        }
-                    }
+stage('sonarqube') {
+    steps {
+        script {
+            def scannerHome = tool 'sonarqube'
+            withSonarQubeEnv('SonarServer') {  // credentialsId 제거
+                sh "${scannerHome}/bin/sonar-scanner"
+            }
+        }
+        script {
+            timeout(time: 1, unit: 'HOURS') {
+                def qg = waitForQualityGate()
+                if (qg.status != 'OK') {
+                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
                 }
             }
         }
+    }
+}
     }
 
     post {
