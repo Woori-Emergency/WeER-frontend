@@ -46,12 +46,8 @@ stage('sonarqube') {
     steps {
         script {
             def scannerHome = tool 'sonarqube'
-            withSonarQubeEnv('SonarServer') {  
-                sh """
-                    ${scannerHome}/bin/sonar-scanner \
-                    -Dsonar.token=${SONAR_CREDENTIAL_PSW}
-                """
-            }
+            withSonarQubeEnv(credentialsId: "fe-jenkins-token", installationName: 'SonarServer') {
+            sh "${scannerHome}/bin/sonar-scanner"
         }
         script {
             timeout(time: 1, unit: 'HOURS') {
