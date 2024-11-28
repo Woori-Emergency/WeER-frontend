@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     def scannerHome = tool 'sonarqube'
-                    withSonarQubeEnv() {
+                    withSonarQubeEnv(credentialsId: 'fe-jenkins-token', installationName: 'SonarServer') {
                         sh "${scannerHome}/bin/sonar-scanner"
                     }
                 }
