@@ -1,2 +1,1 @@
 sonar.projectKey=weer-FE
-sonar.exclusions=**/node_modules/**,**/test/**
