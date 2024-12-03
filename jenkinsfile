@@ -18,7 +18,7 @@ pipeline {
             steps {
                 git(
                     url: env.FEGITHUB,
-                    branch: 'develop'
+                    branch: 'feat/92'
                 )
             }
         }
