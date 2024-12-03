@@ -45,6 +45,25 @@ pipeline {
             }
         }
 
+        stage('sonarqube') {
+            steps {
+                script {
+                    def scannerHome = tool 'sonarqube'
+                    withSonarQubeEnv(credentialsId: "fe-jenkins-token", installationName: 'SonarServer') {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
+                }
+                script {
+                    timeout(time: 1, unit: 'HOURS') {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
+                }
+            }
+        }
+
         stage('S3 Upload Test') {
             steps {
                 dir('build') {
