@@ -32,10 +32,11 @@ const LoginPage = () => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
       },
-      body: JSON.stringify(loginData),
-    })
+      credentials: 'include',
+      body: JSON.stringify(loginData)
+   })
     .then((response) => {
       if (!response.ok) {
         return response.json().then(error => {

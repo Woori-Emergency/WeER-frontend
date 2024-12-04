@@ -1,7 +1,7 @@
-  import React, { useState } from 'react';
-  import { useNavigate } from 'react-router-dom';
-  import { Button, Col, Form, Input, Row, Select, Typography } from 'antd';
-  import Search from '../../components/Search/Search';
+  import { Button, Col, Form, Input, Select, Typography } from 'antd';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Search from '../../components/Search/Search';
   const { Option } = Select;
   const { Title } = Typography;
 
@@ -79,7 +79,7 @@
       })
       .then((response) => {
         if (response.ok) {
-          alert('회원가입 성공!');
+          alert('회원가입 성공');
           navigate('/'); 
         } else {
           response.json().then((errorData) => {
@@ -127,7 +127,7 @@
                 rules={[
                   {
                     required: true,
-                    message: '이름을 입력해주세요;/',
+                    message: '이름을 입력해주세요.',
                     whitespace: true,
                   },
                 ]}
@@ -153,7 +153,7 @@
                     validator: (_, value) =>
                       value && value.length >= 8 && value.length <= 13
                         ? Promise.resolve()
-                        : Promise.reject(new Error('ID는 8자 이상, 13자 이하로 입력해주세요!')),
+                        : Promise.reject(new Error('ID는 8자 이상, 13자 이하로 입력해주세요.')),
                   },
                 ]}
                 onBlur={(e) => checkIdAvailability(e.target.value)}
@@ -176,7 +176,7 @@
                   },
                   {
                     required: true,
-                    message: '이메일을 입력해 주세요!',
+                    message: '이메일을 입력해 주세요.',
                     whitespace: true,
                   },
                 ]}
@@ -196,14 +196,14 @@
                 rules={[
                   {
                     required: true,
-                    message: '비밀번호를 입력해주세요!',
+                    message: '비밀번호를 입력해주세요.',
                     whitespace: true,
                   },
                   {
                     validator: (_, value) =>
                       value && value.length >= 8 && value.length <= 15
                         ? Promise.resolve()
-                        : Promise.reject(new Error('비밀번호는 8자 이상, 15자 이하로 입력해주세요!')),
+                        : Promise.reject(new Error('비밀번호는 8자 이상, 15자 이하로 입력해주세요.')),
                   },
                 ]}
                 hasFeedback
@@ -219,14 +219,14 @@
                 rules={[
                   {
                     required: true,
-                    message: '비밀번호를 확인해주세요!',
+                    message: '비밀번호를 확인해주세요.',
                   },
                   ({ getFieldValue }) => ({
                     validator(_, value) {
                       if (!value || getFieldValue('password') === value) {
                         return Promise.resolve();
                       }
-                      return Promise.reject(new Error('입력하셨던 비밀번호와 틀립니다!'));
+                      return Promise.reject(new Error('입력하셨던 비밀번호와 틀립니다.'));
                     },
                   }),
                 ]}
@@ -235,23 +235,57 @@
               </Form.Item>
 
               <Form.Item
-                name="tel"
-                label="핸드폰 번호"
-                rules={[
-                  {
-                    required: true,
-                    message: '전화번호를 입력해주세요!',
-                    whitespace: true,
-                  },
-                ]}
-              >
-                <Input
-                  addonBefore={prefixSelector}
-                  style={{
-                    width: '100%',
-                  }}
-                />
-              </Form.Item>
+  name="tel"
+  label="핸드폰 번호"
+  validateTrigger="onBlur"  // 입력 필드가 포커스를 잃었을 때만 검증
+  rules={[
+    {
+      required: true,
+      message: '전화번호를 입력해주세요.',
+      whitespace: true,
+    },
+    {
+      pattern: /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/,
+      message: '올바른 휴대폰 번호 형식이 아닙니다. (예: 010-1234-5678)',
+    },
+    {
+      validator: (_, value) => {
+        if (value) {
+          const numberOnly = value.replace(/-/g, '');
+          
+          if (!/^\d+$/.test(numberOnly)) {
+            return Promise.reject('숫자만 입력해주세요.');
+          }
+          
+          if (numberOnly.length !== 11) {
+            return Promise.reject('휴대폰 번호는 11자리여야 합니다.');
+          }
+        }
+        return Promise.resolve();
+      }
+    }
+  ]}
+  normalize={(value, prevValue) => {
+    const numberOnly = value.replace(/[^\d]/g, '');
+    
+    if (numberOnly.length <= 3) {
+      return numberOnly;
+    } else if (numberOnly.length <= 7) {
+      return `${numberOnly.slice(0, 3)}-${numberOnly.slice(3)}`;
+    } else {
+      return `${numberOnly.slice(0, 3)}-${numberOnly.slice(3, 7)}-${numberOnly.slice(7, 11)}`;
+    }
+  }}
+>
+  <Input
+    addonBefore={prefixSelector}
+    style={{
+      width: '100%',
+    }}
+    maxLength={13}
+    placeholder="010-1234-5678"
+  />
+</Form.Item>
 
               <Form.Item
                 name="certificate"
@@ -260,7 +294,7 @@
                 rules={[
                   {
                     required: true,
-                    message: '자격증의 자격번호를 입력해주세요',
+                    message: '자격증의 자격번호를 입력해주세요.',
                     whitespace: true,
                   },
                 ]}
@@ -271,10 +305,10 @@
               <Form.Item
               name="organization"
               label="소속 기관"
-              tooltip="현재 자신이 근무하는 병원명을 적어주세요"
+              tooltip="현재 자신이 근무하는 병원명을 적어주세요."
               rules={[
                 { required: true, 
-                  message: '소속 기관을 입력해주세요', 
+                  message: '소속 기관을 입력해주세요.', 
                   whitespace: true },
               ]}
             >
