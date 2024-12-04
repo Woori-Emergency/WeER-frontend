@@ -64,6 +64,7 @@ function AdminUserListPage() {
       })
       .then(data => {
         const userArray = Array.isArray(data.result) ? data.result : [];
+        console.log(userArray);
         setUsers(userArray);
         setIsLoading(false);
       })
@@ -73,17 +74,7 @@ function AdminUserListPage() {
         setIsLoading(false);
       });
   }, [navigate]);
-
-  const handleOpenEditModal = () => {
-    if (selectedUserIds.length === 1) {
-      const user = users.find((u) => u.id === selectedUserIds[0]);
-      setEditingUser(user);
-      setIsModalOpen(true);
-    } else {
-      alert("수정할 사용자를 한 명만 선택해주세요.");
-    }
-  };
-
+  
   const handleSaveUser = (updatedData) => {
     const token = localStorage.getItem('accessToken');
     fetch(`${process.env.REACT_APP_API_BASE_URL}/user/update/${editingUser.id}`, {

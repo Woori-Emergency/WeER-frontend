@@ -46,7 +46,7 @@ const AdminApprovalPage = () => {
 
   const handleApproval = async (userId, approve) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/approve-signup/${userId}?approved=${approve}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/approve-signup/${userId}?approve=${approve}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -58,12 +58,15 @@ const AdminApprovalPage = () => {
 
       const result = await response.json();
 
-      setData((prevData) =>
-        prevData.map((user) =>
-          user.key === userId ? { ...user, status: approve ? '승인됨' : '반려됨' } : user
-        )
-      );
-      message.success(result.message);
+      setData((prevData) => prevData.filter((user) => user.key !== userId));
+      message.success({
+        content: `사용자 ${approve === 'APPROVED' ? '승인이' : '반려가'} 완료되었습니다`,
+        style: {
+          fontSize: '16px',
+        },
+        duration: 2
+      });
+      
     } catch (error) {
       console.error('Error updating status:', error);
       message.error(error.message || 'Failed to update user status');

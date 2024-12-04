@@ -46,7 +46,8 @@ const ApprovalTable = ({ data, loading, onStatusChange }) => {
     try {
       // 문자열 값 'APPROVED' 또는 'UNAPPROVED'를 approve 파라미터에 전달
       const approveValue = approve ? 'APPROVED' : 'UNAPPROVED';
-  
+
+      console.log("userId", userId);
       const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/user/approve-signup/${userId}?approve=${approveValue}`, {
         method: 'POST',
         headers: {
@@ -57,7 +58,6 @@ const ApprovalTable = ({ data, loading, onStatusChange }) => {
   
       if (!response.ok) throw new Error('Failed to update status');
   
-      message.success(`User has been ${approve ? 'approved' : 'rejected'}`);
       onStatusChange(userId, approve ? 'APPROVED' : 'UNAPPROVED');
     } catch (error) {
       console.error('Error updating status:', error);

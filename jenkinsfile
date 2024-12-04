@@ -1,115 +1,178 @@
 pipeline {
-    agent any
-    
-    environment {
-        ENV_VARS = credentials('react-env-vars')
-        CI = 'false'
-        AWS_CREDENTIAL = credentials('aws-credentials')
-        CLOUDFRONT = credentials('cloudfrontId')
-        FEBUCKET = credentials('bucket')
-        REGION = credentials('aws-region')
-        FEGITHUB = credentials('fe-github')
-        GCP_BUCKET = credentials('gcp-bucket')
-        GCP_CREDENTIAL = 'gcpCredentials'
-    }
-    
-    stages {
-        stage('Git Clone') {
-            steps {
-                git(
-                    url: env.FEGITHUB,
-                    branch: 'develop'
-                )
-            }
-        }
-        
-        stage('Prepare Environment') {
-            steps {
-                script {
-                    def envContent = readFile(file: env.ENV_VARS)
-                    writeFile file: '.env', text: envContent
-                    sh 'ls -la .env'
-                }
-            }
-        }
-        
-        stage('React Build') {
-            tools {
-                nodejs '18.3.1'  
-            }
-            steps {
-                dir('FE pipeline') {  
-                    sh 'CI=false npm install'
-                    sh 'CI=false npm run build'
-                }
-            }
-        }
+   agent any
+   
+   environment {
+       ENV_VARS = credentials('react-env-vars')
+       CI = 'false'
+       AWS_CREDENTIAL = credentials('aws-credentials')
+       CLOUDFRONT = credentials('cloudfrontId')
+       FEBUCKET = credentials('bucket')
+       REGION = credentials('aws-region')
+       FEGITHUB = credentials('fe-github')
+       GCP_BUCKET = credentials('gcp-bucket')
+       GCP_CREDENTIAL = 'gcpCredentials'
+   }
+   
+   options {
+       buildDiscarder(logRotator(numToKeepStr: '5'))
+       disableConcurrentBuilds()
+   }
+   
+   stages {
+       stage('Cleanup Workspace') {
+           steps {
+               cleanWs()
+           }
+       }
+       
+       stage('Git Clone') {
+           steps {
+               git(
+                   url: env.FEGITHUB,
+                   branch: 'develop'
+               )
+           }
+       }
+       
+       stage('Prepare Environment') {
+           steps {
+               script {
+                   def envContent = readFile(file: env.ENV_VARS)
+                   writeFile file: '.env', text: envContent
+                   sh 'ls -la .env'
+               }
+           }
+       }
+       
+       stage('React Build') {
+           tools {
+               nodejs '18.3.1'  
+           }
+           steps {
+               dir('FE pipeline') {  
+                   sh '''
+                       rm -rf node_modules/.cache
+                       npm cache clean --force
+                       CI=false npm install
+                       CI=false npm run build
+                   '''
+               }
+           }
+       }
 
-        stage('sonarqube') {
-            steps {
-                script {
-                    def scannerHome = tool 'sonarqube'
-                    withSonarQubeEnv(credentialsId: "fe-jenkins-token", installationName: 'SonarServer') {
-                          sh """
-                    ${scannerHome}/bin/sonar-scanner \
-                    -Dsonar.projectKey=weer-FE \
-                    """
-                    }
-                }
-            }
-        }
+       stage('sonarqube analysis') {
+           steps {
+               script {
+                   def scannerHome = tool 'sonarqube'
+                   withSonarQubeEnv(credentialsId: "fe-jenkins-token", installationName: 'SonarServer') {
+                       sh """
+                           ${scannerHome}/bin/sonar-scanner \
+                           -Dsonar.projectKey=weer-FE \
+                           -Dsonar.sources=. \
+                           -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                           -Dsonar.sourceEncoding=UTF-8 \
+                           -Dsonar.qualitygate.wait=true \
+                           -Dsonar.coverage.exclusions=**/*.test.js,**/*.spec.js,**/tests/**/*,**/*.stories.js,**/*.config.js \
+                           -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/build/**,**/*.test.js,**/*.spec.js,**/*.stories.js \
+                           -Dsonar.javascript.coveragePlugin=lcov \
+                           -Dsonar.qualitygate.timeout=300 \
+                           -Dsonar.qualitygate.conditions="""" \
+                               blocker_violations=0; \
+                               critical_violations<3; \
+                               major_violations<30; \
+                               coverage>30; \
+                               duplicated_lines_density<20; \
+                               cognitive_complexity_per_file<20; \
+                               security_hotspots<3; \
+                               vulnerabilities<3 \
+                           """"
+                       """
+                   }
+               }
+           }
+       }
 
-        stage('S3 Upload Test') {
-            steps {
-                dir('build') {
-                    withAWS(credentials: env.AWS_CREDENTIAL, region: env.REGION) {
-                     sh '''
-                echo "Testing single file upload..."
-                aws s3 cp index.html ${FEBUCKET}/index.html
-                
-                if [ $? -eq 0 ]; then
-                    echo "Single file upload successful, uploading all files..."
-                    aws s3 cp . ${FEBUCKET}/ --recursive
-                else
-                    echo "Single file upload failed"
-                    exit 1
-                fi
-            '''
-                }
-}
-            }
-        }
+       stage('Quality Gate') {
+           steps {
+               timeout(time: 5, unit: 'MINUTES') {
+                   waitForQualityGate abortPipeline: true
+               }
+           }
+       }
 
-        stage('Store to GCS'){
-            steps{
-                script{
-                    googleStorageUpload(
-                        credentialsId: env.GCP_CREDENTIAL,
-                        bucket: "gs://${env.GCP_BUCKET}",
-                        pattern: 'build/**/*',
-                        pathPrefix: 'build', // 'build/' 경로를 제거하여 루트에 업로드
-                        flatten: true
-                    )
-                }
-            }
-        }
-        
-        stage('CloudFront Invalidation') {
-            steps {
-                sh 'aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT} --paths "/*"'
-            }
-        }
-    }
-    
-    post {
-        always {
-            echo 'Cleaning up workspace'
-        }
-        success {
-            echo 'Build and deployment successful!'
-        }
-        failure {
-            echo 'Build or deployment failed'
-        }
-    }
+       stage('S3 Upload Test') {
+           steps {
+               dir('build') {
+                   withAWS(credentials: env.AWS_CREDENTIAL, region: env.REGION) {
+                    sh '''
+               echo "Testing single file upload..."
+               aws s3 cp index.html ${FEBUCKET}/index.html
+               
+               if [ $? -eq 0 ]; then
+                   echo "Single file upload successful, uploading all files..."
+                   aws s3 cp . ${FEBUCKET}/ --recursive
+               else
+                   echo "Single file upload failed"
+                   exit 1
+               fi
+           '''
+               }
+               }
+           }
+       }
+
+       stage('Store to GCS'){
+           steps{
+               script{
+                   googleStorageUpload(
+                       credentialsId: env.GCP_CREDENTIAL,
+                       bucket: "gs://${env.GCP_BUCKET}",
+                       pattern: 'build/**/*',
+                       pathPrefix: 'build',
+                       flatten: true
+                   )
+               }
+           }
+       }
+       
+       stage('CloudFront Invalidation') {
+           steps {
+               sh 'aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT} --paths "/*"'
+           }
+       }
+   }
+   
+   post {
+       always {
+           script {
+               sh '''
+                   rm -rf build/
+                   rm -rf node_modules/
+                   rm -rf coverage/
+                   npm cache clean --force
+                   docker system prune -f || true
+               '''
+               
+               cleanWs(
+                   cleanWhenSuccess: true,
+                   cleanWhenFailure: true,
+                   cleanWhenUnstable: true,
+                   deleteDirs: true,
+                   patterns: [
+                       [pattern: '.env', type: 'INCLUDE'],
+                       [pattern: 'node_modules/**', type: 'INCLUDE'],
+                       [pattern: 'build/**', type: 'INCLUDE'],
+                       [pattern: 'coverage/**', type: 'INCLUDE'],
+                       [pattern: '*.log', type: 'INCLUDE']
+                   ]
+               )
+           }
+       }
+       success {
+           echo 'Build and deployment successful!'
+       }
+       failure {
+           echo 'Build or deployment failed'
+       }
+   }
 }
