@@ -18,7 +18,7 @@ import {
 } from '../../components/HospitalBookingList/HospitalBookingListComponents';
 import { getAuthHeaders } from '../../components/api/config';
 import { formatDate } from '../../utils/dateUtils';
-import { hospitalList } from '../../data/HospitalList';
+import { originHospitalList } from '../../data/originHospitalList';
 
 //TODO: Need to Impl
 const ContentWrapper = styled.div`
@@ -49,7 +49,7 @@ const HospitalBookingListPage = () => {
         }
         
         const data = await response.json();
-        const hospitalData = hospitalList.find(
+        const hospitalData = originHospitalList.find(
           (hospital) => hospital.name === data.result);
         setHospital(hospitalData);
 

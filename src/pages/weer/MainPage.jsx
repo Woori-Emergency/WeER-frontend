@@ -36,7 +36,7 @@ const MainPage = () => {
               ...hospital,
               duration: Math.ceil(hospital.duration),
                // 초 단위를 분 단위로 변환
-            }));            
+            }));
             setHospitals(formattedHospitals);
           } else {
             console.warn("Failed to fetch hospital data.");
@@ -82,12 +82,16 @@ const MainPage = () => {
        console.warn("검색된 병원이 hospitals에 없습니다.");
     }
   };
-  
+
+  // `hospitals`에서 `hospitalName`만 추출
+  const hospitalNames = hospitals.map(hospital => hospital.hospitalName);
+
   return (
     <ContentWrapper>
       <TopContainer>
       <Search
-                setSelectedHospital={searchHospitalSelect}// Form 값 업데이트
+        hospitalList={hospitalNames}
+        setSelectedHospital={searchHospitalSelect}// Form 값 업데이트
               />
         <StatusButtons onStatusChange={() => {}} />
       </TopContainer>

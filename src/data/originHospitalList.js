@@ -1,4 +1,4 @@
-export const hospitalList = [
+export const originHospitalList = [
     { id: 1, name: "강남더드림병원" },
     { id: 2, name: "강남베드로병원" },
     { id: 3, name: "삼성서울병원" },

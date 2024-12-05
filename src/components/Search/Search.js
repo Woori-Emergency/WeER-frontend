@@ -1,8 +1,8 @@
 import { AutoComplete, Input } from 'antd';
 import React, { useState } from 'react';
-import { hospitalList } from '../../data/HospitalList'; // 병원 데이터 가져오기
+import { originHospitalList } from '../../data/originHospitalList';
 
-const Search = ({ setSelectedHospital }) => {
+const Search = ({ hospitalList, setSelectedHospital }) => {
   const [searchText, setSearchText] = useState('');
   const [options, setOptions] = useState([]);
 
@@ -15,15 +15,23 @@ const Search = ({ setSelectedHospital }) => {
       return;
     }
 
-    // 검색어와 병원 이름이 매칭되는 항목만 필터링
-    const filteredHospitals = hospitalList
-      .filter(hospital => hospital.name.toLowerCase().includes(value.toLowerCase()))
-      .map(hospital => ({
-        value: hospital.name,
-        id: hospital.id, // 병원 ID 포함
-      }));
+  // 검색어와 hospitalList의 이름이 매칭되는 항목만 필터링
+  const filteredHospitals = hospitalList
+  .filter(hospitalName => 
+    hospitalName.toLowerCase().includes(value.toLowerCase()) && // 검색어 매칭
+    originHospitalList.some(originHospital => originHospital.name === hospitalName) // 교집합 확인
+  )
+  .map(hospitalName => {
+    const matchedOriginHospital = originHospitalList.find(
+      originHospital => originHospital.name === hospitalName
+    );
+    return {
+      value: matchedOriginHospital.name, // 병원 이름
+      id: matchedOriginHospital.id // 병원 ID
+    };
+  });
 
-    setOptions(filteredHospitals);
+  setOptions(filteredHospitals);
   };
 
   // 병원 선택 시 호출되는 함수
