@@ -306,7 +306,7 @@ import SearchSafetyCenter from '../../components/Search/SearchSafetyCenter';
               <Form.Item
               name="organization"
               label="소속 기관"
-              tooltip="현재 자신이 근무하는 병원명을 적어주세요."
+              tooltip="현재 자신이 근무하는 119 응급센터를 적어주세요."
               rules={[
                 { required: true, 
                   message: '소속 기관을 입력해주세요.', 
