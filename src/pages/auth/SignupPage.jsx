@@ -1,7 +1,8 @@
   import { Button, Col, Form, Input, Select, Typography } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Search from '../../components/Search/Search';
+import SearchSafetyCenter from '../../components/Search/SearchSafetyCenter';
+
   const { Option } = Select;
   const { Title } = Typography;
 
@@ -36,7 +37,7 @@ import Search from '../../components/Search/Search';
     const navigate = useNavigate();
     const [idAvailable, setIdAvailable] = useState(false); // ID 중복 체크 상태
     const [emailAvailable, setEmailAvailable] = useState(false); // 이메일 중복 체크 상태
-    const [selectedHospital, setSelectedHospital] = useState('');
+    const [selectedSafetyCenter, setSafetyCenter] = useState('');
 
     // ID 중복 체크 비동기 함수
     const checkIdAvailability = async (loginId) => {
@@ -65,7 +66,7 @@ import Search from '../../components/Search/Search';
         password: values.password,
         tel: values.tel,
         certificate: values.certificate,
-        organization: selectedHospital,
+        organization: selectedSafetyCenter,
       };
     
 
@@ -313,9 +314,9 @@ import Search from '../../components/Search/Search';
               ]}
             >
               {/* Search 컴포넌트에 setSelectedHospital 전달 */}
-              <Search
-                setSelectedHospital={(value) => {
-                  setSelectedHospital(value);
+              <SearchSafetyCenter
+                setSafetyCenter={(value) => {
+                  setSafetyCenter(value);
                   form.setFieldsValue({ organization: value }); // Form 값 업데이트
                 }}
               />
