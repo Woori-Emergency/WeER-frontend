@@ -45,8 +45,6 @@ const HospitalCardItem = ({ hospitalData, onReservation }) => {
                         {hospitalData.name}
                     </S.HospitalName>
                     <S.StatusInfo>
-                        <S.StatusDot />
-                        <span>상태:</span>
                         <S.Distance>
                             거리: {(hospitalData.roadDistance/1000).toFixed(1)}KM
                         </S.Distance>
@@ -93,7 +91,7 @@ const HospitalCardItem = ({ hospitalData, onReservation }) => {
           >
                 <S.NoticeBar />
                 <S.NoticeIcon>📢</S.NoticeIcon>
-                알림을 확인할 수 있습니다.
+                공지사항을 확인할 수 있습니다. 
             </S.NoticeLink>
         </S.CardWrapper>
     );

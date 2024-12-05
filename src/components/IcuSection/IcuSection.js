@@ -54,7 +54,7 @@ const IcuSection = ({ hospitalId }) => {
               const value = formatValue(icuData.hvicc, icuData.hvs17);
               return (
                 <>
-                  <S.StatusIcon isAvailable={value !== 'None'} />
+                  <S.StatusIcon isAvailable={value !== '이용 불가'} />
                   {value}
                 </>
               );
@@ -68,7 +68,7 @@ const IcuSection = ({ hospitalId }) => {
               const value = formatValue(icuData.hv2, icuData.hvs06);
               return (
                 <>
-                  <S.StatusIcon isAvailable={value !== 'None'} />
+                  <S.StatusIcon isAvailable={value !== '이용 불가'} />
                   {value}
                 </>
               );
@@ -82,7 +82,7 @@ const IcuSection = ({ hospitalId }) => {
               const value = formatValue(icuData.hv3, icuData.hvs07);
               return (
                 <>
-                  <S.StatusIcon isAvailable={value !== 'None'} />
+                  <S.StatusIcon isAvailable={value !== '이용 불가'} />
                   {value}
                 </>
               );
@@ -96,7 +96,7 @@ const IcuSection = ({ hospitalId }) => {
               const value = formatValue(icuData.hv35, icuData.hvs18);
               return (
                 <>
-                  <S.StatusIcon isAvailable={value !== 'None'} />
+                  <S.StatusIcon isAvailable={value !== '이용 불가'} />
                   {value}
                 </>
               );
@@ -110,7 +110,7 @@ const IcuSection = ({ hospitalId }) => {
               const value = formatValue(icuData.hv34, icuData.hvs15);
               return (
                 <>
-                  <S.StatusIcon isAvailable={value !== 'None'} />
+                  <S.StatusIcon isAvailable={value !== '이용 불가'} />
                   {value}
                 </>
               );
@@ -124,7 +124,7 @@ const IcuSection = ({ hospitalId }) => {
               const value = formatValue(icuData.hv6, icuData.hvs12);
               return (
                 <>
-                  <S.StatusIcon isAvailable={value !== 'None'} />
+                  <S.StatusIcon isAvailable={value !== '이용 불가'} />
                   {value}
                 </>
               );
@@ -138,7 +138,7 @@ const IcuSection = ({ hospitalId }) => {
               const value = formatValue(icuData.hv32, icuData.hvs09);
               return (
                 <>
-                  <S.StatusIcon isAvailable={value !== 'None'} />
+                  <S.StatusIcon isAvailable={value !== '이용 불가'} />
                   {value}
                 </>
               );
@@ -152,7 +152,7 @@ const IcuSection = ({ hospitalId }) => {
               const value = formatValue(icuData.hvcc, icuData.hvs11);
               return (
                 <>
-                  <S.StatusIcon isAvailable={value !== 'None'} />
+                  <S.StatusIcon isAvailable={value !== '이용 불가'} />
                   {value}
                 </>
               );
@@ -166,7 +166,7 @@ const IcuSection = ({ hospitalId }) => {
               const value = formatValue(icuData.hvccc, icuData.hvs16);
               return (
                 <>
-                  <S.StatusIcon isAvailable={value !== 'None'} />
+                  <S.StatusIcon isAvailable={value !== '이용 불가'} />
                   {value}
                 </>
               );
@@ -180,7 +180,7 @@ const IcuSection = ({ hospitalId }) => {
               const value = formatValue(icuData.hvncc, icuData.hvs08);
               return (
                 <>
-                  <S.StatusIcon isAvailable={value !== 'None'} />
+                  <S.StatusIcon isAvailable={value !== '이용 불가'} />
                   {value}
                 </>
               );
@@ -194,7 +194,7 @@ const IcuSection = ({ hospitalId }) => {
               const value = formatValue(icuData.hv8, icuData.hvs13);
               return (
                 <>
-                  <S.StatusIcon isAvailable={value !== 'None'} />
+                  <S.StatusIcon isAvailable={value !== '이용 불가'} />
                   {value}
                 </>
               );

@@ -5,7 +5,7 @@ export const formatValue = (current, total) => {
     (current === undefined || total === undefined) || 
     current <= 0 || total === 0
   ) {
-    return 'None';
+    return '이용 불가';
   }
   return `${current}/${total}`;
 };
