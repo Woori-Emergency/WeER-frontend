@@ -108,7 +108,7 @@ const EditableCell = ({
           maxLength={13}
           onKeyPress={(e) => {
             // 숫자만 입력 가능하도록
-            const regex = /[0-9]/;
+            const regex = /\d/;
             if (!regex.test(e.key)) {
               e.preventDefault();
             }

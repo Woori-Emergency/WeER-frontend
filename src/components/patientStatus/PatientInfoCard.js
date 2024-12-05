@@ -200,7 +200,7 @@ const PatientInfoCard = ({ patient, onComplete }) => {
   const handleComplete = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`/hospital/patient/${patient.patientconditionid}/complete`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospital/patient/${patient.patientconditionid}/complete`, {
         method: 'PATCH',
         headers: getAuthHeaders(),
       });

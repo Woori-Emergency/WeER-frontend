@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import { AutoComplete, Input } from 'antd';
+import React, { useState } from 'react';
 import { hospitalList } from '../../data/HospitalList'; // 병원 데이터 가져오기
 
 const Search = ({ setSelectedHospital }) => {
@@ -49,7 +49,7 @@ const Search = ({ setSelectedHospital }) => {
       onSearch={handleSearch}
       onSelect={handleSelect}
       style={{ width: '100%', borderRadius: '8px',    }}
-      placeholder="소속 병원을 검색하세요"
+      placeholder="병원 이름을 검색하세요."
     >
       <Input 
         onKeyPress={handleKeyPress} // 키보드 입력 처리

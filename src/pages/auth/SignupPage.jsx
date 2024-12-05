@@ -245,7 +245,7 @@ import Search from '../../components/Search/Search';
       whitespace: true,
     },
     {
-      pattern: /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/,
+      pattern: /^01([016789])-?(\d{3,4})-?(\d{4})$/,
       message: '올바른 휴대폰 번호 형식이 아닙니다. (예: 010-1234-5678)',
     },
     {

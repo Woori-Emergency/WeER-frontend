@@ -54,7 +54,7 @@ const Emergency = ({ hospitalId }) => {
                   const value = formatValue(erData.hvec, erData.hvs01);
                   return (
                     <>
-                      <S.StatusIcon isAvailable={value !== 'None'} />
+                      <S.StatusIcon isAvailable={value !== '이용 불가'} />
                       {value}
                     </>
                   );
@@ -68,7 +68,7 @@ const Emergency = ({ hospitalId }) => {
                   const value = formatValue(erData.hv27, erData.hvs59);
                   return (
                     <>
-                      <S.StatusIcon isAvailable={value !== 'None'} />
+                      <S.StatusIcon isAvailable={value !== '이용 불가'} />
                       {value}
                     </>
                   );
@@ -82,7 +82,7 @@ const Emergency = ({ hospitalId }) => {
                   const value = formatValue(erData.hv29, erData.hvs52);
                   return (
                     <>
-                      <S.StatusIcon isAvailable={value !== 'None'} />
+                      <S.StatusIcon isAvailable={value !== '이용 불가'} />
                       {value}
                     </>
                   );
@@ -96,7 +96,7 @@ const Emergency = ({ hospitalId }) => {
                   const value = formatValue(erData.hv30, erData.hvs51);
                   return (
                     <>
-                      <S.StatusIcon isAvailable={value !== 'None'} />
+                      <S.StatusIcon isAvailable={value !== '이용 불가'} />
                       {value}
                     </>
                   );
@@ -110,7 +110,7 @@ const Emergency = ({ hospitalId }) => {
                   const value = formatValue(erData.hv28, erData.hvs02);
                   return (
                     <>
-                      <S.StatusIcon isAvailable={value !== 'None'} />
+                      <S.StatusIcon isAvailable={value !== '이용 불가'} />
                       {value}
                     </>
                   );
@@ -124,7 +124,7 @@ const Emergency = ({ hospitalId }) => {
                   const value = formatValue(erData.hv15, erData.hvs48);
                   return (
                     <>
-                      <S.StatusIcon isAvailable={value !== 'None'} />
+                      <S.StatusIcon isAvailable={value !== '이용 불가'} />
                       {value}
                     </>
                   );
@@ -138,7 +138,7 @@ const Emergency = ({ hospitalId }) => {
                   const value = formatValue(erData.hv16, erData.hvs49);
                   return (
                     <>
-                      <S.StatusIcon isAvailable={value !== 'None'} />
+                      <S.StatusIcon isAvailable={value !== '이용 불가'} />
                       {value}
                     </>
                   );

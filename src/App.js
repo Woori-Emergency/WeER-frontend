@@ -1,26 +1,26 @@
 import React from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import Header from './components/common/Header';
 import AdminHeader from './components/common/AdminHeader';
 import Footer from './components/common/Footer';
+import Header from './components/common/Header';
 import ProtectedRoute from './components/routes/AdminRoute';
 
-import MainPage from './pages/weer/MainPage';
-import LoginPage from './pages/auth/LoginPage';
-import SignupPage from './pages/auth/SignupPage';
-import SignupCompletePage from './pages/auth/SignupCompletePage';
-import HospitalListPage from './pages/weer/HospitalListPage';
-import HospitalFilterPage from './pages/weer/HospitalFilterPage';
-import PatientStatusInputPage from './pages/weer/PatientStatusInputPage';
-import PatientStatusListPage from './pages/weer/PatientStatusListPage';
-import HospitalNoticePage from './pages/weer/HospitalAnnouncementPage';
-import ReservationListPage from './pages/weer/ReservationListPage';
+import AdminApprovalPage from './pages/admin/AdminApprovalPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminUserListPage from './pages/admin/AdminUserListPage';
-import AdminApprovalPage from './pages/admin/AdminApprovalPage';
+import LoginPage from './pages/auth/LoginPage';
+import SignupCompletePage from './pages/auth/SignupCompletePage';
+import SignupPage from './pages/auth/SignupPage';
 import HospitalBookingListPage from './pages/hospital_admin/HospitalBookingListPage';
+import HospitalNoticePage from './pages/weer/HospitalAnnouncementPage';
+import HospitalFilterPage from './pages/weer/HospitalFilterPage';
 import HospitalFilteredList from './pages/weer/HospitalFilteredList';
+import HospitalListPage from './pages/weer/HospitalListPage';
+import MainPage from './pages/weer/MainPage';
+import PatientStatusInputPage from './pages/weer/PatientStatusInputPage';
+import PatientStatusListPage from './pages/weer/PatientStatusListPage';
+import ReservationListPage from './pages/weer/ReservationListPage';
 
 const Container = styled.div`
   display: flex;
@@ -65,6 +65,7 @@ function App() {
           </Route>
 
           <Route path="/hospital-booking-list" element={<HospitalBookingListPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Content>
 

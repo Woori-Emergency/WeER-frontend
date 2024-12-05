@@ -1,5 +1,5 @@
-import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
 export const CardWrapper = styled.div`
   width: 100%;
@@ -50,20 +50,11 @@ export const HospitalName = styled.h2`
 export const StatusInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
   font-size: 14px;
   color: #666;
 `;
 
-export const StatusDot = styled.div`
-  width: 8px;
-  height: 8px;
-  background: #7EB09B;
-  border-radius: 50%;
-`;
-
 export const Distance = styled.span`
-  margin-left: 8px;
 `;
 
 export const ButtonGroup = styled.div`
