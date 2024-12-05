@@ -1,7 +1,8 @@
   import { Button, Col, Form, Input, Select, Typography } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Search from '../../components/Search/Search';
+import SearchSafetyCenter from '../../components/Search/SearchSafetyCenter';
+
   const { Option } = Select;
   const { Title } = Typography;
 
@@ -36,7 +37,7 @@ import Search from '../../components/Search/Search';
     const navigate = useNavigate();
     const [idAvailable, setIdAvailable] = useState(false); // ID 중복 체크 상태
     const [emailAvailable, setEmailAvailable] = useState(false); // 이메일 중복 체크 상태
-    const [selectedHospital, setSelectedHospital] = useState('');
+    const [selectedSafetyCenter, setSafetyCenter] = useState('');
 
     // ID 중복 체크 비동기 함수
     const checkIdAvailability = async (loginId) => {
@@ -65,7 +66,7 @@ import Search from '../../components/Search/Search';
         password: values.password,
         tel: values.tel,
         certificate: values.certificate,
-        organization: selectedHospital,
+        organization: selectedSafetyCenter,
       };
     
 
@@ -305,7 +306,7 @@ import Search from '../../components/Search/Search';
               <Form.Item
               name="organization"
               label="소속 기관"
-              tooltip="현재 자신이 근무하는 병원명을 적어주세요."
+              tooltip="현재 자신이 근무하는 119 응급센터를 적어주세요."
               rules={[
                 { required: true, 
                   message: '소속 기관을 입력해주세요.', 
@@ -313,9 +314,9 @@ import Search from '../../components/Search/Search';
               ]}
             >
               {/* Search 컴포넌트에 setSelectedHospital 전달 */}
-              <Search
-                setSelectedHospital={(value) => {
-                  setSelectedHospital(value);
+              <SearchSafetyCenter
+                setSafetyCenter={(value) => {
+                  setSafetyCenter(value);
                   form.setFieldsValue({ organization: value }); // Form 값 업데이트
                 }}
               />
