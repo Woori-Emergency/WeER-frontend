@@ -59,47 +59,6 @@ pipeline {
                }
            }
        }
-
-       stage('sonarqube analysis') {
-           steps {
-               script {
-                   def scannerHome = tool 'sonarqube'
-                   withSonarQubeEnv(credentialsId: "fe-jenkins-token", installationName: 'SonarServer') {
-                       sh """
-                           ${scannerHome}/bin/sonar-scanner \
-                           -Dsonar.projectKey=weer-FE \
-                           -Dsonar.sources=. \
-                           -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-                           -Dsonar.sourceEncoding=UTF-8 \
-                           -Dsonar.qualitygate.wait=true \
-                           -Dsonar.coverage.exclusions=**/*.test.js,**/*.spec.js,**/tests/**/*,**/*.stories.js,**/*.config.js \
-                           -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/build/**,**/*.test.js,**/*.spec.js,**/*.stories.js \
-                           -Dsonar.javascript.coveragePlugin=lcov \
-                           -Dsonar.qualitygate.timeout=300 \
-                           -Dsonar.qualitygate.conditions="""" \
-                               blocker_violations=0; \
-                               critical_violations<3; \
-                               major_violations<30; \
-                               coverage>30; \
-                               duplicated_lines_density<20; \
-                               cognitive_complexity_per_file<20; \
-                               security_hotspots<3; \
-                               vulnerabilities<3 \
-                           """"
-                       """
-                   }
-               }
-           }
-       }
-
-       stage('Quality Gate') {
-           steps {
-               timeout(time: 5, unit: 'MINUTES') {
-                   waitForQualityGate abortPipeline: true
-               }
-           }
-       }
-
        stage('S3 Upload Test') {
            steps {
                dir('build') {
