@@ -111,20 +111,6 @@ pipeline {
                    npm cache clean --force
                    docker system prune -f || true
                '''
-               
-               cleanWs(
-                   cleanWhenSuccess: true,
-                   cleanWhenFailure: true,
-                   cleanWhenUnstable: true,
-                   deleteDirs: true,
-                   patterns: [
-                       [pattern: '.env', type: 'INCLUDE'],
-                       [pattern: 'node_modules/**', type: 'INCLUDE'],
-                       [pattern: 'build/**', type: 'INCLUDE'],
-                       [pattern: 'coverage/**', type: 'INCLUDE'],
-                       [pattern: '*.log', type: 'INCLUDE']
-                   ]
-               )
            }
        }
        success {
