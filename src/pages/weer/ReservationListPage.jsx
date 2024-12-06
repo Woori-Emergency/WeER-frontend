@@ -106,7 +106,7 @@ const ReservationListPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     const fetchPatient = async () => {
       try {
@@ -177,7 +177,10 @@ const ReservationListPage = () => {
   return (
     <ContentWrapper>
       <Card>
-        <PatientInfoCard patient={currentPatient} isCompleted={currentPatient.transportStatus === 'COMPLETED'}  />
+        <PatientInfoCard 
+          patient={currentPatient} 
+          isCompleted={currentPatient.transportStatus === 'COMPLETED'}  
+        />
         <SectionDivider />
         
         <AccordionSection>
