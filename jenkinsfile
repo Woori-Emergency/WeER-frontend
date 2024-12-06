@@ -100,24 +100,4 @@ pipeline {
            }
        }
    }
-   
-   post {
-       always {
-           script {
-               sh '''
-                   rm -rf build/
-                   rm -rf node_modules/
-                   rm -rf coverage/
-                   npm cache clean --force
-                   docker system prune -f || true
-               '''
-           }
-       }
-       success {
-           echo 'Build and deployment successful!'
-       }
-       failure {
-           echo 'Build or deployment failed'
-       }
-   }
 }
