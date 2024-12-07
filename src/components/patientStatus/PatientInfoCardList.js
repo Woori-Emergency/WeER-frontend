@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { formatDate } from '../../utils/dateUtils';
 import { getAuthHeaders } from '../api/config';
 import * as S from './PatientInfoCard.styles';
-import { Spin } from 'antd';
 
 const getAgeGroupText = (ageGroup) => {
   const ageGroupMap = {
@@ -32,7 +30,7 @@ const PatientInfoCard = ({ patient, onCompleted = false }) => {
     try {
       setShowModal(false);
       setIsLoading(true);
-      const response = await fetch(`/hospital/patient/${patient.patientId}/complete`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/hospital/patient/${patient.patientconditionid}/complete`, {
         method: 'PATCH',
         headers: getAuthHeaders(),
       });

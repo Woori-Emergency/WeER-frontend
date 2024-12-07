@@ -77,7 +77,7 @@ const PatientStatusListPage = () => {
         if (currentTransfer) {
           // PatientInfoCard 컴포넌트에 맞게 데이터 매핑
           const mappedPatient = {
-            patientId: currentTransfer.patientconditionid,
+            patientconditionid: currentTransfer.patientconditionid,
             gender: currentTransfer.gender,
             ageGroup: currentTransfer.ageGroup,
             bloodPressure: currentTransfer.bloodPressure,
