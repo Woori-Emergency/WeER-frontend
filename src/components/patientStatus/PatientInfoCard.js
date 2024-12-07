@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { formatDate } from '../../utils/dateUtils';
 import { getAuthHeaders } from '../api/config';
 import * as S from './PatientInfoCard.styles';
-import { Spin } from 'antd';
 
 const getAgeGroupText = (ageGroup) => {
   const ageGroupMap = {
