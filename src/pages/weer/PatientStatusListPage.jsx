@@ -58,7 +58,7 @@ const PatientStatusListPage = () => {
         const completedTransfersList = data.result.filter(item => 
           item.transportStatus === 'COMPLETED'
         ).map(item => ({
-          patientId: item.patientconditionid,
+          patientconditionid: item.patientconditionid,
           gender: item.gender,
           ageGroup: item.ageGroup,
           bloodPressure: item.bloodPressure,
