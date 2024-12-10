@@ -6,7 +6,9 @@ import Search from '../../components/Search/Search';
 import StatusButtons from '../../components/StatusButtons/StatusButtons';
 import FilterButtons from '../../components/patientStatus/FilterButtons';
 import { ContentWrapper, TopContainer } from '../../styles/CommonStyles';
-import { Form } from 'antd';
+import { Button, Form } from 'antd';
+
+const locationImage = {currentLocationImage: '/images/location-crosshairs.png'};
 
 const MainPage = () => {
   const { location, error } = useGeoLocation();
@@ -19,7 +21,7 @@ const MainPage = () => {
   });
   const [range, setRange] = useState(1000); // 초기 범위 (100m)
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (location.latitude && location.longitude) {
       console.log("Current Location:", location.latitude, location.longitude);
@@ -36,7 +38,9 @@ const MainPage = () => {
               ...hospital,
               duration: Math.ceil(hospital.duration),
                // 초 단위를 분 단위로 변환
-            }));
+               
+            })
+          );
             setHospitals(formattedHospitals);
           } else {
             console.warn("Failed to fetch hospital data.");
@@ -67,6 +71,10 @@ const MainPage = () => {
     navigate('/hospital/filter');
   };
   
+  const handleMapCenterChange = (newCenter) => {
+    setMapCenter(newCenter);
+  };
+  
   const searchHospitalSelect = async (value) =>{
     const selectedHospitalData = hospitals.find(hospital => hospital.hospitalName === value);
     if(selectedHospitalData){
@@ -94,8 +102,27 @@ const MainPage = () => {
         setSelectedHospital={searchHospitalSelect}// Form 값 업데이트
               />
         <StatusButtons onStatusChange={() => {}} />
+        <Button
+          icon={<img src={locationImage.currentLocationImage} alt="Current Location" style={{ width: 30, height: 30 }} />}
+          shape="circle"
+          size="small"
+          onClick={() => {
+            if (location.latitude && location.longitude) {
+              setMapCenter({
+                lat: location.latitude,
+                lng: location.longitude,
+              });
+            }
+          }}
+          style={{ position: 'relative',}}
+        />
       </TopContainer>
-      <KakaoMap center={mapCenter} hospitals={hospitals} selectedHospital={selectedHospital} />
+      <KakaoMap 
+        center={mapCenter} 
+        hospitals={hospitals} 
+        selectedHospital={selectedHospital} 
+        currentLocation={location}
+        onCenterChange={handleMapCenterChange}/>
       <FilterButtons 
         onDistanceSort={handleDistanceSort}
         onEmergencyFilter={handleFilterSearch}
