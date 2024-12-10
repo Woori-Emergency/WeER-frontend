@@ -12,14 +12,6 @@ const MapContainer = styled.div`
   position; relative; // 버튼 위치를 지도 위에 배치하기 위하여 필요
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
-`;
-
-
-
 // 마커 이미지 경로 상수 정의
 const MARKER_IMAGES = {
   available: '/images/marker/available.png',
