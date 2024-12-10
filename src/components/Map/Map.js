@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Map, MapMarker, CustomOverlayMap } from 'react-kakao-maps-sdk';
+import { Map, MapMarker, CustomOverlayMap, Circle } from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 import * as S from './Map.styles';
 
@@ -9,16 +9,26 @@ const MapContainer = styled.div`
   border-radius: 8px;
   overflow: hidden;
   margin: 20px 0;
+  position; relative; // 버튼 위치를 지도 위에 배치하기 위하여 필요
 `;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+`;
+
+
 
 // 마커 이미지 경로 상수 정의
 const MARKER_IMAGES = {
   available: '/images/marker/available.png',
   busy: '/images/marker/busy.png',
   unavailable: '/images/marker/unavailable.png',
+  current: '/images/marker/ambulance.png',
 };
 
-const KakaoMap = ({ center, hospitals = [], selectedHospital }) => {
+const KakaoMap = ({ center, hospitals = [], selectedHospital, currentLocation, onCenterChange }) => {
   const [selectedMarker, setSelectedMarker] = useState(null);
   // 거리(m)를 km로 변환하는 함수
   const formatDistance = (distance) => {
@@ -38,6 +48,16 @@ const KakaoMap = ({ center, hospitals = [], selectedHospital }) => {
     return MARKER_IMAGES.unavailable;
   };
 
+  const handleMarkerClick = (hospital) => {
+    setSelectedMarker(selectedMarker === hospital.hospitalName ? null : hospital.hospitalName);
+    if(onCenterChange){
+      onCenterChange({
+        lat: hospital.latitude,
+        lng: hospital.longitude
+      });
+    }
+  }
+
   // 병원을 선택했을 때 자동으로 선택된 병원의 마커를 클릭
   useEffect(()=>{
     if(selectedHospital){
@@ -51,11 +71,23 @@ const KakaoMap = ({ center, hospitals = [], selectedHospital }) => {
   return (
     <MapContainer>
       <Map center={center} style={{ width: "100%", height: "100%" }} level={3}>
+      {currentLocation && currentLocation.latitude && currentLocation.longitude && (
+          <MapMarker
+            position={{ 
+              lat: currentLocation.latitude, 
+              lng: currentLocation.longitude 
+            }}
+            image={{
+              src: MARKER_IMAGES.current,
+              size: { width: 50, height: 55 }
+            }}
+          />
+        )}
         {hospitals.map((hospital) => (
           <React.Fragment key={hospital.hospitalName}>
             <MapMarker
               position={{ lat: hospital.latitude, lng: hospital.longitude }}
-              onClick={() => setSelectedMarker(selectedMarker === hospital.hospitalName ? null : hospital.hospitalName)}
+              onClick={() => () => handleMarkerClick(hospital)}
               image={{
                 src: getMarkerImage(hospital.availableBeds, hospital.totalBeds), // hvec 값에 따른 이미지 결정
                 size: { width: 50, height: 55 },
