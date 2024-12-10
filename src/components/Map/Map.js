@@ -79,7 +79,7 @@ const KakaoMap = ({ center, hospitals = [], selectedHospital, currentLocation, o
           <React.Fragment key={hospital.hospitalName}>
             <MapMarker
               position={{ lat: hospital.latitude, lng: hospital.longitude }}
-              onClick={() => () => handleMarkerClick(hospital)}
+              onClick={() => handleMarkerClick(hospital)}
               image={{
                 src: getMarkerImage(hospital.availableBeds, hospital.totalBeds), // hvec 값에 따른 이미지 결정
                 size: { width: 50, height: 55 },
