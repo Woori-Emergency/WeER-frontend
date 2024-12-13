@@ -1,70 +1,76 @@
-# Getting Started with Create React App
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d03bdedc-ea90-444f-8ece-101fb8b4c734" width="400" alt="weer_logo">
+</p>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 🚑 WeER
 
-## Available Scripts
+> 응급실 가용 병상 확인 및 예약 사이트
 
-In the project directory, you can run:
+📁 전체 깃허브 주소 : https://github.com/Woori-Emergency
 
-### `npm start`
+## 💡 프로젝트 소개
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<b>'WeER'</b>는 '응급실 뺑뺑이' 문제를 해결하기 위해 실시간 응급실 병상 정보를 제공하는 고가용성 웹 서비스입니다. 본 프로젝트에서 프론트엔드는 긴급 상황에서의 신속한 의사결정을 돕기 위해 정보 가독성 향상에 중점을 두었습니다. 기존 응급실 정보 시스템의 복잡한 UI를 개선하여 필수 정보를 직관적으로 파악할 수 있도록 하였으며, 실시간 필터링과 검색 기능을 통해 사용자가 원하는 조건의 병원을 빠르게 찾을 수 있습니다. 또한 병원 간 이송 예약 시스템을 구축하여 응급 상황에서의 업무 효율성 향상을 기대할 수 있습니다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## ⚒️ 기술 스택
 
-### `npm test`
+### 🛠️ Environment
+- 📦 Node.js
+- 📦 npm
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### ⚙️ Config
+- 🔍 ESLint
 
-### `npm run build`
+### 💻 Development
+- ⚛️ React
+- 🎨 Styled Components
+- 🔄 Fetch API
+- 📄 HTML
+- 🎯 CSS
+- 💫 JavaScript
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 🤝 Communication
+- 🐱 GitHub
+- 💬 Slack
+- 📝 Notion
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 📚 API 문서
+📝 WeER API 문서 : https://shorturl.at/TfsTL
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 📁 페이지 구성
 
-### `npm run eject`
+```
+📦 pages
+┣ 📂 admin
+┃ ┣ 📜 AdminApprovalPage.jsx
+┃ ┣ 📜 AdminDashboardPage.jsx
+┃ ┗ 📜 AdminUserListPage.jsx
+┣ 📂 auth
+┃ ┣ 📜 LoginPage.jsx
+┃ ┣ 📜 SignupCompletePage.jsx
+┃ ┗ 📜 SignupPage.jsx
+┣ 📂 hospital_admin
+┃ ┗ 📜 HospitalBookingListPage.jsx
+┗ 📂 weer
+┃ ┣ 📜 HospitalAnnouncementPage.jsx
+┃ ┣ 📜 HospitalFilterPage.jsx
+┃ ┣ 📜 HospitalFilteredList.jsx
+┃ ┣ 📜 HospitalListPage.jsx
+┃ ┣ 📜 MainPage.jsx
+┃ ┣ 📜 PatientStatusInputPage.jsx
+┃ ┣ 📜 PatientStatusListPage.jsx
+┃ ┗ 📜 ReservationListPage.jsx
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 📱 화면 구성
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+| 페이지 | 스크린샷 | 구현 기능 |
+|--------------------------------|--------------------------|--------------------------|
+| 🏠 메인 화면 | <img src="https://github.com/user-attachments/assets/8e04f9ad-d34e-4d98-a24d-5aa860cc9e3b" width="300" alt="메인 페이지"/> | - 🗺️ 지도에 현재 가용 가능한 응급실 표시 <br>- 📍 거리순 응급실 조회<br>- 🔍 필터링순 응급실 조회<br> - 🏥 응급실 이름 검색으로 현 위치에서 거리 및 소요 시간 확인 |
+| 📍 거리순 응급실 조회| <img src="https://github.com/user-attachments/assets/599e05fc-58b0-4efa-b5e8-80c31b4e227b" width="300" alt="거리순 응급실 조회"/> | - 🚶‍♂️ 현재 위치에서 가장 가까운 응급실 확인 <br>- 🔧 현재 장비 확인<br> - 📅 예약 기능 |
+| 🔍 필터링별 응급실 조회 | <img src="https://github.com/user-attachments/assets/348197cd-4690-41dd-9a86-9d2dc86c9ee1" width="300" alt="필터링별 응급실 조회"/> | - ⚕️ 병원 필터링 조건 제시<br>- 🏥 현재 상황에 맞는 응급실 확인 가능 |
+| 👤 환자 정보 입력| <img src="https://github.com/user-attachments/assets/ba545f3b-c18a-49c8-aa7a-9def84c9eef9" width="300" alt="환자 정보 입력"/> | - 📝 이송할 환자 상태 정보 입력 |
+| 📋 환자 내역 페이지 | <img src="https://github.com/user-attachments/assets/97b329f6-da32-4f67-84f2-0195b5e1c6b3" width="300" alt="환자 내역 페이지"/> | - 🚑 현재 이송중인 환자 정보<br>- 📊 이송 완료한 환자 정보 리스트 <br>- ✅ 이송 완료 기능|
+| 📅 응급실 예약 조회| <img src="https://github.com/user-attachments/assets/dad8ff2f-ce35-4431-b319-219ca50d939f" width="300" alt="응급실 예약 조회 페이지"/> | - 🏃 현재 이송중인 환자 정보<br>- 🔖 해당 환자를 위한 응급실 예약<br>- ✔️ 예약 승인/반려 확인<br> - ✅ 이송 완료 기능 |
+| 👨‍💼 관리자 대시보드| <img src="https://github.com/user-attachments/assets/9c96b1cd-88a7-4dca-9ba8-479c37abc651" width="300" alt="관리자 대시보드"/> | - 👥 회원 정보 확인 <br>- 📝 회원가입 요청 리스트 확인 <br>- ✅ 회원가입 승인/반려 |
+| 🏥 병원 측 승인/반려 | <img src="https://github.com/user-attachments/assets/8f103fcf-2f19-4223-9620-655e9e5eeb09" width="300" alt="병원 측 승인/반려 페이지"/> | - 📋 요청 들어온 예약 확인<br>- ✔️ 예약 요청 승인/반려 |

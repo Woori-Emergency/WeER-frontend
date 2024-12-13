@@ -1,0 +1,103 @@
+pipeline {
+   agent any
+   
+   environment {
+       ENV_VARS = credentials('react-env-vars')
+       CI = 'false'
+       AWS_CREDENTIAL = credentials('aws-credentials')
+       CLOUDFRONT = credentials('cloudfrontId')
+       FEBUCKET = credentials('bucket')
+       REGION = credentials('aws-region')
+       FEGITHUB = credentials('fe-github')
+       GCP_BUCKET = credentials('gcp-bucket')
+       GCP_CREDENTIAL = 'gcpCredentials'
+   }
+   
+   options {
+       buildDiscarder(logRotator(numToKeepStr: '5'))
+       disableConcurrentBuilds()
+   }
+   
+   stages {
+       stage('Cleanup Workspace') {
+           steps {
+               cleanWs()
+           }
+       }
+       
+       stage('Git Clone') {
+           steps {
+               git(
+                   url: env.FEGITHUB,
+                   branch: 'develop'
+               )
+           }
+       }
+       
+       stage('Prepare Environment') {
+           steps {
+               script {
+                   def envContent = readFile(file: env.ENV_VARS)
+                   writeFile file: '.env', text: envContent
+                   sh 'ls -la .env'
+               }
+           }
+       }
+       
+       stage('React Build') {
+           tools {
+               nodejs '18.3.1'  
+           }
+           steps {
+               dir('FE pipeline') {  
+                   sh '''
+                       rm -rf node_modules/.cache
+                       npm cache clean --force
+                       CI=false npm install
+                       CI=false npm run build
+                   '''
+               }
+           }
+       }
+       stage('S3 Upload Test') {
+           steps {
+               dir('build') {
+                   withAWS(credentials: env.AWS_CREDENTIAL, region: env.REGION) {
+                    sh '''
+               echo "Testing single file upload..."
+               aws s3 cp index.html ${FEBUCKET}/index.html
+               
+               if [ $? -eq 0 ]; then
+                   echo "Single file upload successful, uploading all files..."
+                   aws s3 cp . ${FEBUCKET}/ --recursive
+               else
+                   echo "Single file upload failed"
+                   exit 1
+               fi
+           '''
+               }
+               }
+           }
+       }
+
+       stage('Store to GCS'){
+           steps{
+               script{
+                   googleStorageUpload(
+                       credentialsId: env.GCP_CREDENTIAL,
+                       bucket: "gs://${env.GCP_BUCKET}",
+                       pattern: 'build/**/*',
+                       pathPrefix: 'build',
+                       flatten: true
+                   )
+               }
+           }
+       }
+       
+       stage('CloudFront Invalidation') {
+           steps {
+               sh 'aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT} --paths "/*"'
+           }
+       }
+   }
+}

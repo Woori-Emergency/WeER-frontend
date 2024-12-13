@@ -1,13 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Link, useLocation } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import React, { useEffect, useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import Profile from '../Profile/Profile';
+import { getRole, getToken } from '../api/config';
 
 const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 40px;
+  padding: 20px 30px;
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
   background-color: white;
 `;
@@ -18,21 +21,9 @@ const LogoContainer = styled.div`
 `;
 
 const LogoImage = styled.img`
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
-`;
-
-const LogoText = styled.div`
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  line-height: 1.2;
-`;
-
-const Subtitle = styled.div`
-  font-size: 12px;
-  color: #666;
+  width: 150px;
+  height: 50px;
+  margin-right: 5px;
 `;
 
 const Nav = styled.nav`
@@ -47,10 +38,10 @@ const NavItem = styled(Link)`
   margin: 0 15px;
   position: relative;
   font-weight: ${(props) => (props.active ? 'bold' : 'normal')};
-  color: ${(props) => (props.active ? '#007bff' : '#333')};
+  color: ${(props) => (props.active ? '#E97132 ' : '#333')};
 
   &:hover {
-    color: #007bff;
+    color: #E97132 ;
   }
 `;
 
@@ -78,32 +69,103 @@ const LoginIcon = styled(FaUserCircle)`
   color: #333;
 `;
 
-
 function Header() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState(null);
+  const [userPayload, setUserPayload] = useState(null);
+
+  useEffect(() => {
+    const checkLoginStatus = async() => {
+      const token = await getToken();
+      const role = await getRole();
+      console.log(role);
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          setIsLoggedIn(true);
+          setRole(role);
+          setUserPayload(decoded);
+          if (role === 'HOSPITAL_ADMIN' && location.pathname === '/') {
+            navigate('/hospital-booking-list');
+          }
+        } catch (error) {
+          console.error("토큰 가져오기 실패:", error);
+          setIsLoggedIn(false);
+          setRole(null);
+          setUserPayload(null);
+        }
+      } else {
+        setIsLoggedIn(false);
+        setRole(role);
+        setUserPayload(null);
+      }
+    };
+
+    checkLoginStatus();
+    window.addEventListener('storage', checkLoginStatus);
+
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+    };
+  }, [location.pathname, navigate]);
 
   return (
     <HeaderContainer>
       <LogoContainer>
-        <LogoImage src="/weer_logo.png" alt="Logo" />
-        <div>
-          <LogoText>Emergency</LogoText>
-          <Subtitle>실시간 응급실 예약 서비스</Subtitle>
-        </div>
+        <Link to="/" active={location.pathname === "/" ? 1 : 0}>
+          <LogoImage src="/weer_logo.png" alt="Logo" />
+        </Link>
       </LogoContainer>
       
       <Nav>
-        <NavItem to="/" active={location.pathname === "/"}>메인</NavItem>
-        <NavItem to="/my-booking-requests" active={location.pathname === "/my-booking-requests"}>
-          예약 확인
+      {isLoggedIn && (
+  <>
+    {role === 'MEMBER' && (
+      <>
+        <NavItem 
+          to="/my-booking-requests" 
+          active={location.pathname === "/my-booking-requests" ? 1 : 0}
+        >
+          실시간 환자 예약 확인
         </NavItem>
-        <NavItem to="/patient-status-list" active={location.pathname === "/patient-status-list"}>
-          환자 상태 내역
+        
+        <NavItem 
+          to="/patient-status-list" 
+          active={location.pathname === "/patient-status-list" ? 1 : 0}
+        >
+          이송 환자 리스트 
         </NavItem>
-        <LoginButton to="/login">
-          <LoginIcon />
-          로그인
-        </LoginButton>
+        
+        <NavItem
+          to="/patient-status-input"
+          active={location.pathname === "/patient-status-input" ? 1 : 0}
+        >
+          환자 상태 기입
+        </NavItem>
+      </>
+    )}
+    
+    {role === 'HOSPITAL_ADMIN' && (
+      <NavItem
+        to="/hospital-booking-list"
+        active={location.pathname === "/hospital-booking-list" ? 1 : 0}
+      >
+        예약 승인/반려
+      </NavItem>
+    )}
+  </>
+)}
+        
+        {isLoggedIn ? (
+          <Profile payload={userPayload} />
+        ) : (
+          <LoginButton to="/login">
+            <LoginIcon />
+            로그인
+          </LoginButton>
+        )}
       </Nav>
     </HeaderContainer>
   );
