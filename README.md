@@ -34,6 +34,9 @@
 - 💬 Slack
 - 📝 Notion
 
+## 📚 API 문서
+📝 WeER API 문서 : https://shorturl.at/TfsTL
+
 ## 📁 페이지 구성
 
 ```
