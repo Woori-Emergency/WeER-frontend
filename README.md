@@ -1,4 +1,6 @@
-![weer_logo](https://github.com/user-attachments/assets/d03bdedc-ea90-444f-8ece-101fb8b4c734)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d03bdedc-ea90-444f-8ece-101fb8b4c734" width="400" alt="weer_logo">
+</p>
 
 # 🚑 WeER
 
