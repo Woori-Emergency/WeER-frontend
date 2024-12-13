@@ -1,4 +1,7 @@
-# 🚑 WeER 
+![weer_logo](https://github.com/user-attachments/assets/d03bdedc-ea90-444f-8ece-101fb8b4c734)
+
+# 🚑 WeER
+
 > 응급실 가용 병상 확인 및 예약 사이트
 
 📁 전체 깃허브 주소 : https://github.com/Woori-Emergency
